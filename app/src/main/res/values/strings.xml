@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">BcyKari</string>
+
+    <string name="close">Close</string>
+    <string name="illust">Painting</string>
+    <string name="cos">COS</string>
+    <string name="settings">Settings</string>
+
+    <!-- settings -->
+    <string name="about">About</string>
+    <string name="version">Version</string>
+    <string name="license">Open-source license</string>
+
+</resources>
