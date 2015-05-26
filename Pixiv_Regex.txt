@@ -1,8 +1,8 @@
-Cover: http://i\d.pixiv.net/c/\d+x\d+/img-master/img/\d+/\d+/\d+/\d+/\d+/\d+/\w+.jpg
+Cover: http://i\d.pixiv.net/c/\d+x\d+/img-master/img/\d+/\d+/\d+/\d+/\d+/\d+/\w+.jpg  //completed
 
-Avatar: http://i\d.pixiv.net/img\d+/profile/\w+/\d+_s.(jpg|png)
+Avatar: data-profile_img="http://i\d.pixiv.net/img\d+/profile/\S+/\d+_s.(jpg|png|gif)" //completed
 
-Author: <span class="icon-text">[\s\S]+?</span>
+Author: <span class="icon-text">[\s\S]+?</span> //completed
 
 HD_Cover_Example: http://i2.pixiv.net/img-original/img/2015/05/25/13/17/57/50554617_p0.(jpg|png)
 
