@@ -1,0 +1,7 @@
+Cover: http://i2.pixiv.net/c/240x480/img-master/img/2015/05/25/13/17/57/50554617_p0_master1200.jpg
+
+HD_Cover_Example: http://i2.pixiv.net/img-original/img/2015/05/25/13/17/57/50554617_p0.(jpg|png)
+
+Detail: member_illust.php\?mode=medium&illust_id=\d+&uarea=daily&ref=rn-b-\d+-thumbnail-3
+
+manga: member_illust.php\?mode=manga&illust_id=\d+
