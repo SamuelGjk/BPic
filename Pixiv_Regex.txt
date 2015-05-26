@@ -1,4 +1,4 @@
-Cover: http://i2.pixiv.net/c/240x480/img-master/img/2015/05/25/13/17/57/50554617_p0_master1200.jpg
+Cover: http://i\d.pixiv.net/c/\d+x\d+/img-master/img/\d+/\d+/\d+/\d+/\d+/\d+/\w+.jpg
 
 Avatar: http://i\d.pixiv.net/img\d+/profile/\w+/\d+_s.(jpg|png)
 
