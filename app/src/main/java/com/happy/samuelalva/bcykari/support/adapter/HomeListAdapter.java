@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -24,9 +23,7 @@ import java.util.Random;
 /**
  * Created by Administrator on 2015/4/15.
  */
-public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int VIEW_TYPE_HEADER = 0;
-    private static final int VIEW_TYPE_ITEM = 1;
+public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ItemViewHolder> {
 
     private Random random;
     private int lastPosition = -1;
@@ -34,75 +31,60 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context context;
     private boolean hasAvatar;
     private List<StatusModel> data;
-    private LayoutInflater mInflater;
 
     public HomeListAdapter(Context context, boolean hasAvatar) {
         this.context = context;
         this.hasAvatar = hasAvatar;
         this.data = new ArrayList<>();
-        this.mInflater = LayoutInflater.from(context);
         random = new Random();
 
         Fresco.initialize(context);
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_HEADER) {
-            return new HeaderViewHolder(mInflater.inflate(R.layout.list_header, null));
-        } else {
-            return new ItemHolder(mInflater.inflate(R.layout.home_list_item, parent, false));
+    public HomeListAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ItemViewHolder(View.inflate(context, R.layout.home_list_item, null));
+    }
+
+    @Override
+    public void onBindViewHolder(HomeListAdapter.ItemViewHolder holder, final int position) {
+        if (hasAvatar) {
+            holder.avatar.setVisibility(View.VISIBLE);
+            holder.avatar.setImageURI(Uri.parse(data.get(position).getAvatar()));
+        }
+        holder.cover.setImageURI(Uri.parse(data.get(position).getCover()));
+        holder.author.setText(data.get(position).getAuthor());
+        holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, DetailActivity.class);
+                i.putExtra(DetailActivity.DETAIL_URL, data.get(position).getDetail());
+                context.startActivity(i);
+            }
+        });
+
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.list_item_into);
+            switch (random.nextInt(2)) {
+                case 0:
+                    animation.setDuration(500);
+                    break;
+            }
+            holder.itemLayout.startAnimation(animation);
+            lastPosition = position;
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if (holder instanceof ItemHolder) {
-            ItemHolder h = (ItemHolder) holder;
-            if (hasAvatar) {
-                h.avatar.setVisibility(View.VISIBLE);
-                h.avatar.setImageURI(Uri.parse(data.get(position - 2).getAvatar()));
-            }
-            h.cover.setImageURI(Uri.parse(data.get(position - 2).getCover()));
-            h.author.setText(data.get(position - 2).getAuthor());
-            h.card.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(context, DetailActivity.class);
-                    i.putExtra(DetailActivity.DETAIL_URL, data.get(position - 2).getDetail());
-                    context.startActivity(i);
-                }
-            });
-
-            if (position > lastPosition) {
-                Animation animation = AnimationUtils.loadAnimation(context, R.anim.list_item_into);
-                switch (random.nextInt(2)) {
-                    case 0:
-                        animation.setDuration(500);
-                        break;
-                }
-                h.itemLayout.startAnimation(animation);
-                lastPosition = position;
-            }
-        }
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+    public void onViewDetachedFromWindow(HomeListAdapter.ItemViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
 
-        if (holder instanceof ItemHolder)
-            ((ItemHolder) holder).itemLayout.clearAnimation();
+        holder.itemLayout.clearAnimation();
     }
 
     @Override
     public int getItemCount() {
-        return data.size() + 2;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return (position == 0 || position == 1) ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
+        return data.size();
     }
 
     public void addAll(List<StatusModel> elem) {
@@ -116,18 +98,12 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    class HeaderViewHolder extends RecyclerView.ViewHolder {
-        public HeaderViewHolder(View view) {
-            super(view);
-        }
-    }
-
-    class ItemHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder {
         private View card, itemLayout;
         private SimpleDraweeView avatar, cover;
         private TextView author;
 
-        public ItemHolder(View itemView) {
+        public ItemViewHolder(View itemView) {
             super(itemView);
 
             card = itemView.findViewById(R.id.card_view);

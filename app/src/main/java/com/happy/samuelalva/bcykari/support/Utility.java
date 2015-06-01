@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
-import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 public class Utility {
     public static boolean isWIFI;
 
+    /*
     public static float dp2px(Context context, float dp) {
         return context.getResources().getDisplayMetrics().density * dp + 0.5f;
     }
@@ -29,6 +29,7 @@ public class Utility {
             return 0;
         }
     }
+    */
 
     public static String getCacheName(String url) {
         return url.substring(url.lastIndexOf("/") + 1);

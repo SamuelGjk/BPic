@@ -3,6 +3,7 @@ package com.happy.samuelalva.bcykari.ui.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,8 +11,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -23,29 +24,23 @@ import com.happy.samuelalva.bcykari.ui.fragment.IllustFragment;
 import com.melnykov.fab.FloatingActionButton;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+    private static final int ILLUST = 0, COS = 1;
     private Fragment[] mFragments = new Fragment[2];
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
+    private NavigationView mDrawerNavigation;
     private FrameLayout tabContainer;
-    private View mHeaderView, btnIllust, btnCos, btnSettings;
+    private View btnSettings;
     private FloatingActionButton mFab;
-
-    private TypedValue outValue;
 
     private FragmentManager mManager;
     private int curFragment;
 
-    private int mTranslationY;
-
     public FrameLayout getTabContainer() {
         return tabContainer;
-    }
-
-    public int getmTranslationY() {
-        return mTranslationY;
     }
 
     public interface Refresher {
@@ -63,33 +58,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tabContainer = (FrameLayout) findViewById(R.id.tab_container);
 
-        mHeaderView = findViewById(R.id.header_view);
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackground(R.color.darkPrimaryColor);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, 0, 0);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        btnIllust = findViewById(R.id.btn_illust);
-        btnCos = findViewById(R.id.btn_cos);
+        mDrawerNavigation = (NavigationView) findViewById(R.id.drawer_navigation);
+        mDrawerNavigation.setNavigationItemSelectedListener(this);
+
         btnSettings = findViewById(R.id.btn_settings);
-
-        outValue = new TypedValue();
-        getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
-
-        btnCos.setBackgroundResource(outValue.resourceId);
-
-        btnIllust.setOnClickListener(this);
-        btnCos.setOnClickListener(this);
         btnSettings.setOnClickListener(this);
-
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(this);
 
-        mFragments[0] = new IllustFragment();
-        mFragments[1] = new CoserFragment();
+        mFragments[ILLUST] = new IllustFragment();
+        mFragments[COS] = new CoserFragment();
 
         mManager = getSupportFragmentManager();
         FragmentTransaction ft = mManager.beginTransaction();
@@ -131,11 +116,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDrawerLayout.closeDrawer(Gravity.START);
     }
 
-    public void updateHeaderTranslation(int translationY) {
-        mHeaderView.setTranslationY(translationY);
-        mTranslationY = translationY;
-    }
-
     public void showFab() {
         mFab.show();
     }
@@ -145,18 +125,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.navigation_item_illust:
+                selectItem(ILLUST);
+                break;
+            case R.id.navigation_item_cos:
+                selectItem(COS);
+                break;
+        }
+//        mDrawerNavigation.setItemTextColor(getResources().getColorStateList(R.color.drawer_navigation_item_text_color_bcy));
+        mDrawerLayout.closeDrawer(Gravity.START);
+        menuItem.setChecked(true);
+        return true;
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_illust:
-                selectItem(0);
-                btnIllust.setBackgroundColor(0x10000000);
-                btnCos.setBackgroundResource(outValue.resourceId);
-                break;
-            case R.id.btn_cos:
-                selectItem(1);
-                btnIllust.setBackgroundResource(outValue.resourceId);
-                btnCos.setBackgroundColor(0x10000000);
-                break;
             case R.id.btn_settings:
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivity(i);

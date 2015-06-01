@@ -38,8 +38,6 @@ public abstract class ChildBaseFragment extends Fragment {
     protected int nextPage = 2;
     protected double totalPage;
 
-    protected int mHeaderHeight;
-
     protected MainActivity parentActivity;
 
     @Override
@@ -51,10 +49,8 @@ public abstract class ChildBaseFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         parentActivity = (MainActivity) getActivity();
-        mHeaderHeight = Utility.getActionBarHeight(parentActivity);
         mSwipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefresh.setColorSchemeResources(R.color.refresh_progress_1, R.color.refresh_progress_2, R.color.refresh_progress_3);
-        mSwipeRefresh.setProgressViewOffset(false, 0, (int) ((mHeaderHeight + Utility.dp2px(parentActivity, 36)) * 1.2));
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -75,22 +71,9 @@ public abstract class ChildBaseFragment extends Fragment {
                     parentActivity.hideFab();
                 }
 
-                int mTranslationY = getmTranslationY();
                 if (dy > 0 && !mSwipeRefresh.isRefreshing() && mLayoutManager.findLastCompletelyVisibleItemPosition() >= mAdapter.getItemCount() - 1) {
                     doLoad();
                 }
-
-                if (((mTranslationY > -mHeaderHeight && dy > 0) || (mTranslationY < 0 && dy < 0)) && mTranslationY != -dy) {
-                    mTranslationY -= dy;
-                }
-
-                if (mTranslationY < -mHeaderHeight) {
-                    mTranslationY = -mHeaderHeight;
-                } else if (mTranslationY > 0) {
-                    mTranslationY = 0;
-                }
-
-                parentActivity.updateHeaderTranslation(mTranslationY);
             }
         });
         mList.setAdapter(mAdapter = getAdapter());
@@ -121,10 +104,6 @@ public abstract class ChildBaseFragment extends Fragment {
             mSwipeRefresh.setRefreshing(false);
             Utility.showToastForNoNetwork(parentActivity);
         }
-    }
-
-    private int getmTranslationY() {
-        return parentActivity.getmTranslationY();
     }
 
     protected abstract List<StatusModel> responseDeal(String response);

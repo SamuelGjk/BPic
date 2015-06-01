@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="PagerSlidingTabStrip">
+    <!-- <declare-styleable name="PagerSlidingTabStrip">
         <attr name="pstsIndicatorColor" format="color" />
         <attr name="pstsUnderlineColor" format="color" />
         <attr name="pstsDividerColor" format="color" />
@@ -13,10 +13,6 @@
         <attr name="pstsTabBackground" format="reference" />
         <attr name="pstsShouldExpand" format="boolean" />
         <attr name="pstsTextAllCaps" format="boolean" />
-    </declare-styleable>
-
-    <declare-styleable name="ScrimInsetsView">
-        <attr name="insetForeground" format="reference|color" />
-    </declare-styleable>
+    </declare-styleable> -->
 
 </resources>

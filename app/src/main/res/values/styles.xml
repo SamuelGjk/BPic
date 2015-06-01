@@ -7,6 +7,9 @@
 
     <style name="AppTheme" parent="AppBaseTheme" />
 
-    <style name="DetailActivityStyle" parent="Theme.AppCompat.NoActionBar" />
+    <style name="DetailActivityStyle" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 
 </resources>

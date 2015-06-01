@@ -6,31 +6,20 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <FrameLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="16dp"
-            android:src="@mipmap/ic_refresh"
-            app:fab_colorNormal="@color/primaryColor"
-            app:fab_colorPressed="@color/primaryColor"
-            app:fab_colorRipple="@color/darkPrimaryColor" />
-
-        <LinearLayout
-            android:id="@+id/header_view"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <include layout="@layout/toolbar" />
 
@@ -38,47 +27,30 @@
                 android:id="@+id/tab_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/primaryColor" />
+                android:background="?colorPrimary" />
+        </android.support.design.widget.AppBarLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@drawable/topbar_shadow" />
-        </LinearLayout>
-    </FrameLayout>
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@mipmap/ic_refresh"
+            app:fab_colorNormal="@color/primaryColor"
+            app:fab_colorPressed="@color/primaryColor"
+            app:fab_colorRipple="@color/darkPrimaryColor"
+            app:layout_anchor="@id/content_frame"
+            app:layout_anchorGravity="bottom|right" />
+    </android.support.design.widget.CoordinatorLayout>
 
-    <com.google.samples.apps.iosched.ui.widget.ScrimInsetsFrameLayout
-        android:layout_width="270dp"
+    <android.support.design.widget.NavigationView
+        android:id="@+id/drawer_navigation"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#FFF7F7F7"
-        android:clickable="true"
-        android:fitsSystemWindows="true"
-        app:insetForeground="#4000">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/btn_illust"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#1000"
-                android:padding="20dp"
-                android:text="@string/illust"
-                android:textColor="@color/primaryText" />
-
-            <TextView
-                android:id="@+id/btn_cos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:text="@string/cos"
-                android:textColor="@color/primaryText" />
-        </LinearLayout>
+        app:headerLayout="@layout/drawer_header_bcy"
+        app:itemTextColor="@color/drawer_navigation_item_text_color_bcy"
+        app:menu="@menu/drawer">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -97,10 +69,11 @@
                 android:layout_height="wrap_content"
                 android:background="?selectableItemBackground"
                 android:gravity="center"
-                android:padding="20dp"
+                android:padding="15dp"
                 android:text="@string/settings"
+                android:textSize="16sp"
                 android:textColor="@color/primaryText" />
         </LinearLayout>
 
-    </com.google.samples.apps.iosched.ui.widget.ScrimInsetsFrameLayout>
+    </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

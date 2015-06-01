@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_illust"
+            android:checked="true"
+            android:title="@string/illust" />
+        <item
+            android:id="@+id/navigation_item_cos"
+            android:title="@string/cos" />
+    </group>
+</menu>
