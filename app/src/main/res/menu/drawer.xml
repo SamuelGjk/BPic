@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/menu_bcy"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_item_illust"
             android:checked="true"
@@ -8,5 +10,14 @@
         <item
             android:id="@+id/navigation_item_cos"
             android:title="@string/cos" />
+    </group>
+    <group
+        android:id="@+id/menu_pixiv"
+        android:checkableBehavior="single"
+        android:visible="false">
+        <item
+            android:id="@+id/navigation_item_daily_illust"
+            android:checked="true"
+            android:title="@string/daily_illust" />
     </group>
 </menu>

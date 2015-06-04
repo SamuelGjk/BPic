@@ -13,4 +13,5 @@
 
     <color name="tab_text_color">#CCFFFFFF</color>
     <color name="bcy_color">#FA6FA1</color>
+    <color name="pixiv_color">#0096DB</color>
 </resources>

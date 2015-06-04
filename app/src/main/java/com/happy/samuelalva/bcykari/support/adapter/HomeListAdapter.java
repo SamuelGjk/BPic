@@ -31,11 +31,13 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ItemVi
     private Context context;
     private boolean hasAvatar;
     private List<StatusModel> data;
+    private int hostType;
 
-    public HomeListAdapter(Context context, boolean hasAvatar) {
+    public HomeListAdapter(Context context, boolean hasAvatar, int hostType) {
         this.context = context;
         this.hasAvatar = hasAvatar;
         this.data = new ArrayList<>();
+        this.hostType = hostType;
         random = new Random();
 
         Fresco.initialize(context);
@@ -58,6 +60,7 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ItemVi
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, DetailActivity.class);
+                i.putExtra(DetailActivity.HOST_TYPE, hostType);
                 i.putExtra(DetailActivity.DETAIL_URL, data.get(position).getDetail());
                 context.startActivity(i);
             }

@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
+import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
 import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
 
 import java.util.ArrayList;
@@ -20,15 +21,16 @@ public class IllustTopPostFragment extends ChildBaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         requestUrl = Constants.ILLUST_TOP_POST_100;
+        requestHostType = PicHttpClient.BCY;
         super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     protected List<StatusModel> responseDeal(String response) {
-        Matcher coverMatcher = Constants.COVER_PATTERN.matcher(response);
-        Matcher authorMatcher = Constants.AUTHOR_PATTERN.matcher(response);
-        Matcher avatarMatcher = Constants.AVATAR_PATTERN.matcher(response);
-        Matcher detailMatcher = Constants.ILLUST_DETAIL_PATTERN.matcher(response);
+        Matcher coverMatcher = COVER_PATTERN.matcher(response);
+        Matcher authorMatcher = AUTHOR_PATTERN.matcher(response);
+        Matcher avatarMatcher = AVATAR_PATTERN.matcher(response);
+        Matcher detailMatcher = ILLUST_DETAIL_PATTERN.matcher(response);
 
         List<StatusModel> data = new ArrayList<>();
         while (coverMatcher.find() && authorMatcher.find() && avatarMatcher.find() && detailMatcher.find()) {
@@ -36,7 +38,7 @@ public class IllustTopPostFragment extends ChildBaseFragment {
             model.setCover(coverMatcher.group());
             model.setAuthor(authorMatcher.group().substring(authorMatcher.group().indexOf(">") + 1, authorMatcher.group().lastIndexOf("<")));
             if (avatarMatcher.group().startsWith("/Public")) {
-                model.setAvatar((Constants.BASE_API + avatarMatcher.group()).replace("middle", "big"));
+                model.setAvatar((Constants.BASE_API_BCY + avatarMatcher.group()).replace("middle", "big"));
             } else {
                 model.setAvatar(avatarMatcher.group().replace("middle", "big"));
             }
@@ -48,7 +50,7 @@ public class IllustTopPostFragment extends ChildBaseFragment {
 
     @Override
     protected HomeListAdapter getAdapter() {
-        return new HomeListAdapter(getActivity(), true);
+        return new HomeListAdapter(getActivity(), true, requestHostType);
     }
 
     @Override

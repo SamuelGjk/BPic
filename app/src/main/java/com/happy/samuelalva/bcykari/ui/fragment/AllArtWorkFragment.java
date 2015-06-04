@@ -6,6 +6,7 @@ import android.view.View;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
+import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
 import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
 
 import java.util.ArrayList;
@@ -19,15 +20,16 @@ public class AllArtWorkFragment extends ChildBaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         requestUrl = Constants.ALL_ART_WORK;
+        requestHostType = PicHttpClient.BCY;
         super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     protected List<StatusModel> responseDeal(String response) {
-        Matcher coverMatcher = Constants.COVER_PATTERN.matcher(response);
-        Matcher authorMatcher = Constants.AUTHOR_PATTERN.matcher(response);
-        Matcher detailMatcher = Constants.ILLUST_DETAIL_PATTERN.matcher(response);
-        Matcher totalPageMatcher = Constants.TOTAL_PAGE_PATTERN.matcher(response);
+        Matcher coverMatcher = COVER_PATTERN.matcher(response);
+        Matcher authorMatcher = AUTHOR_PATTERN.matcher(response);
+        Matcher detailMatcher = ILLUST_DETAIL_PATTERN.matcher(response);
+        Matcher totalPageMatcher = TOTAL_PAGE_PATTERN.matcher(response);
         if (totalPageMatcher.find()) {
             String s = totalPageMatcher.group();
             totalPage = Math.ceil(Double.parseDouble(s.substring(s.indexOf("共") + 1, s.lastIndexOf("篇"))) / 60);
@@ -46,6 +48,6 @@ public class AllArtWorkFragment extends ChildBaseFragment {
 
     @Override
     protected HomeListAdapter getAdapter() {
-        return new HomeListAdapter(getActivity(), false);
+        return new HomeListAdapter(getActivity(), false, requestHostType);
     }
 }

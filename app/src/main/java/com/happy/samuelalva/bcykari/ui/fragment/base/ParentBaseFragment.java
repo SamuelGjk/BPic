@@ -16,7 +16,7 @@ import com.happy.samuelalva.bcykari.ui.activity.MainActivity;
 /**
  * Created by Samuel.Alva on 2015/5/4.
  */
-public abstract class ParentBaseFragment extends Fragment implements MainActivity.Refresher {
+public abstract class ParentBaseFragment extends Fragment {
 
     protected TabLayout mTabLayout;
     protected ViewPager mPager;
@@ -51,7 +51,6 @@ public abstract class ParentBaseFragment extends Fragment implements MainActivit
         }
     }
 
-    @Override
     public void doRefresh() {
         Fragment f = mAdapter.getItemAt(mPager.getCurrentItem());
         if (f instanceof ChildBaseFragment)

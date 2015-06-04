@@ -48,8 +48,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/drawer_header_bcy"
-        app:itemTextColor="@color/drawer_navigation_item_text_color_bcy"
+        app:headerLayout="@layout/navigation_header"
+        app:itemTextColor="@color/navigation_item_text_color_bcy"
         app:menu="@menu/drawer">
 
         <LinearLayout

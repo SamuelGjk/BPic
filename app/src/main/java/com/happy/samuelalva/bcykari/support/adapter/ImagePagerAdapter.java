@@ -14,7 +14,7 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
+import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -36,11 +36,13 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     private List<View> mViews = new ArrayList<>();
     private LayoutInflater mInflater;
     private File mCacheDir;
+    private int hostType;
 
-    public ImagePagerAdapter(Context context, List<String> urls, File mCacheDir) {
+    public ImagePagerAdapter(Context context, List<String> urls, File mCacheDir, int hostType) {
         this.context = context;
         this.urls = urls;
         this.mCacheDir = mCacheDir;
+        this.hostType = hostType;
 
         mInflater = LayoutInflater.from(context);
 
@@ -93,7 +95,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 npb.setVisibility(View.GONE);
             } else {
                 if (Utility.readNetworkState(context)) {
-                    BcyHttpClient.get(context, urls.get(position), new FileAsyncHttpResponseHandler(tempFile) {
+                    PicHttpClient.get(context, urls.get(position), new FileAsyncHttpResponseHandler(tempFile) {
                         @Override
                         public void onProgress(int bytesWritten, int totalSize) {
                             super.onProgress(bytesWritten, totalSize);
@@ -122,7 +124,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                             super.onCancel();
                             tempFile.delete();
                         }
-                    });
+                    }, hostType);
                 } else {
                     Utility.showToastForNoNetwork(context);
                 }

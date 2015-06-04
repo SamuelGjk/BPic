@@ -7,44 +7,48 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.ui.fragment.CoserFragment;
 import com.happy.samuelalva.bcykari.ui.fragment.IllustFragment;
+import com.happy.samuelalva.bcykari.ui.fragment.PixivFragment;
+import com.happy.samuelalva.bcykari.ui.fragment.base.ParentBaseFragment;
 import com.melnykov.fab.FloatingActionButton;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
-    private static final int ILLUST = 0, COS = 1;
-    private Fragment[] mFragments = new Fragment[2];
+    private static final int ILLUST = 0, COS = 1, PIXIV = 2;
+    private Fragment[] mFragments = new Fragment[3];
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
     private NavigationView mDrawerNavigation;
     private FrameLayout tabContainer;
-    private View btnSettings;
+    private View btnSettings, mNavigationHeader;
+    private ImageView mNavigationHeaderImageView;
     private FloatingActionButton mFab;
 
+    private Menu menu;
+
     private FragmentManager mManager;
-    private int curFragment;
+    private int curFragment, bcyCurFragment, pixivCurFragment = 2;
+    private boolean isPixiv;
 
     public FrameLayout getTabContainer() {
         return tabContainer;
-    }
-
-    public interface Refresher {
-        void doRefresh();
     }
 
     @Override
@@ -67,6 +71,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDrawerNavigation = (NavigationView) findViewById(R.id.drawer_navigation);
         mDrawerNavigation.setNavigationItemSelectedListener(this);
 
+        menu = mDrawerNavigation.getMenu();
+
+        mNavigationHeader = findViewById(R.id.navigation_header);
+        mNavigationHeaderImageView = (ImageView) findViewById(R.id.iv_navigation_header);
+        mNavigationHeader.setOnClickListener(this);
+
         btnSettings = findViewById(R.id.btn_settings);
         btnSettings.setOnClickListener(this);
 
@@ -75,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mFragments[ILLUST] = new IllustFragment();
         mFragments[COS] = new CoserFragment();
+        mFragments[PIXIV] = new PixivFragment();
 
         mManager = getSupportFragmentManager();
         FragmentTransaction ft = mManager.beginTransaction();
@@ -112,8 +123,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         ft.commit();
+        if (index < 2) {
+            bcyCurFragment = index;
+        } else {
+            pixivCurFragment = index;
+        }
         curFragment = index;
-        mDrawerLayout.closeDrawer(Gravity.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
     public void showFab() {
@@ -134,8 +150,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 selectItem(COS);
                 break;
         }
-//        mDrawerNavigation.setItemTextColor(getResources().getColorStateList(R.color.drawer_navigation_item_text_color_bcy));
-        mDrawerLayout.closeDrawer(Gravity.START);
         menuItem.setChecked(true);
         return true;
     }
@@ -149,8 +163,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.fab:
                 Fragment f = mFragments[curFragment];
-                if (f instanceof Refresher)
-                    ((Refresher) f).doRefresh();
+                if (f instanceof ParentBaseFragment)
+                    ((ParentBaseFragment) f).doRefresh();
+                break;
+            case R.id.navigation_header:
+                if (isPixiv) {
+                    isPixiv = false;
+                    mNavigationHeader.setBackgroundResource(R.color.bcy_color);
+                    mNavigationHeaderImageView.setImageResource(R.mipmap.bcy_header);
+                    mDrawerNavigation.setItemTextColor(getResources().getColorStateList(R.color.navigation_item_text_color_bcy));
+                    menu.setGroupVisible(R.id.menu_bcy, true);
+                    menu.setGroupVisible(R.id.menu_pixiv, false);
+                    selectItem(bcyCurFragment);
+                } else {
+                    isPixiv = true;
+                    mNavigationHeader.setBackgroundResource(R.color.pixiv_color);
+                    mNavigationHeaderImageView.setImageResource(R.mipmap.pixiv_header);
+                    mDrawerNavigation.setItemTextColor(getResources().getColorStateList(R.color.navigation_item_text_color_pixiv));
+                    menu.setGroupVisible(R.id.menu_bcy, false);
+                    menu.setGroupVisible(R.id.menu_pixiv, true);
+                    selectItem(pixivCurFragment);
+                }
                 break;
         }
     }
