@@ -4,49 +4,51 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
 import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
-import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
 
 /**
  * Created by Administrator on 2015/4/17.
  */
-public class IllustTopPostFragment extends ChildBaseFragment {
+public class IllustTopPostFragment extends BcyFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         requestUrl = Constants.ILLUST_TOP_POST_100;
         requestHostType = PicHttpClient.BCY;
+        hasAvatar = true;
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    protected List<StatusModel> responseDeal(String response) {
-        Matcher coverMatcher = COVER_PATTERN.matcher(response);
-        Matcher authorMatcher = AUTHOR_PATTERN.matcher(response);
-        Matcher avatarMatcher = AVATAR_PATTERN.matcher(response);
-        Matcher detailMatcher = ILLUST_DETAIL_PATTERN.matcher(response);
-
-        List<StatusModel> data = new ArrayList<>();
-        while (coverMatcher.find() && authorMatcher.find() && avatarMatcher.find() && detailMatcher.find()) {
-            StatusModel model = new StatusModel();
-            model.setCover(coverMatcher.group());
-            model.setAuthor(authorMatcher.group().substring(authorMatcher.group().indexOf(">") + 1, authorMatcher.group().lastIndexOf("<")));
-            if (avatarMatcher.group().startsWith("/Public")) {
-                model.setAvatar((Constants.BASE_API_BCY + avatarMatcher.group()).replace("middle", "big"));
-            } else {
-                model.setAvatar(avatarMatcher.group().replace("middle", "big"));
-            }
-            model.setDetail(detailMatcher.group());
-            data.add(model);
-        }
-        return data;
-    }
+//    @Override
+//    protected List<StatusModel> responseDeal(String response) {
+//        Document doc = Jsoup.parse(response);
+//        Elements detailUrls = doc.select("div.work-thumbnail__bd > a");
+//        Elements avatars = doc.getElementsByAttributeValue("class", "i-work-thumbnail__uava");
+//        Elements authors = doc.getElementsByAttributeValue("class", "work-thumbnail__author");
+//        int index = 0;
+//
+//        List<StatusModel> data = new ArrayList<>();
+//        for (Element e : detailUrls) {
+//            StatusModel model = new StatusModel();
+//
+//            model.setDetail(e.attr("href"));
+//            model.setCover(e.getElementsByTag("img").first().attr("src"));
+//
+//            String avatar = avatars.get(index).getElementsByTag("img").first().attr("src");
+//            if (avatar.startsWith("/Public")) {
+//                avatar = (Constants.BASE_API_BCY + avatar).replace("middle", "big");
+//            }
+//
+//            model.setAvatar(avatar);
+//            model.setAuthor(authors.get(index).html());
+//
+//            data.add(model);
+//
+//            index++;
+//        }
+//        return data;
+//    }
 
     @Override
     protected HomeListAdapter getAdapter() {

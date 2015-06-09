@@ -3,48 +3,44 @@ package com.happy.samuelalva.bcykari.ui.fragment;
 import android.os.Bundle;
 import android.view.View;
 
-import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
 import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
-import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
 
 /**
  * Created by Samuel.Alva on 2015/4/19.
  */
-public class AllArtWorkFragment extends ChildBaseFragment {
+public class AllArtWorkFragment extends BcyFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         requestUrl = Constants.ALL_ART_WORK;
         requestHostType = PicHttpClient.BCY;
+        hasAvatar = false;
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    protected List<StatusModel> responseDeal(String response) {
-        Matcher coverMatcher = COVER_PATTERN.matcher(response);
-        Matcher authorMatcher = AUTHOR_PATTERN.matcher(response);
-        Matcher detailMatcher = ILLUST_DETAIL_PATTERN.matcher(response);
-        Matcher totalPageMatcher = TOTAL_PAGE_PATTERN.matcher(response);
-        if (totalPageMatcher.find()) {
-            String s = totalPageMatcher.group();
-            totalPage = Math.ceil(Double.parseDouble(s.substring(s.indexOf("共") + 1, s.lastIndexOf("篇"))) / 60);
-        }
-
-        List<StatusModel> data = new ArrayList<>();
-        while (coverMatcher.find() && authorMatcher.find() && detailMatcher.find()) {
-            StatusModel model = new StatusModel();
-            model.setCover(coverMatcher.group());
-            model.setAuthor(authorMatcher.group().substring(authorMatcher.group().indexOf(">") + 1, authorMatcher.group().lastIndexOf("<")));
-            model.setDetail(detailMatcher.group());
-            data.add(model);
-        }
-        return data;
-    }
+//    @Override
+//    protected List<StatusModel> responseDeal(String response) {
+//        Document doc = Jsoup.parse(response);
+//        Elements detailUrls = doc.select("div.work-thumbnail__bd > a");
+//        Elements authors = doc.getElementsByAttributeValue("class", "work-thumbnail__author");
+//        Element pageItem = doc.getElementsByAttributeValue("class", "pager__item pager__item--is-cur pager__item--disabled").first();
+//        String strTotalPage = pageItem.getElementsByTag("span").first().html();
+//        totalPage = Math.ceil(Double.parseDouble(strTotalPage.substring(strTotalPage.indexOf("共") + 1, strTotalPage.lastIndexOf("篇"))) / 60);
+//        int index = 0;
+//
+//        List<StatusModel> data = new ArrayList<>();
+//        for (Element e : detailUrls) {
+//            StatusModel model = new StatusModel();
+//
+//            model.setDetail(e.attr("href"));
+//            model.setCover(e.getElementsByTag("img").first().attr("src"));
+//            model.setAuthor(authors.get(index).html());
+//            data.add(model);
+//            index++;
+//        }
+//        return data;
+//    }
 
     @Override
     protected HomeListAdapter getAdapter() {

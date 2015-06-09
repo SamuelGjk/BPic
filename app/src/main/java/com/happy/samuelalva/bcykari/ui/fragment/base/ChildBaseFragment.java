@@ -28,15 +28,6 @@ import java.util.regex.Pattern;
  * Created by Administrator on 2015/4/17.
  */
 public abstract class ChildBaseFragment extends Fragment {
-    protected final Pattern COVER_PATTERN = Pattern.compile("http://img[0-9].bcyimg.com/drawer/[0-9]+/cover/\\w+/\\w+(\\.jpg|\\.png|\\.jpeg|\\.gif|\\w)");
-    protected final Pattern AUTHOR_PATTERN = Pattern.compile("<a class=\"work-thumbnail__author\" href=\"/u/\\d+\" target=\"_blank\">[\\s\\S]+?</a>");
-    protected final Pattern AVATAR_PATTERN = Pattern.compile("(http://user.bcyimg.com/Public/Upload/avatar/\\S+/middle(\\.jpg|\\.png|\\.jpeg|\\.gif)|/Public/Image/user_pic_middle.gif)");
-    protected final Pattern ILLUST_DETAIL_PATTERN = Pattern.compile("/illust/detail/\\d+/\\d+");
-    protected final Pattern TOTAL_PAGE_PATTERN = Pattern.compile("<span>共\\d+篇</span>");
-
-    protected final Pattern COSER_PATTERN = Pattern.compile("http://img[0-9].bcyimg.com/coser/[0-9]+/post/\\w+/\\w+(\\.jpg|\\.png|\\.jpeg|\\.gif|\\w)");
-    protected final Pattern COSER_DETAIL_PATTERN = Pattern.compile("/coser/detail/\\d+/\\d+");
-
     protected final Pattern PIXIV_COVER_PATTERN = Pattern.compile("http://i\\d.pixiv.net/c/\\d+x\\d+/img-master/img/\\d+/\\d+/\\d+/\\d+/\\d+/\\d+/\\w+(\\.jpg|\\.png|\\.jpeg|\\.gif|\\w)");
     protected final Pattern PIXIV_AUTHOR_PATTERN = Pattern.compile("<span class=\"icon-text\">[\\s\\S]+?</span>");
     protected final Pattern PIXIV_AVATAR_PATTERN = Pattern.compile("data-profile_img=\"(http://i\\d.pixiv.net/img\\d+/profile/\\S+/\\d+_s.(jpg|png|gif)|http://source.pixiv.net/common/images/no_profile_s.png)\"");
@@ -134,7 +125,7 @@ public abstract class ChildBaseFragment extends Fragment {
                 @Override
                 public void run() {
                     if (isRefresh) {
-                        mAdapter.replaceAll(responseDeal(responseString));
+                        mAdapter.replaceAll(data);
                         nextPage = 2;
                     } else {
                         mAdapter.addAll(data);
