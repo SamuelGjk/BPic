@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="AppBaseTheme">
+    <style name="AppBaseTheme.AppTheme" parent="AppBaseTheme">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="DetailActivityStyle" parent="Theme.AppCompat.NoActionBar">
+    <style name="AppTheme.Translucent" parent="AppBaseTheme.AppTheme">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowTranslucentStatus">true</item>

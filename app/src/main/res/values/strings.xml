@@ -7,9 +7,10 @@
     <string name="daily_illust">Illustrations Daily Rankings</string>
     <string name="settings">Settings</string>
 
+    <string name="separator">&#160;/&#160;</string>
+
     <!-- settings -->
     <string name="about">About</string>
     <string name="version">Version</string>
     <string name="license">Open-source license</string>
-
 </resources>

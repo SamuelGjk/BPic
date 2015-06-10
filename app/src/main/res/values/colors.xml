@@ -9,7 +9,9 @@
     <color name="refresh_progress_2">@color/accentColor</color>
     <color name="refresh_progress_3">@color/primaryColor</color>
 
-    <color name="translucent">#9000</color>
+    <color name="image_activity_bg">#9000</color>
+
+    <color name="detail_status_bar_bg">#4000</color>
 
     <color name="tab_text_color">#CCFFFFFF</color>
     <color name="bcy_color">#FA6FA1</color>

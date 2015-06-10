@@ -1,9 +1,10 @@
 package com.happy.samuelalva.bcykari.support;
 
 /**
- * Created by Administrator on 2015/4/16.
+ * Created by Samuel.Alva on 2015/4/16.
  */
 public interface Constants {
+    String HOST_TYPE = "HOST_TYPE";
 
     String BASE_API_BCY = "http://bcy.net";
     String ILLUST_API = BASE_API_BCY + "/illust";

@@ -36,13 +36,13 @@ public class PixivNormalFragment extends ChildBaseFragment {
         List<StatusModel> data = new ArrayList<>();
         while (coverMatcher.find() && authorMatcher.find() && avatarMatcher.find()) {
             StatusModel model = new StatusModel();
-            model.setCover(coverMatcher.group());
+            model.cover = coverMatcher.group();
 
             String temp_author = authorMatcher.group();
-            model.setAuthor(temp_author.substring(temp_author.indexOf(">") + 1, temp_author.lastIndexOf("<")));
+            model.author = temp_author.substring(temp_author.indexOf(">") + 1, temp_author.lastIndexOf("<"));
 
             String temp_avatar = avatarMatcher.group();
-            model.setAvatar(temp_avatar.substring(temp_avatar.indexOf("\"") + 1, temp_avatar.lastIndexOf("\"")));
+            model.avatar = temp_avatar.substring(temp_avatar.indexOf("\"") + 1, temp_avatar.lastIndexOf("\""));
             data.add(model);
         }
         return data;
@@ -50,6 +50,6 @@ public class PixivNormalFragment extends ChildBaseFragment {
 
     @Override
     protected HomeListAdapter getAdapter() {
-        return new HomeListAdapter(getActivity(), true, requestHostType);
+        return new HomeListAdapter(getActivity(), requestHostType, true);
     }
 }

@@ -1,6 +1,7 @@
 package com.happy.samuelalva.bcykari.support;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -31,6 +32,16 @@ public class Utility {
     }
     */
 
+    public static int getStatusBarHeight(Context context) {
+        Resources res = context.getResources();
+        int result = 0;
+        int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = res.getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
     public static String getCacheName(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
     }
@@ -41,6 +52,10 @@ public class Utility {
 
     public static void showToastForNoNetwork(Context context) {
         Toast.makeText(context, "看来你的网络傲娇了╮(￣▽￣)╭", Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showToastForLoadFailure(Context context) {
+        Toast.makeText(context, "加载失败，请重试", Toast.LENGTH_SHORT).show();
     }
 
     public static boolean readNetworkState(Context context) {

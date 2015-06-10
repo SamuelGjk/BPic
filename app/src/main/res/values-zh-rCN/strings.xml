@@ -7,6 +7,8 @@
     <string name="daily_illust">插画今日排行榜</string>
     <string name="settings">设置</string>
 
+    <string name="separator">&#160;/&#160;</string>
+
     <!-- settings -->
     <string name="about">关于</string>
     <string name="version">版本</string>

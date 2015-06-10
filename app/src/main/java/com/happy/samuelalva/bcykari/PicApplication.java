@@ -1,23 +1,22 @@
-package com.happy.samuelalva.bcykari.ui.activity;
+package com.happy.samuelalva.bcykari;
 
-import android.content.Intent;
+import android.app.Application;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.happy.samuelalva.bcykari.support.Utility;
 
 import java.io.File;
 
 /**
- * Created by Samuel.Alva on 2015/5/17.
+ * Created by Samuel.Alva on 2015/6/10.
  */
-public class EntryActivity extends AppCompatActivity {
+public class PicApplication extends Application {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate() {
+        super.onCreate();
 
         File mCacheDir = new File(getExternalCacheDir().getPath() + "/image");
         if (!mCacheDir.exists()) {
@@ -31,9 +30,7 @@ public class EntryActivity extends AppCompatActivity {
 
         new DeleteTask().execute(mCacheDir);
 
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
-        finish();
+        Fresco.initialize(this);
     }
 
     private class DeleteTask extends AsyncTask<File, Void, Integer> {
@@ -57,7 +54,7 @@ public class EntryActivity extends AppCompatActivity {
         protected void onPostExecute(Integer i) {
             super.onPostExecute(i);
             if (i != null)
-                Utility.showToast(EntryActivity.this, "缓存已清除", Toast.LENGTH_SHORT);
+                Utility.showToast(PicApplication.this, "缓存已清除", Toast.LENGTH_SHORT);
         }
     }
 }

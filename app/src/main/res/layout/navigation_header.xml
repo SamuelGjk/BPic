@@ -11,5 +11,4 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:src="@mipmap/bcy_header" />
-
 </FrameLayout>

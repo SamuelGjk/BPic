@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.webkit.WebView;
 
@@ -17,14 +18,12 @@ public class SettingsFragment extends PreferenceFragment {
     private static final String VERSION = "version";
     private static final String LICENSE = "license";
 
-    private Preference mVersion;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
 
-        mVersion = findPreference(VERSION);
+        Preference mVersion = findPreference(VERSION);
 
         String version = "Unknown";
         try {
@@ -35,7 +34,7 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     @Override
-    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, @NonNull Preference preference) {
         switch (preference.getKey()) {
             case LICENSE:
                 showAboutDialog();
@@ -52,7 +51,6 @@ public class SettingsFragment extends PreferenceFragment {
         new AlertDialog.Builder(getActivity()).setView(v).setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                // Noting to do
             }
         }).show();
     }

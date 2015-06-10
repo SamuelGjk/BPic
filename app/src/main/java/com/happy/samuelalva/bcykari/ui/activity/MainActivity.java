@@ -34,10 +34,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-    private Toolbar toolbar;
     private NavigationView mDrawerNavigation;
     private FrameLayout tabContainer;
-    private View btnSettings, mNavigationHeader;
+    private View mNavigationHeader;
     private ImageView mNavigationHeaderImageView;
     private FloatingActionButton mFab;
 
@@ -56,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tabContainer = (FrameLayout) findViewById(R.id.tab_container);
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mNavigationHeaderImageView = (ImageView) findViewById(R.id.iv_navigation_header);
         mNavigationHeader.setOnClickListener(this);
 
-        btnSettings = findViewById(R.id.btn_settings);
+        View btnSettings = findViewById(R.id.btn_settings);
         btnSettings.setOnClickListener(this);
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);

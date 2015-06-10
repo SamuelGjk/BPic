@@ -1,7 +1,11 @@
 package com.happy.samuelalva.bcykari.ui.fragment;
 
+import android.os.Bundle;
+import android.view.View;
+
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
+import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
 import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
 
 import org.jsoup.Jsoup;
@@ -15,8 +19,14 @@ import java.util.List;
 /**
  * Created by Samuel.Alva on 2015/6/7.
  */
-public abstract class BcyFragment extends ChildBaseFragment {
+public abstract class BcyChildFragment extends ChildBaseFragment {
     protected boolean hasAvatar;
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        requestHostType = PicHttpClient.BCY;
+        super.onViewCreated(view, savedInstanceState);
+    }
 
     @Override
     protected List<StatusModel> responseDeal(String response) {
@@ -37,18 +47,18 @@ public abstract class BcyFragment extends ChildBaseFragment {
         for (Element e : detailUrls) {
             StatusModel model = new StatusModel();
 
-            model.setDetail(e.attr("href"));
-            model.setCover(e.getElementsByTag("img").first().attr("src"));
+            model.detail = e.attr("href");
+            model.cover = e.getElementsByTag("img").first().attr("src");
 
             if (hasAvatar) {
                 String avatar = avatars.get(index).getElementsByTag("img").first().attr("src");
                 if (avatar.startsWith("/Public")) {
                     avatar = (Constants.BASE_API_BCY + avatar).replace("middle", "big");
                 }
-                model.setAvatar(avatar);
+                model.avatar = avatar;
             }
 
-            model.setAuthor(authors.get(index).html());
+            model.author = authors.get(index).html();
 
             data.add(model);
 

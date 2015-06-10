@@ -5,14 +5,14 @@
         <item name="colorPrimaryDark">@color/darkPrimaryColor</item>
     </style>
 
-    <style name="AppTheme" parent="AppBaseTheme" />
+    <style name="AppBaseTheme.AppTheme" parent="AppBaseTheme" />
 
-    <style name="DetailActivityStyle" parent="Theme.AppCompat.NoActionBar">
+    <style name="AppTheme.Translucent" parent="AppBaseTheme.AppTheme">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="DetailActivityIndicatorStyle">
+    <style name="ImageActivityIndicatorStyle">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@android:color/white</item>

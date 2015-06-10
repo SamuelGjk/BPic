@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2015/4/16.
+ * Created by Samuel.Alva on 2015/4/16.
  */
 public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListener {
     private static final String TAG = "ImagePagerAdapter";
@@ -116,7 +116,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
-
+                            Utility.showToastForLoadFailure(context);
                         }
 
                         @Override

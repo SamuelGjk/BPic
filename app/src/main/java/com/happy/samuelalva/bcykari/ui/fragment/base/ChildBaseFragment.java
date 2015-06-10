@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Created by Administrator on 2015/4/17.
+ * Created by Samuel.Alva on 2015/4/17.
  */
 public abstract class ChildBaseFragment extends Fragment {
     protected final Pattern PIXIV_COVER_PATTERN = Pattern.compile("http://i\\d.pixiv.net/c/\\d+x\\d+/img-master/img/\\d+/\\d+/\\d+/\\d+/\\d+/\\d+/\\w+(\\.jpg|\\.png|\\.jpeg|\\.gif|\\w)");
@@ -137,6 +137,7 @@ public abstract class ChildBaseFragment extends Fragment {
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            Utility.showToastForLoadFailure(parentActivity);
         }
     };
 
