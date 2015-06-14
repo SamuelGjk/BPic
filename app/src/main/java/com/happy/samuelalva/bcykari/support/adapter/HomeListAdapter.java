@@ -51,7 +51,6 @@ public class HomeListAdapter extends BaseRecyclerAdapter<StatusModel> {
         SimpleDraweeView avatar = (SimpleDraweeView) holder.getView(R.id.avatar);
         SimpleDraweeView cover = (SimpleDraweeView) holder.getView(R.id.cover);
         TextView author = (TextView) holder.getView(R.id.author);
-
         if (hasAvatar) {
             avatar.setVisibility(View.VISIBLE);
             avatar.setImageURI(Uri.parse(data.get(position).avatar));

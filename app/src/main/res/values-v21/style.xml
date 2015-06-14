@@ -12,8 +12,4 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="CardViewStyle" parent="CardView.Light">
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-    </style>
-
 </resources>

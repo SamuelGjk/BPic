@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
+import com.happy.samuelalva.bcykari.ui.fragment.base.BcyChildFragment;
 
 /**
  * Created by Samuel.Alva on 2015/4/19.

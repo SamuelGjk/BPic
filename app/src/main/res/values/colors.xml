@@ -5,13 +5,13 @@
     <color name="accentColor">#FFC107</color>
     <color name="primaryText">#212121</color>
 
+    <color name="translucent">#44000000</color>
+
     <color name="refresh_progress_1">#FF5722</color>
     <color name="refresh_progress_2">@color/accentColor</color>
     <color name="refresh_progress_3">@color/primaryColor</color>
 
     <color name="image_activity_bg">#9000</color>
-
-    <color name="detail_status_bar_bg">#4000</color>
 
     <color name="tab_text_color">#CCFFFFFF</color>
     <color name="bcy_color">#FA6FA1</color>

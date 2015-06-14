@@ -1,6 +1,7 @@
 package com.happy.samuelalva.bcykari.ui.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -12,12 +13,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.BasePostprocessor;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.DetailListAdapter;
 import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
+import com.happy.samuelalva.bcykari.support.image.FastBlur;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -56,6 +63,7 @@ public class DetailActivity extends AppCompatActivity {
         mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         mBackdrop = (SimpleDraweeView) findViewById(R.id.iv_backdrop);
 
+
         RecyclerView mList = (RecyclerView) findViewById(R.id.rv_detail);
 
         Intent intent = getIntent();
@@ -87,13 +95,31 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public void onSuccess(int statusCode, Header[] headers, String responseString) {
             Document doc = Jsoup.parse(responseString);
+            String avatar = doc.select("a._avatar > img").first().attr("src");
+            if (avatar.startsWith("/Public")) {
+                avatar = Constants.BASE_API_BCY + avatar;
+            }
+
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(avatar)).setPostprocessor(new BasePostprocessor() {
+                @Override
+                public String getName() {
+                    return "blurPostprocessor";
+                }
+
+                @Override
+                public void process(Bitmap bitmap) {
+                    FastBlur.doBlur(bitmap, 2, true);
+                }
+            }).build();
+            PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder().setImageRequest(request).setOldController(mBackdrop.getController()).build();
+            mBackdrop.setController(controller);
+
             mCollapsingToolbar.setTitle(doc.getElementsByAttributeValue("class", "fz14 blue1").first().html());
             Elements elements = doc.getElementsByAttributeValue("class", "detail_std detail_clickable");
             List<String> data = new ArrayList<>();
             for (Element e : elements) {
                 data.add(e.attr("src").replace("/w650", ""));
             }
-            mBackdrop.setImageURI(Uri.parse(data.get(0) + "/w650"));
             mAdapter.addAll(data);
         }
 

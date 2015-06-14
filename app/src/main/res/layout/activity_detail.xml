@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+        android:id="@+id/detail_appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/detail_backdrop_height"
         android:fitsSystemWindows="true"
@@ -40,13 +40,12 @@
             <View
                 android:id="@+id/status_bar_tint_view"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:background="@color/detail_status_bar_bg"
+                android:layout_height="wrap_content"
+                android:background="@color/translucent"
                 android:fitsSystemWindows="true"
                 app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
-
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView

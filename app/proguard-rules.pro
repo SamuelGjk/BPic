@@ -16,6 +16,8 @@
 #   public *;
 #}
 
+-keepattributes Signature
+
 -keep class com.happy.samuelalva.bcykari.model.** { *; }
 
 -keep class com.facebook.** { *; }
@@ -23,5 +25,8 @@
 -keep class com.davemorrissey.** { *; }
 -keep class com.loopj.** { *; }
 -keep class com.melnykov.** { *; }
+-keep class org.jsoup.** { *; }
+
+-keep class android.support.design.widget.** { *; }
 
 -dontwarn com.facebook.**

@@ -1,4 +1,4 @@
-package com.happy.samuelalva.bcykari.ui.fragment;
+package com.happy.samuelalva.bcykari.ui.fragment.base;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,7 +6,6 @@ import android.view.View;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
-import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -53,9 +52,9 @@ public abstract class BcyChildFragment extends ChildBaseFragment {
             if (hasAvatar) {
                 String avatar = avatars.get(index).getElementsByTag("img").first().attr("src");
                 if (avatar.startsWith("/Public")) {
-                    avatar = (Constants.BASE_API_BCY + avatar).replace("middle", "big");
+                    avatar = Constants.BASE_API_BCY + avatar;
                 }
-                model.avatar = avatar;
+                model.avatar = avatar.replace("middle", "big");
             }
 
             model.author = authors.get(index).html();
