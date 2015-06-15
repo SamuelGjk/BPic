@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
-import com.happy.samuelalva.bcykari.ui.fragment.base.BcyChildFragment;
 
 /**
  * Created by Samuel.Alva on 2015/5/6.
@@ -16,10 +14,5 @@ public class AllWorkFragment extends BcyChildFragment {
         requestUrl = Constants.ALL_WORK;
         hasAvatar = false;
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    protected HomeListAdapter getAdapter() {
-        return new HomeListAdapter(getActivity(), requestHostType, false);
     }
 }

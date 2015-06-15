@@ -15,25 +15,19 @@ import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
-import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
 import com.happy.samuelalva.bcykari.ui.activity.MainActivity;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by Samuel.Alva on 2015/4/17.
  */
 public abstract class ChildBaseFragment extends Fragment {
-    protected final Pattern PIXIV_COVER_PATTERN = Pattern.compile("http://i\\d.pixiv.net/c/\\d+x\\d+/img-master/img/\\d+/\\d+/\\d+/\\d+/\\d+/\\d+/\\w+(\\.jpg|\\.png|\\.jpeg|\\.gif|\\w)");
-    protected final Pattern PIXIV_AUTHOR_PATTERN = Pattern.compile("<span class=\"icon-text\">[\\s\\S]+?</span>");
-    protected final Pattern PIXIV_AVATAR_PATTERN = Pattern.compile("data-profile_img=\"(http://i\\d.pixiv.net/img\\d+/profile/\\S+/\\d+_s.(jpg|png|gif)|http://source.pixiv.net/common/images/no_profile_s.png)\"");
-
     protected String requestUrl;
-    protected int requestHostType;
 
     protected RecyclerView mList;
     protected SwipeRefreshLayout mSwipeRefresh;
@@ -92,7 +86,7 @@ public abstract class ChildBaseFragment extends Fragment {
         if (Utility.readNetworkState(parentActivity)) {
             isRefresh = true;
             mSwipeRefresh.setRefreshing(true);
-            PicHttpClient.get(requestUrl, handler, requestHostType);
+            doRequest(requestUrl, handler);
         } else {
             mSwipeRefresh.setRefreshing(false);
             Utility.showToastForNoNetwork(parentActivity);
@@ -105,7 +99,7 @@ public abstract class ChildBaseFragment extends Fragment {
         } else if (Utility.readNetworkState(parentActivity)) {
             isRefresh = false;
             mSwipeRefresh.setRefreshing(true);
-            PicHttpClient.get(requestUrl + nextPage, handler, requestHostType);
+            doRequest(requestUrl + nextPage, handler);
         } else {
             mSwipeRefresh.setRefreshing(false);
             Utility.showToastForNoNetwork(parentActivity);
@@ -115,6 +109,8 @@ public abstract class ChildBaseFragment extends Fragment {
     protected abstract List<StatusModel> responseDeal(String response);
 
     protected abstract HomeListAdapter getAdapter();
+
+    protected abstract void doRequest(String url, AsyncHttpResponseHandler handler);
 
     private TextHttpResponseHandler handler = new TextHttpResponseHandler() {
         @Override
@@ -137,6 +133,7 @@ public abstract class ChildBaseFragment extends Fragment {
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            mSwipeRefresh.setRefreshing(false);
             Utility.showToastForLoadFailure(parentActivity);
         }
     };

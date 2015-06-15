@@ -1,25 +1,22 @@
 package com.happy.samuelalva.bcykari.support.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.happy.samuelalva.bcykari.R;
-import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerAdapter;
-import com.happy.samuelalva.bcykari.ui.activity.ImageActivity;
 
 import java.util.ArrayList;
 
 /**
  * Created by Samuel.Alva on 2015/4/15.
  */
-public class DetailListAdapter extends BaseRecyclerAdapter<String> {
+public abstract class DetailListAdapter extends BaseRecyclerAdapter<String> {
 
-    public DetailListAdapter(Context context, int hostType) {
-        super(context, hostType);
+    public DetailListAdapter(Context context) {
+        super(context);
     }
 
     @Override
@@ -30,17 +27,17 @@ public class DetailListAdapter extends BaseRecyclerAdapter<String> {
     @Override
     public void doBindViewHolder(BaseRecyclerAdapter.ItemViewHolder holder, final int position) {
         SimpleDraweeView iv = (SimpleDraweeView) holder.getView(R.id.iv_detail);
-        iv.setImageURI(Uri.parse(data.get(position) + "/2X3"));
+        iv.setImageURI(Uri.parse(picUrlDeal(data.get(position))));
 
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context, ImageActivity.class);
-                i.putExtra(Constants.HOST_TYPE, hostType);
-                i.putExtra(ImageActivity.CUR_PAGE, position);
-                i.putStringArrayListExtra(ImageActivity.IMG_URLS, new ArrayList<>(data));
-                context.startActivity(i);
+                doOnClick(position, new ArrayList<>(data));
             }
         });
     }
+
+    protected abstract void doOnClick(int position, ArrayList<String> urls);
+
+    protected abstract String picUrlDeal(String url);
 }

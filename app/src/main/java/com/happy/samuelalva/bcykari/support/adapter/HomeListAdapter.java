@@ -1,32 +1,33 @@
 package com.happy.samuelalva.bcykari.support.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
-import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerAdapter;
-import com.happy.samuelalva.bcykari.ui.activity.DetailActivity;
 
 import java.util.Random;
 
 /**
  * Created by Samuel.Alva on 2015/4/15.
  */
-public class HomeListAdapter extends BaseRecyclerAdapter<StatusModel> {
+public abstract class HomeListAdapter extends BaseRecyclerAdapter<StatusModel> {
     private Random random;
     private int lastPosition = -1;
     private boolean hasAvatar;
 
-    public HomeListAdapter(Context context, int hostType, boolean hasAvatar) {
-        super(context, hostType);
+    public HomeListAdapter(Context context, boolean hasAvatar) {
+        super(context);
 
         this.hasAvatar = hasAvatar;
         random = new Random();
@@ -53,17 +54,21 @@ public class HomeListAdapter extends BaseRecyclerAdapter<StatusModel> {
         TextView author = (TextView) holder.getView(R.id.author);
         if (hasAvatar) {
             avatar.setVisibility(View.VISIBLE);
-            avatar.setImageURI(Uri.parse(data.get(position).avatar));
+            String avatarUrl = data.get(position).avatar;
+            if (avatarUrl.endsWith(".gif")) {
+                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(avatarUrl)).build();
+                DraweeController controller = Fresco.newDraweeControllerBuilder().setImageRequest(request).setAutoPlayAnimations(true).build();
+                avatar.setController(controller);
+            } else {
+                avatar.setImageURI(Uri.parse(avatarUrl));
+            }
         }
         cover.setImageURI(Uri.parse(data.get(position).cover));
         author.setText(data.get(position).author);
         card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context, DetailActivity.class);
-                i.putExtra(Constants.HOST_TYPE, hostType);
-                i.putExtra(DetailActivity.DETAIL_URL, data.get(position).detail);
-                context.startActivity(i);
+                doOnClick(data.get(position));
             }
         });
 
@@ -78,5 +83,7 @@ public class HomeListAdapter extends BaseRecyclerAdapter<StatusModel> {
             lastPosition = position;
         }
     }
+
+    protected abstract void doOnClick(StatusModel model);
 
 }

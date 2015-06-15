@@ -14,12 +14,14 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
+import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
+import com.happy.samuelalva.bcykari.support.http.PixivHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import org.apache.http.Header;
 
 import java.io.File;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,8 @@ import java.util.List;
  * Created by Samuel.Alva on 2015/4/16.
  */
 public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListener {
-    private static final String TAG = "ImagePagerAdapter";
+    private final String TAG = "ImagePagerAdapter";
+    public static final int BCY_SOURCE = 0, PIXIV_SOURCE = 1;
 
     private static final long MIN_FILE_SIZE = 1024 * 10;
 
@@ -36,13 +39,13 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     private List<View> mViews = new ArrayList<>();
     private LayoutInflater mInflater;
     private File mCacheDir;
-    private int hostType;
+    private int dataSource;
 
-    public ImagePagerAdapter(Context context, List<String> urls, File mCacheDir, int hostType) {
+    public ImagePagerAdapter(Context context, List<String> urls, File mCacheDir, int dataSource) {
         this.context = context;
         this.urls = urls;
         this.mCacheDir = mCacheDir;
-        this.hostType = hostType;
+        this.dataSource = dataSource;
 
         mInflater = LayoutInflater.from(context);
 
@@ -62,7 +65,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(final ViewGroup container, int position) {
         View v = mViews.get(position);
         if (v != null) {
             container.addView(v);
@@ -80,13 +83,11 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
 
             final NumberProgressBar npb = (NumberProgressBar) v.findViewById(R.id.number_progress_bar);
 
-            String url = urls.get(position);
+            final String url = urls.get(position);
             final String cacheName = Utility.getCacheName(url);
 
             final File file = new File(mCacheDir, cacheName);
             final File tempFile = new File(mCacheDir, cacheName + ".temp");
-
-            Log.i(TAG, url);
 
             if (file.exists()) {
                 npb.setProgress(100);
@@ -95,7 +96,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 npb.setVisibility(View.GONE);
             } else {
                 if (Utility.readNetworkState(context)) {
-                    PicHttpClient.get(context, urls.get(position), new FileAsyncHttpResponseHandler(tempFile) {
+                    FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
                         @Override
                         public void onProgress(int bytesWritten, int totalSize) {
                             super.onProgress(bytesWritten, totalSize);
@@ -116,7 +117,13 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
-                            Utility.showToastForLoadFailure(context);
+                            Log.i(TAG, statusCode + "");
+                            if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
+                                urls.set(0, url.replace("jpg", "png"));
+                                notifyDataSetChanged();
+                            } else {
+                                Utility.showToastForLoadFailure(context);
+                            }
                         }
 
                         @Override
@@ -124,13 +131,29 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                             super.onCancel();
                             tempFile.delete();
                         }
-                    }, hostType);
+                    };
+                    if (dataSource == BCY_SOURCE) {
+                        BcyHttpClient.get(context, url, handler);
+                    } else {
+                        PixivHttpClient.get(context, url, handler);
+                    }
                 } else {
                     Utility.showToastForNoNetwork(context);
                 }
             }
             return v;
         }
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        mViews.set(0, null);
+        super.notifyDataSetChanged();
     }
 
     @Override

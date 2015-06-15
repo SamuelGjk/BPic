@@ -15,12 +15,10 @@ import java.util.List;
 public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRecyclerAdapter.ItemViewHolder> {
     protected Context context;
     protected List<T> data;
-    protected int hostType;
 
-    public BaseRecyclerAdapter(Context context, int hostType) {
+    public BaseRecyclerAdapter(Context context) {
         this.context = context;
         this.data = new ArrayList<T>();
-        this.hostType = hostType;
     }
 
     @Override

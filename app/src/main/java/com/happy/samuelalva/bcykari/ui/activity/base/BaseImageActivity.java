@@ -1,4 +1,4 @@
-package com.happy.samuelalva.bcykari.ui.activity;
+package com.happy.samuelalva.bcykari.ui.activity.base;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happy.samuelalva.bcykari.R;
-import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.ImagePagerAdapter;
-import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
 import com.happy.samuelalva.bcykari.support.image.ImageSaver;
 
 import java.io.File;
@@ -21,16 +19,16 @@ import java.util.List;
 /**
  * Created by Samuel.Alva on 2015/4/16.
  */
-public class ImageActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
+public abstract class BaseImageActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
     public static final String IMG_URLS = "IMG_URLS";
     public static final String CUR_PAGE = "CUR_PAGE";
 
     private ViewPager mPager;
     private TextView curPage;
 
-    private List<String> urls;
+    protected List<String> urls;
 
-    private File mCacheDir;
+    protected File mCacheDir;
 
 
     @Override
@@ -53,11 +51,10 @@ public class ImageActivity extends AppCompatActivity implements ViewPager.OnPage
 
         Intent intent = getIntent();
         urls = intent.getStringArrayListExtra(IMG_URLS);
-        int hostType = intent.getIntExtra(Constants.HOST_TYPE, PicHttpClient.BCY);
         int index = intent.getIntExtra(CUR_PAGE, 0);
 
         if (Utility.readNetworkState(this)) {
-            mPager.setAdapter(new ImagePagerAdapter(this, urls, mCacheDir, hostType));
+            mPager.setAdapter(getAdapter());
             mPager.setCurrentItem(index);
             curPage.setText(String.valueOf(index + 1));
             totalPage.setText(String.valueOf(urls.size()));
@@ -66,11 +63,7 @@ public class ImageActivity extends AppCompatActivity implements ViewPager.OnPage
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        PicHttpClient.cancel(this);
-    }
+    protected abstract ImagePagerAdapter getAdapter();
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

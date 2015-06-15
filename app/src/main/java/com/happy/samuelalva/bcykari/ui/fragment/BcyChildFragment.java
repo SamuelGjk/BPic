@@ -1,11 +1,12 @@
-package com.happy.samuelalva.bcykari.ui.fragment.base;
-
-import android.os.Bundle;
-import android.view.View;
+package com.happy.samuelalva.bcykari.ui.fragment;
 
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
+import com.happy.samuelalva.bcykari.support.adapter.BcyHomeListAdapter;
+import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
+import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
+import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,12 +21,6 @@ import java.util.List;
  */
 public abstract class BcyChildFragment extends ChildBaseFragment {
     protected boolean hasAvatar;
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        requestHostType = PicHttpClient.BCY;
-        super.onViewCreated(view, savedInstanceState);
-    }
 
     @Override
     protected List<StatusModel> responseDeal(String response) {
@@ -64,5 +59,15 @@ public abstract class BcyChildFragment extends ChildBaseFragment {
             index++;
         }
         return data;
+    }
+
+    @Override
+    protected void doRequest(String url, AsyncHttpResponseHandler handler) {
+        BcyHttpClient.get(url, handler);
+    }
+
+    @Override
+    protected HomeListAdapter getAdapter() {
+        return new BcyHomeListAdapter(getActivity(), hasAvatar);
     }
 }

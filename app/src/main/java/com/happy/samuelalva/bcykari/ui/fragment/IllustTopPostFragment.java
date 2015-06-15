@@ -5,8 +5,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
-import com.happy.samuelalva.bcykari.ui.fragment.base.BcyChildFragment;
 
 /**
  * Created by Samuel.Alva on 2015/4/17.
@@ -17,11 +15,6 @@ public class IllustTopPostFragment extends BcyChildFragment {
         requestUrl = Constants.ILLUST_TOP_POST_100;
         hasAvatar = true;
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    protected HomeListAdapter getAdapter() {
-        return new HomeListAdapter(getActivity(), requestHostType, true);
     }
 
     @Override

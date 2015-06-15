@@ -1,4 +1,4 @@
-package com.happy.samuelalva.bcykari.ui.activity;
+package com.happy.samuelalva.bcykari.ui.activity.base;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,32 +20,28 @@ import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.happy.samuelalva.bcykari.R;
-import com.happy.samuelalva.bcykari.support.Constants;
+import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.DetailListAdapter;
-import com.happy.samuelalva.bcykari.support.http.PicHttpClient;
 import com.happy.samuelalva.bcykari.support.image.FastBlur;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Samuel.Alva on 2015/4/16.
  */
-public class DetailActivity extends AppCompatActivity {
-    public static final String DETAIL_URL = "DETAIL_URL";
+public abstract class BaseDetailActivity extends AppCompatActivity {
+    public static final String ENTITY = "ENTITY";
 
     private CollapsingToolbarLayout mCollapsingToolbar;
     private SimpleDraweeView mBackdrop;
 
-    private DetailListAdapter mAdapter;
+    protected DetailListAdapter mAdapter;
+    protected StatusModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,17 +63,14 @@ public class DetailActivity extends AppCompatActivity {
         RecyclerView mList = (RecyclerView) findViewById(R.id.rv_detail);
 
         Intent intent = getIntent();
-        int hostType = intent.getIntExtra(Constants.HOST_TYPE, PicHttpClient.BCY);
-        String detailUrl = intent.getStringExtra(DETAIL_URL);
+        model = intent.getParcelableExtra(ENTITY);
 
         mList.setLayoutManager(new GridLayoutManager(this, 2));
         mList.setHasFixedSize(true);
-        mList.setAdapter(mAdapter = new DetailListAdapter(this, hostType));
+        mList.setAdapter(mAdapter = getAdapter());
 
         if (Utility.readNetworkState(this)) {
-            if (hostType == PicHttpClient.BCY) {
-                PicHttpClient.get(Constants.BASE_API_BCY + detailUrl, handler, hostType);
-            }
+            doRequest(model.detail, handler);
         } else {
             Utility.showToastForNoNetwork(this);
         }
@@ -95,11 +88,10 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public void onSuccess(int statusCode, Header[] headers, String responseString) {
             Document doc = Jsoup.parse(responseString);
-            String avatar = doc.select("a._avatar > img").first().attr("src");
-            if (avatar.startsWith("/Public")) {
-                avatar = Constants.BASE_API_BCY + avatar;
+            String avatar = model.avatar;
+            if (avatar == null) {
+                avatar = doc.select("a._avatar > img").first().attr("src");
             }
-
             ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(avatar)).setPostprocessor(new BasePostprocessor() {
                 @Override
                 public String getName() {
@@ -113,19 +105,19 @@ public class DetailActivity extends AppCompatActivity {
             }).build();
             PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder().setImageRequest(request).setOldController(mBackdrop.getController()).build();
             mBackdrop.setController(controller);
-
-            mCollapsingToolbar.setTitle(doc.getElementsByAttributeValue("class", "fz14 blue1").first().html());
-            Elements elements = doc.getElementsByAttributeValue("class", "detail_std detail_clickable");
-            List<String> data = new ArrayList<>();
-            for (Element e : elements) {
-                data.add(e.attr("src").replace("/w650", ""));
-            }
-            mAdapter.addAll(data);
+            mCollapsingToolbar.setTitle(model.author);
+            updateData(doc);
         }
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-            Utility.showToastForLoadFailure(DetailActivity.this);
+            Utility.showToastForLoadFailure(BaseDetailActivity.this);
         }
     };
+
+    protected abstract DetailListAdapter getAdapter();
+
+    protected abstract void doRequest(String url, AsyncHttpResponseHandler handler);
+
+    protected abstract void updateData(Document doc);
 }
