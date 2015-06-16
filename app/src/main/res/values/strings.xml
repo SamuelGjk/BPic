@@ -13,4 +13,8 @@
     <string name="about">About</string>
     <string name="version">Version</string>
     <string name="license">Open-source license</string>
+
+    <!-- menu -->
+    <string name="the_day_after">the day after</string>
+    <string name="the_day_before">the day before</string>
 </resources>

@@ -14,4 +14,7 @@
     <string name="version">版本</string>
     <string name="license">开源协议</string>
 
+    <!-- menu -->
+    <string name="the_day_after">后一天</string>
+    <string name="the_day_before">前一天</string>
 </resources>
