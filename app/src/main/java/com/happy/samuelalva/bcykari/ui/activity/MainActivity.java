@@ -17,9 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.happy.samuelalva.bcykari.R;
+import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.ui.fragment.CoserFragment;
 import com.happy.samuelalva.bcykari.ui.fragment.IllustFragment;
@@ -96,8 +96,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         selectItem(0);
 
-        if (Utility.readNetworkState(this) && !Utility.isWIFI)
-            Utility.showToast(this, "正在使用你那又贵量又少的数据流量，请一定要谨慎(..•˘_˘•..)", Toast.LENGTH_LONG);
+        if (ConnectivityReceiver.readNetworkState(this) && !ConnectivityReceiver.isWIFI)
+            Utility.showToastForMobileData(this);
     }
 
     @Override

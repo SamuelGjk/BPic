@@ -17,4 +17,11 @@
     <!-- menu -->
     <string name="the_day_after">the day after</string>
     <string name="the_day_before">the day before</string>
+
+    <string name="no_network">Please connect to the Internet</string>
+    <string name="load_failed">Failed to load, please try again</string>
+    <string name="mobile_data">Using Mobile Data</string>
+    <string name="no_more">No more</string>
+    <string name="no_after_day">Can not go to the future</string>
+    <string name="wait_a_minute">Wait a minute</string>
 </resources>

@@ -17,6 +17,6 @@ public interface Constants {
 
     String BASE_API_PIXIV = "http://www.pixiv.net/";
     String BASE_RANKING_API_PIXIV = BASE_API_PIXIV + "ranking.php";
-    String DAILY_ILLUST_RANKING_PIXIV = BASE_RANKING_API_PIXIV + "?mode=daily&content=illust&p=";
+    String DAILY_ILLUST_RANKING_PIXIV = BASE_RANKING_API_PIXIV + "?mode=daily&content=illust&date=&p=";
 
 }

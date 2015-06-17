@@ -11,24 +11,16 @@ import com.happy.samuelalva.bcykari.support.adapter.PixivPagerAdapter;
 import com.happy.samuelalva.bcykari.support.adapter.base.BasePagerAdapter;
 import com.happy.samuelalva.bcykari.ui.fragment.base.ParentBaseFragment;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 /**
  * Created by Samuel.Alva on 2015/5/6.
  */
 public class PixivFragment extends ParentBaseFragment {
     private Menu menu;
-    private SimpleDateFormat sdf;
-    private Calendar curCalendar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sdf = new SimpleDateFormat("yyyyMMdd");
-        initCalendar();
         setHasOptionsMenu(true);
     }
 
@@ -46,20 +38,22 @@ public class PixivFragment extends ParentBaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String date = null;
-
-        switch (item.getItemId()) {
-            case R.id.menu_the_day_after:
-                date = getAfterDay();
-                break;
-            case R.id.menu_the_day_before:
-                date = getBeforeDay();
-                break;
+        Fragment f = mAdapter.getItemAt(mPager.getCurrentItem());
+        PixivNormalFragment pnf = null;
+        if (f instanceof PixivNormalFragment) {
+            pnf = (PixivNormalFragment) f;
         }
 
-        Fragment f = mAdapter.getItemAt(mPager.getCurrentItem());
-        if (f instanceof PixivNormalFragment)
-            ((PixivNormalFragment) f).dateChange(date);
+        if (pnf != null) {
+            switch (item.getItemId()) {
+                case R.id.menu_the_day_after:
+                    pnf.dateChange(1);
+                    break;
+                case R.id.menu_the_day_before:
+                    pnf.dateChange(-1);
+                    break;
+            }
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -69,22 +63,5 @@ public class PixivFragment extends ParentBaseFragment {
         super.onHiddenChanged(hidden);
         if (menu != null)
             menu.setGroupVisible(R.id.menu_date_selector, hidden);
-    }
-
-    private void initCalendar() {
-        Date now = new Date();
-        curCalendar = Calendar.getInstance();
-        curCalendar.setTime(now);
-        curCalendar.add(Calendar.DATE, -1);
-    }
-
-    private String getBeforeDay() {
-        curCalendar.add(Calendar.DATE, -1);
-        return sdf.format(curCalendar.getTime());
-    }
-
-    private String getAfterDay() {
-        curCalendar.add(Calendar.DATE, 1);
-        return sdf.format(curCalendar.getTime());
     }
 }

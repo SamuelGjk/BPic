@@ -13,6 +13,7 @@ import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.happy.samuelalva.bcykari.R;
+import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
 import com.happy.samuelalva.bcykari.support.http.PixivHttpClient;
@@ -95,7 +96,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 iv.setVisibility(View.VISIBLE);
                 npb.setVisibility(View.GONE);
             } else {
-                if (Utility.readNetworkState(context)) {
+                if (ConnectivityReceiver.readNetworkState(context)) {
                     FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
                         @Override
                         public void onProgress(int bytesWritten, int totalSize) {

@@ -1,11 +1,13 @@
 package com.happy.samuelalva.bcykari.ui.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
+import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
 import com.happy.samuelalva.bcykari.support.adapter.PixivHomeListAdapter;
 import com.happy.samuelalva.bcykari.support.http.PixivHttpClient;
@@ -16,13 +18,33 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Samuel.Alva on 2015/5/6.
  */
 public class PixivNormalFragment extends ChildBaseFragment {
+
+    private SimpleDateFormat sdf;
+    private Calendar curCalendar;
+    private String today;
+
+    private String noAfterDayStr, waitStr;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        sdf = new SimpleDateFormat("yyyyMMdd");
+        initCalendar();
+
+        noAfterDayStr = getResources().getString(R.string.no_after_day);
+        waitStr = getResources().getString(R.string.wait_a_minute);
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -60,12 +82,28 @@ public class PixivNormalFragment extends ChildBaseFragment {
 
     @Override
     protected void doRequest(String url, AsyncHttpResponseHandler handler) {
-        PixivHttpClient.get(url, handler);
+        PixivHttpClient.get(parentActivity, url, handler);
     }
 
-    public void dateChange(String date) {
-        requestUrl = requestUrl.replace("&p=", "&date=" + date + "&p=");
-        Log.i("requestUrl", requestUrl);
-        doRefresh();
+    private void initCalendar() {
+        Date now = new Date();
+        curCalendar = Calendar.getInstance();
+        curCalendar.setTime(now);
+        curCalendar.add(Calendar.DATE, -1);
+        today = sdf.format(curCalendar.getTime());
+    }
+
+    public void dateChange(int i) {
+        if (!mSwipeRefresh.isRefreshing()) {
+            if (i == 1 && today.equals(sdf.format(curCalendar.getTime()))) {
+                Utility.showToast(parentActivity, noAfterDayStr, Toast.LENGTH_SHORT);
+            } else {
+                curCalendar.add(Calendar.DATE, i);
+                requestUrl = Constants.DAILY_ILLUST_RANKING_PIXIV.replace("date=", "&date=" + sdf.format(curCalendar.getTime()));
+                doRefresh();
+            }
+        } else {
+            Utility.showToast(parentActivity, waitStr, Toast.LENGTH_SHORT);
+        }
     }
 }

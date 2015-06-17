@@ -17,4 +17,11 @@
     <!-- menu -->
     <string name="the_day_after">后一天</string>
     <string name="the_day_before">前一天</string>
+
+    <string name="no_network">看来你的网络傲娇了╮(￣▽￣)╭</string>
+    <string name="load_failed">加载失败，请重试</string>
+    <string name="mobile_data">正在使用您那又贵量又少的数据流量，请一定要谨慎(..•˘_˘•..)</string>
+    <string name="no_more">没有了=-=</string>
+    <string name="no_after_day">不能穿越到未来</string>
+    <string name="wait_a_minute">上一位都还没加载完呢</string>
 </resources>

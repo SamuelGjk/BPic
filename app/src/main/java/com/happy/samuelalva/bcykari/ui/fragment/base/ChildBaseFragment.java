@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
+import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
 import com.happy.samuelalva.bcykari.ui.activity.MainActivity;
@@ -39,6 +40,15 @@ public abstract class ChildBaseFragment extends Fragment {
     protected double totalPage;
 
     protected MainActivity parentActivity;
+
+    private String noMoreStr;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        noMoreStr = getResources().getString(R.string.no_more);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,7 +93,7 @@ public abstract class ChildBaseFragment extends Fragment {
 
     protected void doRefresh() {
         mList.smoothScrollToPosition(0);
-        if (Utility.readNetworkState(parentActivity)) {
+        if (ConnectivityReceiver.readNetworkState(parentActivity)) {
             isRefresh = true;
             mSwipeRefresh.setRefreshing(true);
             doRequest(requestUrl, handler);
@@ -95,8 +105,8 @@ public abstract class ChildBaseFragment extends Fragment {
 
     protected void doLoad() {
         if (nextPage > totalPage) {
-            Toast.makeText(parentActivity, "没有了=-=", Toast.LENGTH_SHORT).show();
-        } else if (Utility.readNetworkState(parentActivity)) {
+            Toast.makeText(parentActivity, noMoreStr, Toast.LENGTH_SHORT).show();
+        } else if (ConnectivityReceiver.readNetworkState(parentActivity)) {
             isRefresh = false;
             mSwipeRefresh.setRefreshing(true);
             doRequest(requestUrl + nextPage, handler);

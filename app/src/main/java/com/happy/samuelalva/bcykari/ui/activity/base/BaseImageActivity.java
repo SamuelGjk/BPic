@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happy.samuelalva.bcykari.R;
+import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.ImagePagerAdapter;
 import com.happy.samuelalva.bcykari.support.image.ImageSaver;
@@ -53,7 +54,7 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
         urls = intent.getStringArrayListExtra(IMG_URLS);
         int index = intent.getIntExtra(CUR_PAGE, 0);
 
-        if (Utility.readNetworkState(this)) {
+        if (ConnectivityReceiver.readNetworkState(this)) {
             mPager.setAdapter(getAdapter());
             mPager.setCurrentItem(index);
             curPage.setText(String.valueOf(index + 1));

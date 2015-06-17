@@ -5,16 +5,16 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.net.ConnectivityManager;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.happy.samuelalva.bcykari.R;
 
 /**
  * Created by Samuel.Alva on 2015/5/4.
  */
 public class Utility {
-    public static boolean isWIFI;
 
     /*
     public static float dp2px(Context context, float dp) {
@@ -51,27 +51,15 @@ public class Utility {
     }
 
     public static void showToastForNoNetwork(Context context) {
-        Toast.makeText(context, "看来你的网络傲娇了╮(￣▽￣)╭", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getResources().getString(R.string.no_network), Toast.LENGTH_SHORT).show();
     }
 
     public static void showToastForLoadFailure(Context context) {
-        Toast.makeText(context, "加载失败，请重试", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getResources().getString(R.string.load_failed), Toast.LENGTH_SHORT).show();
     }
 
-    public static boolean readNetworkState(Context context) {
-        if (context == null)
-            return false;
-
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (cm != null && cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected()) {
-
-            isWIFI = (cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI);
-
-            return true;
-        } else {
-            return false;
-        }
+    public static void showToastForMobileData(Context context) {
+        Toast.makeText(context, context.getResources().getString(R.string.mobile_data), Toast.LENGTH_SHORT).show();
     }
 
     private static int getMaxNumOfPixels(Context context) {

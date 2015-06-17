@@ -3,6 +3,7 @@ package com.happy.samuelalva.bcykari.ui.activity.base;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
+import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.DetailListAdapter;
 import com.happy.samuelalva.bcykari.support.image.FastBlur;
@@ -52,6 +54,9 @@ public abstract class BaseDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         View mStatusBarTintView = findViewById(R.id.status_bar_tint_view);
+        if (Build.VERSION.SDK_INT < 20) {
+            mStatusBarTintView.setVisibility(View.GONE);
+        }
         ViewGroup.LayoutParams p = mStatusBarTintView.getLayoutParams();
         p.height = Utility.getStatusBarHeight(this);
         mStatusBarTintView.setLayoutParams(p);
@@ -69,7 +74,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity {
         mList.setHasFixedSize(true);
         mList.setAdapter(mAdapter = getAdapter());
 
-        if (Utility.readNetworkState(this)) {
+        if (ConnectivityReceiver.readNetworkState(this)) {
             doRequest(model.detail, handler);
         } else {
             Utility.showToastForNoNetwork(this);
