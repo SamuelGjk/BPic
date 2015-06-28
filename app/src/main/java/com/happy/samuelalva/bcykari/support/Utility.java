@@ -46,8 +46,8 @@ public class Utility {
         return url.substring(url.lastIndexOf("/") + 1);
     }
 
-    public static void showToast(Context context, String msg, int duration) {
-        Toast.makeText(context, msg, duration).show();
+    public static void showToast(Context context, String msg) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 
     public static void showToastForNoNetwork(Context context) {

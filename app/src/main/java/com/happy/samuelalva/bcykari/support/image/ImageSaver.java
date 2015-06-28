@@ -3,7 +3,6 @@ package com.happy.samuelalva.bcykari.support.image;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.widget.Toast;
 
 import com.happy.samuelalva.bcykari.support.Utility;
 
@@ -75,7 +74,7 @@ public class ImageSaver {
         @Override
         protected void onPostExecute(Object[] objects) {
             super.onPostExecute(objects);
-            Utility.showToast((Context) objects[0], objects[1].toString(), Toast.LENGTH_SHORT);
+            Utility.showToast((Context) objects[0], objects[1].toString());
         }
     }
 }

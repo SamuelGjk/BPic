@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BcyKari</string>
+    <string name="app_name">BPic</string>
 
     <string name="close">Close</string>
     <string name="illust">Painting</string>
@@ -24,4 +24,5 @@
     <string name="no_more">No more</string>
     <string name="no_after_day">Can not go to the future</string>
     <string name="wait_a_minute">Wait a minute</string>
+    <string name="ranking_not_updated">Today\'s ranking has not been updated, automatically load the previous day</string>
 </resources>

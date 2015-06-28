@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BcyKari</string>
+    <string name="app_name">BPic</string>
 
     <string name="close">关闭</string>
     <string name="illust">绘画</string>
@@ -24,4 +24,5 @@
     <string name="no_more">没有了=-=</string>
     <string name="no_after_day">不能穿越到未来</string>
     <string name="wait_a_minute">上一位都还没加载完呢</string>
+    <string name="ranking_not_updated">今天的排行榜还未更新，自动加载前一天的排行榜</string>
 </resources>

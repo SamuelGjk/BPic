@@ -20,13 +20,15 @@
 
 -keep class com.happy.samuelalva.bcykari.model.** { *; }
 
--keep class com.facebook.** { *; }
--keep class com.daimajia.** { *; }
--keep class com.davemorrissey.** { *; }
--keep class com.loopj.** { *; }
--keep class com.melnykov.** { *; }
 -keep class org.jsoup.** { *; }
 
 -keep class android.support.design.widget.** { *; }
 
--dontwarn com.facebook.**
+-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
+-keep @com.facebook.common.internal.DoNotStrip class *
+-keepclassmembers class * {
+    @com.facebook.common.internal.DoNotStrip *;
+}
+-dontwarn javax.annotation.**
+-keep class com.facebook.imagepipeline.gif.** { *; }
+-keep class com.facebook.imagepipeline.webp.** { *; }

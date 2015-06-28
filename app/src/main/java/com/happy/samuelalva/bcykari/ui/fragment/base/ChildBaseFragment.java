@@ -126,19 +126,21 @@ public abstract class ChildBaseFragment extends Fragment {
         @Override
         public void onSuccess(int statusCode, Header[] headers, final String responseString) {
             final List<StatusModel> data = responseDeal(responseString);
-            mSwipeRefresh.setRefreshing(false);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (isRefresh) {
-                        mAdapter.replaceAll(data);
-                        nextPage = 2;
-                    } else {
-                        mAdapter.addAll(data);
-                        nextPage++;
+            if (data != null) {
+                mSwipeRefresh.setRefreshing(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isRefresh) {
+                            mAdapter.replaceAll(data);
+                            nextPage = 2;
+                        } else {
+                            mAdapter.addAll(data);
+                            nextPage++;
+                        }
                     }
-                }
-            }, 200);
+                }, 200);
+            }
         }
 
         @Override

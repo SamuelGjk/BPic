@@ -16,7 +16,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         readNetworkState(context);
-        if (!isWIFI)
+        if (readNetworkState(context) && !isWIFI)
             Utility.showToastForMobileData(context);
     }
 

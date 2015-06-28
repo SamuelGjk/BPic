@@ -1,12 +1,12 @@
 package com.happy.samuelalva.bcykari.support.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.View;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -26,8 +26,8 @@ public abstract class DetailListAdapter extends BaseRecyclerAdapter<String> {
 
     @Override
     public void doBindViewHolder(BaseRecyclerAdapter.ItemViewHolder holder, final int position) {
-        SimpleDraweeView iv = (SimpleDraweeView) holder.getView(R.id.iv_detail);
-        iv.setImageURI(Uri.parse(picUrlDeal(data.get(position))));
+        ImageView iv = (ImageView) holder.getView(R.id.iv_detail);
+        Picasso.with(context).load(picUrlDeal(data.get(position))).placeholder(android.R.color.darker_gray).into(iv);
 
         iv.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -2,7 +2,6 @@ package com.happy.samuelalva.bcykari.ui.activity.base;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -13,13 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.request.BasePostprocessor;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
@@ -28,6 +22,8 @@ import com.happy.samuelalva.bcykari.support.adapter.DetailListAdapter;
 import com.happy.samuelalva.bcykari.support.image.FastBlur;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.apache.http.Header;
 import org.jsoup.Jsoup;
@@ -40,7 +36,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity {
     public static final String ENTITY = "ENTITY";
 
     private CollapsingToolbarLayout mCollapsingToolbar;
-    private SimpleDraweeView mBackdrop;
+    private ImageView mBackdrop;
 
     protected DetailListAdapter mAdapter;
     protected StatusModel model;
@@ -50,7 +46,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.detail_toolbar));
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         View mStatusBarTintView = findViewById(R.id.status_bar_tint_view);
@@ -62,7 +58,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity {
         mStatusBarTintView.setLayoutParams(p);
 
         mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        mBackdrop = (SimpleDraweeView) findViewById(R.id.iv_backdrop);
+        mBackdrop = (ImageView) findViewById(R.id.iv_backdrop);
 
 
         RecyclerView mList = (RecyclerView) findViewById(R.id.rv_detail);
@@ -97,19 +93,19 @@ public abstract class BaseDetailActivity extends AppCompatActivity {
             if (avatar == null) {
                 avatar = doc.select("a._avatar > img").first().attr("src");
             }
-            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(avatar)).setPostprocessor(new BasePostprocessor() {
+            Picasso.with(BaseDetailActivity.this).load(avatar).transform(new Transformation() {
                 @Override
-                public String getName() {
-                    return "blurPostprocessor";
+                public Bitmap transform(Bitmap source) {
+                    Bitmap bitmap = source.copy(Bitmap.Config.ARGB_8888, true);
+                    source.recycle();
+                    return FastBlur.doBlur(bitmap, 2, true);
                 }
 
                 @Override
-                public void process(Bitmap bitmap) {
-                    FastBlur.doBlur(bitmap, 2, true);
+                public String key() {
+                    return "doBlur";
                 }
-            }).build();
-            PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder().setImageRequest(request).setOldController(mBackdrop.getController()).build();
-            mBackdrop.setController(controller);
+            }).into(mBackdrop);
             mCollapsingToolbar.setTitle(model.author);
             updateData(doc);
         }

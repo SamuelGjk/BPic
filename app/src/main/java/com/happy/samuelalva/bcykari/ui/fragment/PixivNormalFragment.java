@@ -2,7 +2,6 @@ package com.happy.samuelalva.bcykari.ui.fragment;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
@@ -33,7 +32,7 @@ public class PixivNormalFragment extends ChildBaseFragment {
     private Calendar curCalendar;
     private String today;
 
-    private String noAfterDayStr, waitStr;
+    private String noAfterDayStr, waitStr, rankingNotUpdatedStr;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,11 +43,12 @@ public class PixivNormalFragment extends ChildBaseFragment {
 
         noAfterDayStr = getResources().getString(R.string.no_after_day);
         waitStr = getResources().getString(R.string.wait_a_minute);
+        rankingNotUpdatedStr = getResources().getString(R.string.ranking_not_updated);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        requestUrl = Constants.DAILY_ILLUST_RANKING_PIXIV;
+        requestUrl = Constants.getPixivDatlyIllustRankingApi(today);
         totalPage = 10;
         super.onViewCreated(view, savedInstanceState);
     }
@@ -71,6 +71,12 @@ public class PixivNormalFragment extends ChildBaseFragment {
             model.avatar = avatars.get(i).attr("data-src");
 
             data.add(model);
+        }
+        if (data.size() == 0) {
+            Utility.showToast(parentActivity, rankingNotUpdatedStr);
+            mSwipeRefresh.setRefreshing(false);
+            dateChange(-1);
+            return null;
         }
         return data;
     }
@@ -96,14 +102,14 @@ public class PixivNormalFragment extends ChildBaseFragment {
     public void dateChange(int i) {
         if (!mSwipeRefresh.isRefreshing()) {
             if (i == 1 && today.equals(sdf.format(curCalendar.getTime()))) {
-                Utility.showToast(parentActivity, noAfterDayStr, Toast.LENGTH_SHORT);
+                Utility.showToast(parentActivity, noAfterDayStr);
             } else {
                 curCalendar.add(Calendar.DATE, i);
-                requestUrl = Constants.DAILY_ILLUST_RANKING_PIXIV.replace("date=", "&date=" + sdf.format(curCalendar.getTime()));
+                requestUrl = Constants.getPixivDatlyIllustRankingApi(sdf.format(curCalendar.getTime()));
                 doRefresh();
             }
         } else {
-            Utility.showToast(parentActivity, waitStr, Toast.LENGTH_SHORT);
+            Utility.showToast(parentActivity, waitStr);
         }
     }
 }

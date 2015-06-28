@@ -6,7 +6,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
@@ -86,7 +85,7 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
         String cacheName = Utility.getCacheName(urls.get(mPager.getCurrentItem()));
         File file = new File(mCacheDir, cacheName);
         if (!file.exists()) {
-            Utility.showToast(this, "图片正在加载", Toast.LENGTH_SHORT);
+            Utility.showToast(this, "图片正在加载");
         } else {
             ImageSaver.getInstance().save(this, file, cacheName);
         }

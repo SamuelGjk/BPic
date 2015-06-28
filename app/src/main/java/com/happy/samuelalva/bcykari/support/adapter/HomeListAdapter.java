@@ -1,22 +1,20 @@
 package com.happy.samuelalva.bcykari.support.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.Random;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Samuel.Alva on 2015/4/15.
@@ -49,21 +47,14 @@ public abstract class HomeListAdapter extends BaseRecyclerAdapter<StatusModel> {
     public void doBindViewHolder(BaseRecyclerAdapter.ItemViewHolder holder, final int position) {
         View card = holder.getView(R.id.card_view);
         View itemLayout = holder.getView(R.id.list_item_layout);
-        SimpleDraweeView avatar = (SimpleDraweeView) holder.getView(R.id.avatar);
-        SimpleDraweeView cover = (SimpleDraweeView) holder.getView(R.id.cover);
+        CircleImageView avatar = (CircleImageView) holder.getView(R.id.avatar);
+        ImageView cover = (ImageView) holder.getView(R.id.cover);
         TextView author = (TextView) holder.getView(R.id.author);
         if (hasAvatar) {
             avatar.setVisibility(View.VISIBLE);
-            String avatarUrl = data.get(position).avatar;
-            if (avatarUrl.endsWith(".gif")) {
-                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(avatarUrl)).build();
-                DraweeController controller = Fresco.newDraweeControllerBuilder().setImageRequest(request).setAutoPlayAnimations(true).build();
-                avatar.setController(controller);
-            } else {
-                avatar.setImageURI(Uri.parse(avatarUrl));
-            }
+            Picasso.with(context).load(data.get(position).avatar).placeholder(android.R.color.darker_gray).into(avatar);
         }
-        cover.setImageURI(Uri.parse(data.get(position).cover));
+        Picasso.with(context).load(data.get(position).cover).placeholder(android.R.color.darker_gray).into(cover);
         author.setText(data.get(position).author);
         card.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/detail_appbar_layout"
+        android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/detail_backdrop_height"
         android:fitsSystemWindows="true"
@@ -22,20 +22,21 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@+id/iv_backdrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
-                app:actualImageScaleType="centerCrop"
+                android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/detail_toolbar"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar" />
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:background="@drawable/shadow"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax" />
 
             <View
                 android:id="@+id/status_bar_tint_view"
@@ -44,6 +45,13 @@
                 android:background="@color/translucent"
                 android:fitsSystemWindows="true"
                 app:layout_collapseMode="pin" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

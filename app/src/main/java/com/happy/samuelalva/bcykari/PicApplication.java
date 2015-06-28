@@ -3,9 +3,7 @@ package com.happy.samuelalva.bcykari;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.widget.Toast;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.happy.samuelalva.bcykari.support.Utility;
 
 import java.io.File;
@@ -29,8 +27,6 @@ public class PicApplication extends Application {
         }
 
         new DeleteTask().execute(mCacheDir);
-
-        Fresco.initialize(this);
     }
 
     private class DeleteTask extends AsyncTask<File, Void, Integer> {
@@ -54,7 +50,7 @@ public class PicApplication extends Application {
         protected void onPostExecute(Integer i) {
             super.onPostExecute(i);
             if (i != null)
-                Utility.showToast(PicApplication.this, "缓存已清除", Toast.LENGTH_SHORT);
+                Utility.showToast(PicApplication.this, "缓存已清除");
         }
     }
 }

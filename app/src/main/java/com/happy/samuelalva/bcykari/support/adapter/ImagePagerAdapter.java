@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -99,15 +98,15 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 if (ConnectivityReceiver.readNetworkState(context)) {
                     FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
                         @Override
-                        public void onProgress(int bytesWritten, int totalSize) {
+                        public void onProgress(long bytesWritten, long totalSize) {
                             super.onProgress(bytesWritten, totalSize);
-                            npb.setProgress(bytesWritten * 100 / totalSize);
+                            npb.setProgress((int) (bytesWritten * 100 / totalSize));
                         }
 
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, File tempFile) {
                             if (tempFile.length() < MIN_FILE_SIZE) {
-                                Utility.showToast(context, "因为各种原因数据出错了=-=", Toast.LENGTH_SHORT);
+                                Utility.showToast(context, "因为各种原因数据出错了=-=");
                             } else {
                                 tempFile.renameTo(file);
                                 iv.setImage(ImageSource.bitmap(Utility.createImageThumbnail(file.getPath(), context)));
