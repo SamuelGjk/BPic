@@ -2,13 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/navigation_header"
     android:layout_width="match_parent"
-    android:layout_height="270dp"
-    android:background="@color/bcy_color">
+    android:layout_height="224dp"
+    android:background="@color/bcy_color"
+    android:foreground="?selectableItemBackground">
 
     <ImageView
         android:id="@+id/iv_navigation_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:src="@mipmap/bcy_header" />
 </FrameLayout>

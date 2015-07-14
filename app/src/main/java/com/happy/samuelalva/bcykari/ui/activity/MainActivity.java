@@ -1,6 +1,8 @@
 package com.happy.samuelalva.bcykari.ui.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -9,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,16 +23,18 @@ import android.widget.ImageView;
 
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
-import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.ui.fragment.CoserFragment;
-import com.happy.samuelalva.bcykari.ui.fragment.IllustFragment;
-import com.happy.samuelalva.bcykari.ui.fragment.PixivFragment;
+import com.happy.samuelalva.bcykari.ui.fragment.BcyCoserParentFragment;
+import com.happy.samuelalva.bcykari.ui.fragment.BcyIllustParentFragment;
+import com.happy.samuelalva.bcykari.ui.fragment.PixivParentFragment;
 import com.happy.samuelalva.bcykari.ui.fragment.base.ParentBaseFragment;
 import com.melnykov.fab.FloatingActionButton;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
-    private static final int ILLUST = 0, COS = 1, PIXIV = 2;
+    private static final int BCY_ILLUST = 0, BCY_COS = 1, PIXIV = 2;
+
+    private BroadcastReceiver mReceiver;
+
     private Fragment[] mFragments = new Fragment[3];
 
     private DrawerLayout mDrawerLayout;
@@ -40,11 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mNavigationHeaderImageView;
     private FloatingActionButton mFab;
 
-    private Menu menu;
-
     private FragmentManager mManager;
-    private int curFragment, bcyCurFragment, pixivCurFragment = 2;
-    private boolean isPixiv;
+    private int curFragment;
 
     public FrameLayout getTabContainer() {
         return tabContainer;
@@ -55,9 +57,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mReceiver = new ConnectivityReceiver();
+        registerReceiver(mReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tabContainer = (FrameLayout) findViewById(R.id.tab_container);
 
@@ -70,21 +78,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDrawerNavigation = (NavigationView) findViewById(R.id.drawer_navigation);
         mDrawerNavigation.setNavigationItemSelectedListener(this);
 
-        menu = mDrawerNavigation.getMenu();
-
         mNavigationHeader = findViewById(R.id.navigation_header);
         mNavigationHeaderImageView = (ImageView) findViewById(R.id.iv_navigation_header);
-        mNavigationHeader.setOnClickListener(this);
-
-        View btnSettings = findViewById(R.id.btn_settings);
-        btnSettings.setOnClickListener(this);
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(this);
 
-        mFragments[ILLUST] = new IllustFragment();
-        mFragments[COS] = new CoserFragment();
-        mFragments[PIXIV] = new PixivFragment();
+        mFragments[BCY_ILLUST] = new BcyIllustParentFragment();
+        mFragments[BCY_COS] = new BcyCoserParentFragment();
+        mFragments[PIXIV] = new PixivParentFragment();
 
         mManager = getSupportFragmentManager();
         FragmentTransaction ft = mManager.beginTransaction();
@@ -94,10 +96,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         ft.commit();
 
-        selectItem(0);
+        selectItem(0, true);
+    }
 
-        if (ConnectivityReceiver.readNetworkState(this) && !ConnectivityReceiver.isWIFI)
-            Utility.showToastForMobileData(this);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (R.id.menu_settings == item.getItemId()) {
+            Intent i = new Intent(this, SettingsActivity.class);
+            startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -112,7 +126,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    private void selectItem(int index) {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+    }
+
+    private void selectItem(int index, boolean isBcy) {
         FragmentTransaction ft = mManager.beginTransaction();
         for (int i = 0; i < mFragments.length; i++) {
             if (i == index) {
@@ -122,11 +142,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         ft.commit();
-        if (index < 2) {
-            bcyCurFragment = index;
-        } else {
-            pixivCurFragment = index;
-        }
+
+        headerChange(isBcy);
         curFragment = index;
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
@@ -142,11 +159,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.navigation_item_illust:
-                selectItem(ILLUST);
+            case R.id.navigation_item_bcy_illust:
+                selectItem(BCY_ILLUST, true);
                 break;
-            case R.id.navigation_item_cos:
-                selectItem(COS);
+            case R.id.navigation_item_bcy_cos:
+                selectItem(BCY_COS, true);
+                break;
+            case R.id.navigation_item_pixiv_daily_illust:
+                selectItem(PIXIV, false);
                 break;
         }
         menuItem.setChecked(true);
@@ -156,34 +176,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_settings:
-                Intent i = new Intent(this, SettingsActivity.class);
-                startActivity(i);
-                break;
             case R.id.fab:
                 Fragment f = mFragments[curFragment];
                 if (f instanceof ParentBaseFragment)
                     ((ParentBaseFragment) f).doRefresh();
                 break;
-            case R.id.navigation_header:
-                if (isPixiv) {
-                    isPixiv = false;
-                    mNavigationHeader.setBackgroundResource(R.color.bcy_color);
-                    mNavigationHeaderImageView.setImageResource(R.mipmap.bcy_header);
-                    mDrawerNavigation.setItemTextColor(getResources().getColorStateList(R.color.navigation_item_text_color_bcy));
-                    menu.setGroupVisible(R.id.menu_bcy, true);
-                    menu.setGroupVisible(R.id.menu_pixiv, false);
-                    selectItem(bcyCurFragment);
-                } else {
-                    isPixiv = true;
-                    mNavigationHeader.setBackgroundResource(R.color.pixiv_color);
-                    mNavigationHeaderImageView.setImageResource(R.mipmap.pixiv_header);
-                    mDrawerNavigation.setItemTextColor(getResources().getColorStateList(R.color.navigation_item_text_color_pixiv));
-                    menu.setGroupVisible(R.id.menu_bcy, false);
-                    menu.setGroupVisible(R.id.menu_pixiv, true);
-                    selectItem(pixivCurFragment);
-                }
-                break;
         }
+    }
+
+    private void headerChange(boolean isBcy) {
+        mNavigationHeader.setBackgroundResource(isBcy ? R.color.bcy_color : R.color.pixiv_color);
+        mNavigationHeaderImageView.setImageResource(isBcy ? R.mipmap.bcy_header : R.mipmap.pixiv_header);
+        mDrawerNavigation.setItemTextColor(getResources().getColorStateList(isBcy ? R.color.navigation_item_text_color_bcy : R.color.navigation_item_text_color_pixiv));
     }
 }

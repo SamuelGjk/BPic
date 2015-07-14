@@ -10,15 +10,15 @@ import com.happy.samuelalva.bcykari.ui.activity.base.BaseImageActivity;
 public class PixivImageActivity extends BaseImageActivity {
     @Override
     protected ImagePagerAdapter getAdapter() {
-        if (urls.size() == 1) {
-            urls.set(0, urls.get(0).replace("c/1200x1200/img-master", "img-original").replace("_master1200", ""));
+        for (int i = 0; i < urls.size(); i++) {
+            urls.set(i, urls.get(i).replace("c/240x480/img-master", "img-original").replace("_master1200", ""));
         }
-        return new ImagePagerAdapter(this, urls, mCacheDir, ImagePagerAdapter.PIXIV_SOURCE);
+        return new ImagePagerAdapter(this, urls, ImagePagerAdapter.PIXIV_SOURCE);
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         PixivHttpClient.cancel(this);
+        super.onDestroy();
     }
 }

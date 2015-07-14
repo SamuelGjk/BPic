@@ -10,7 +10,7 @@ import com.happy.samuelalva.bcykari.ui.activity.base.BaseDetailActivity;
 /**
  * Created by Samuel.Alva on 2015/4/15.
  */
-public class PixivHomeListAdapter extends HomeListAdapter {
+public class PixivHomeListAdapter extends AbsHomeListAdapter {
 
     public PixivHomeListAdapter(Context context, boolean hasAvatar) {
         super(context, hasAvatar);

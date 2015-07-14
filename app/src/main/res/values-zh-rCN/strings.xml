@@ -1,22 +1,26 @@
 <resources>
-    <string name="app_name">BPic</string>
 
     <string name="close">关闭</string>
     <string name="illust">绘画</string>
-    <string name="cos">COS</string>
     <string name="daily_illust">插画今日排行榜</string>
     <string name="settings">设置</string>
 
-    <string name="separator">&#160;/&#160;</string>
+    <string name="cleaning_cache_tip">正在清除, 请稍后&#8230;</string>
+
+    <string name="search_pixiv_illust_id">请输入P站作品id</string>
 
     <!-- settings -->
+    <string name="operation">操作</string>
     <string name="about">关于</string>
     <string name="version">版本</string>
     <string name="license">开源协议</string>
+    <string name="clean_cache">清除缓存</string>
+    <string name="cache_size">缓存大小:%sMB</string>
 
     <!-- menu -->
     <string name="the_day_after">后一天</string>
     <string name="the_day_before">前一天</string>
+    <string name="search">搜索</string>
 
     <string name="no_network">看来你的网络傲娇了╮(￣▽￣)╭</string>
     <string name="load_failed">加载失败，请重试</string>

@@ -10,7 +10,7 @@ import com.happy.samuelalva.bcykari.ui.activity.base.BaseDetailActivity;
 /**
  * Created by Samuel.Alva on 2015/4/15.
  */
-public class BcyHomeListAdapter extends HomeListAdapter {
+public class BcyHomeListAdapter extends AbsHomeListAdapter {
 
     public BcyHomeListAdapter(Context context, boolean hasAvatar) {
         super(context, hasAvatar);

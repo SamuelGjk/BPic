@@ -6,12 +6,12 @@ import android.view.View;
 import com.happy.samuelalva.bcykari.support.Constants;
 
 /**
- * Created by Samuel.Alva on 2015/4/19.
+ * Created by Administrator on 2015/6/30.
  */
-public class AllArtWorkFragment extends BcyChildFragment {
+public class BcyAllFanartFragment extends BcyAbsChildFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        requestUrl = Constants.ALL_ART_WORK;
+        requestUrl = Constants.ALL_FANART_API_BCY;
         hasAvatar = false;
         super.onViewCreated(view, savedInstanceState);
     }

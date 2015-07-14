@@ -2,7 +2,7 @@ package com.happy.samuelalva.bcykari.ui.activity;
 
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.support.adapter.DetailListAdapter;
+import com.happy.samuelalva.bcykari.support.adapter.AbsDetailListAdapter;
 import com.happy.samuelalva.bcykari.support.adapter.PixivDetailListAdapter;
 import com.happy.samuelalva.bcykari.support.http.PixivHttpClient;
 import com.happy.samuelalva.bcykari.ui.activity.base.BaseDetailActivity;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class PixivDetailActivity extends BaseDetailActivity {
     @Override
-    protected DetailListAdapter getAdapter() {
+    protected AbsDetailListAdapter getAdapter() {
         return new PixivDetailListAdapter(this);
     }
 
@@ -34,8 +34,8 @@ public class PixivDetailActivity extends BaseDetailActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         PixivHttpClient.cancel(this);
+        super.onDestroy();
     }
 
     @Override
@@ -46,12 +46,12 @@ public class PixivDetailActivity extends BaseDetailActivity {
             doRequest(elements.first().attr("href"), new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                    Document cDoc = Jsoup.parse(responseString);
-                    Elements cElements = cDoc.getElementsByAttributeValue("class", "image ui-scroll-view");
+                    Document childDoc = Jsoup.parse(responseString);
+                    Elements cElements = childDoc.getElementsByAttributeValue("class", "image ui-scroll-view");
                     for (Element e : cElements) {
-                        data.add(e.attr("data-src"));
+                        data.add(e.attr("data-src").replace("1200x1200", "240x480"));
                     }
-                    mAdapter.addAll(data);
+                    mAdapter.replaceAll(data);
                 }
 
                 @Override
@@ -60,8 +60,26 @@ public class PixivDetailActivity extends BaseDetailActivity {
                 }
             });
         } else {
-            data.add(model.cover.replace("240x480", "1200x1200"));
-            mAdapter.addAll(data);
+            if (model.cover == null) {
+                model.cover = doc.select("a.medium-image > img").first().attr("src").replace("600x600", "240x480");
+            }
+            data.add(model.cover);
+            mAdapter.replaceAll(data);
         }
+    }
+
+    @Override
+    protected String getAvatar(Document doc) {
+        Element element = doc.select("div.usericon > a").first();
+        if (element != null) {
+            return element.getElementsByTag("img").attr("src");
+        }
+        return null;
+    }
+
+    @Override
+    protected String getTitle(Document doc) {
+        String title = doc.select("h1.title").get(3).text();
+        return title;
     }
 }

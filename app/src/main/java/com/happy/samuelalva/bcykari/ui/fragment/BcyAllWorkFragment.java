@@ -8,10 +8,10 @@ import com.happy.samuelalva.bcykari.support.Constants;
 /**
  * Created by Samuel.Alva on 2015/5/6.
  */
-public class AllWorkFragment extends BcyChildFragment {
+public class BcyAllWorkFragment extends BcyAbsChildFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        requestUrl = Constants.ALL_WORK;
+        requestUrl = Constants.ALL_WORK_API_BCY;
         hasAvatar = false;
         super.onViewCreated(view, savedInstanceState);
     }

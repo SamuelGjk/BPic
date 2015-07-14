@@ -15,7 +15,7 @@ import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
+import com.happy.samuelalva.bcykari.support.adapter.AbsHomeListAdapter;
 import com.happy.samuelalva.bcykari.ui.activity.MainActivity;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -32,7 +32,7 @@ public abstract class ChildBaseFragment extends Fragment {
 
     protected RecyclerView mList;
     protected SwipeRefreshLayout mSwipeRefresh;
-    protected HomeListAdapter mAdapter;
+    protected AbsHomeListAdapter mAdapter;
     protected GridLayoutManager mLayoutManager;
 
     protected boolean isRefresh;
@@ -93,34 +93,32 @@ public abstract class ChildBaseFragment extends Fragment {
 
     protected void doRefresh() {
         mList.smoothScrollToPosition(0);
-        if (ConnectivityReceiver.readNetworkState(parentActivity)) {
-            isRefresh = true;
-            mSwipeRefresh.setRefreshing(true);
-            doRequest(requestUrl, handler);
-        } else {
-            mSwipeRefresh.setRefreshing(false);
-            Utility.showToastForNoNetwork(parentActivity);
-        }
+        isRefresh = true;
+        mSwipeRefresh.setRefreshing(true);
+        doRequest(requestUrl, handler);
     }
 
     protected void doLoad() {
         if (nextPage > totalPage) {
             Toast.makeText(parentActivity, noMoreStr, Toast.LENGTH_SHORT).show();
-        } else if (ConnectivityReceiver.readNetworkState(parentActivity)) {
+        } else {
             isRefresh = false;
             mSwipeRefresh.setRefreshing(true);
             doRequest(requestUrl + nextPage, handler);
-        } else {
-            mSwipeRefresh.setRefreshing(false);
-            Utility.showToastForNoNetwork(parentActivity);
         }
     }
 
     protected abstract List<StatusModel> responseDeal(String response);
 
-    protected abstract HomeListAdapter getAdapter();
+    protected abstract AbsHomeListAdapter getAdapter();
 
-    protected abstract void doRequest(String url, AsyncHttpResponseHandler handler);
+    protected void doRequest(String url, AsyncHttpResponseHandler handler) {
+        if (!ConnectivityReceiver.isConnected) {
+            mSwipeRefresh.setRefreshing(false);
+            Utility.showToastForNoNetwork(parentActivity);
+            return;
+        }
+    }
 
     private TextHttpResponseHandler handler = new TextHttpResponseHandler() {
         @Override

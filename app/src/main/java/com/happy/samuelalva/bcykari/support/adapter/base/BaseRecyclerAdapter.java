@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Samuel.Alva on 2015/6/10.
  */
-public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRecyclerAdapter.ItemViewHolder> {
+public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected Context context;
     protected List<T> data;
 
@@ -27,29 +27,30 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     }
 
     /**
-     * c该方法需要子类实现，需要返回item布局的resource id
+     * 该方法需要子类实现，需要返回item布局的resource id
      *
      * @return
      */
     public abstract int getItemResource();
 
     /**
-     * 使用该getItemView方法替换原来的getView方法，需要子类实现
+     * 使用该doBindViewHolder方法替换原来的getView方法，需要子类实现
      *
      * @param holder
      * @param position
      * @return
      */
-    public abstract void doBindViewHolder(BaseRecyclerAdapter.ItemViewHolder holder, int position);
+    public abstract void doBindViewHolder(ItemViewHolder holder, int position);
 
     @Override
-    public BaseRecyclerAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BaseRecyclerAdapter.ItemViewHolder(View.inflate(context, getItemResource(), null));
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ItemViewHolder(View.inflate(context, getItemResource(), null));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void onBindViewHolder(BaseRecyclerAdapter.ItemViewHolder holder, int position) {
-        doBindViewHolder(holder, position);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        doBindViewHolder((ItemViewHolder) holder, position);
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -61,13 +62,14 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
             this.itemView = itemView;
         }
 
-        public View getView(int resId) {
+        @SuppressWarnings("unchecked")
+        public <T extends View> T getView(int resId) {
             View v = views.get(resId);
             if (null == v) {
                 v = itemView.findViewById(resId);
                 views.put(resId, v);
             }
-            return v;
+            return (T) v;
         }
     }
 

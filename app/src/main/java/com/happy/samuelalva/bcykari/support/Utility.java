@@ -9,7 +9,10 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.happy.samuelalva.bcykari.BPicApplication;
 import com.happy.samuelalva.bcykari.R;
+
+import java.io.File;
 
 /**
  * Created by Samuel.Alva on 2015/5/4.
@@ -40,6 +43,22 @@ public class Utility {
             result = res.getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static File[] getCacheFiles() {
+        File mCacheDir = BPicApplication.getImageCacheDir();
+        return mCacheDir.listFiles();
+    }
+
+    public static boolean cleanCache() {
+        File[] files = getCacheFiles();
+        if (files.length != 0) {
+            for (File file : files) {
+                file.delete();
+            }
+            return true;
+        }
+        return false;
     }
 
     public static String getCacheName(String url) {
@@ -73,7 +92,7 @@ public class Utility {
         return width * height;
     }
 
-    public static Bitmap createImageThumbnail(String path, Context context) {
+    public static Bitmap createPreviewImage(String path, Context context) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, opts);

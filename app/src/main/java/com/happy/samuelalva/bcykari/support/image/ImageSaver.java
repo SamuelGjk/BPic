@@ -2,8 +2,8 @@ package com.happy.samuelalva.bcykari.support.image;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Environment;
 
+import com.happy.samuelalva.bcykari.BPicApplication;
 import com.happy.samuelalva.bcykari.support.Utility;
 
 import java.io.File;
@@ -17,34 +17,36 @@ import java.io.IOException;
 public class ImageSaver {
     private static ImageSaver saver;
     private File mDir;
+    private Context context;
 
-    public static ImageSaver getInstance() {
+    public static ImageSaver getInstance(Context context) {
         if (saver == null) {
-            saver = new ImageSaver();
+            saver = new ImageSaver(context);
         }
         return saver;
     }
 
-    private ImageSaver() {
-        mDir = new File(Environment.getExternalStorageDirectory().getPath() + "/BcyKari");
+    private ImageSaver(Context context) {
+        this.context = context;
+        mDir = BPicApplication.getImageSaveDir();
     }
 
-    public void save(Context context, File file, String name) {
-        new SaveImageTask().execute(new Object[]{context, file, name});
+    public void save(File file, String name) {
+        new SaveImageTask().execute(new Object[]{file, name});
     }
 
-    private class SaveImageTask extends AsyncTask<Object, Void, Object[]> {
+    private class SaveImageTask extends AsyncTask<Object, Void, String> {
 
         @Override
-        protected Object[] doInBackground(Object... params) {
-            File f = new File(mDir, params[2].toString());
+        protected String doInBackground(Object... params) {
+            File f = new File(mDir, params[1].toString());
             if (f.exists()) {
-                return new Object[]{params[0], "图片已存在"};
+                return "图片已存在";
             }
             FileInputStream fis = null;
             FileOutputStream fos = null;
             try {
-                fis = new FileInputStream((File) params[1]);
+                fis = new FileInputStream((File) params[0]);
                 fos = new FileOutputStream(f);
 
                 byte[] buf = new byte[1024];
@@ -68,13 +70,13 @@ public class ImageSaver {
                     e.printStackTrace();
                 }
             }
-            return new Object[]{params[0], "图片已保存到" + mDir.getPath()};
+            return "图片已保存到" + mDir.getPath();
         }
 
         @Override
-        protected void onPostExecute(Object[] objects) {
-            super.onPostExecute(objects);
-            Utility.showToast((Context) objects[0], objects[1].toString());
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Utility.showToast(context, result);
         }
     }
 }

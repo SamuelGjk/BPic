@@ -10,12 +10,15 @@ import com.happy.samuelalva.bcykari.ui.activity.base.BaseImageActivity;
 public class BcyImageActivity extends BaseImageActivity {
     @Override
     protected ImagePagerAdapter getAdapter() {
-        return new ImagePagerAdapter(this, urls, mCacheDir, ImagePagerAdapter.BCY_SOURCE);
+        for (int i = 0; i < urls.size(); i++) {
+            urls.set(i, urls.get(i).replace("/2X3", ""));
+        }
+        return new ImagePagerAdapter(this, urls, ImagePagerAdapter.BCY_SOURCE);
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         BcyHttpClient.cancel(this);
+        super.onDestroy();
     }
 }

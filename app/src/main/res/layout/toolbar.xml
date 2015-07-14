@@ -6,5 +6,5 @@
     android:layout_height="?actionBarSize"
     android:background="?colorPrimary"
     app:layout_scrollFlags="scroll|enterAlways"
-    app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark" />
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />

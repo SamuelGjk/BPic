@@ -1,4 +1,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity"></menu>
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@mipmap/ic_search_white_24dp"
+        android:title="@string/search"
+        android:visible="false"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <group
+        android:id="@+id/menu_group_date_selector"
+        android:visible="false">
+        <item
+            android:id="@+id/menu_the_day_after"
+            android:title="@string/the_day_after" />
+        <item
+            android:id="@+id/menu_the_day_before"
+            android:title="@string/the_day_before" />
+    </group>
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/settings" />
+</menu>

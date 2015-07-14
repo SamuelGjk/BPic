@@ -3,7 +3,7 @@ package com.happy.samuelalva.bcykari.ui.fragment;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.BcyHomeListAdapter;
-import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
+import com.happy.samuelalva.bcykari.support.adapter.AbsHomeListAdapter;
 import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
 import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by Samuel.Alva on 2015/6/7.
  */
-public abstract class BcyChildFragment extends ChildBaseFragment {
+public abstract class BcyAbsChildFragment extends ChildBaseFragment {
     protected boolean hasAvatar;
 
     @Override
@@ -36,7 +36,6 @@ public abstract class BcyChildFragment extends ChildBaseFragment {
         }
 
         int index = 0;
-
         List<StatusModel> data = new ArrayList<>();
         for (Element e : detailUrls) {
             StatusModel model = new StatusModel();
@@ -63,11 +62,12 @@ public abstract class BcyChildFragment extends ChildBaseFragment {
 
     @Override
     protected void doRequest(String url, AsyncHttpResponseHandler handler) {
+        super.doRequest(url, handler);
         BcyHttpClient.get(url, handler);
     }
 
     @Override
-    protected HomeListAdapter getAdapter() {
+    protected AbsHomeListAdapter getAdapter() {
         return new BcyHomeListAdapter(getActivity(), hasAvatar);
     }
 }

@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:src="@mipmap/ic_refresh"
+            android:src="@mipmap/ic_refresh_white_24dp"
             app:fab_colorNormal="@color/primaryColor"
             app:fab_colorPressed="@color/primaryColor"
             app:fab_colorRipple="@color/darkPrimaryColor"
@@ -49,31 +49,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/navigation_header"
+        app:itemIconTint="@color/menu_title_gray"
         app:itemTextColor="@color/navigation_item_text_color_bcy"
-        app:menu="@menu/drawer">
+        app:menu="@menu/drawer" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:orientation="vertical">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#FFCCCCCC" />
-
-            <TextView
-                android:id="@+id/btn_settings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackground"
-                android:gravity="center"
-                android:padding="15dp"
-                android:text="@string/settings"
-                android:textSize="16sp"
-                android:textColor="@color/primaryText" />
-        </LinearLayout>
-
-    </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

@@ -2,7 +2,7 @@ package com.happy.samuelalva.bcykari.ui.activity;
 
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.BcyDetailListAdapter;
-import com.happy.samuelalva.bcykari.support.adapter.DetailListAdapter;
+import com.happy.samuelalva.bcykari.support.adapter.AbsDetailListAdapter;
 import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
 import com.happy.samuelalva.bcykari.ui.activity.base.BaseDetailActivity;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class BcyDetailActivity extends BaseDetailActivity {
     @Override
-    protected DetailListAdapter getAdapter() {
+    protected AbsDetailListAdapter getAdapter() {
         return new BcyDetailListAdapter(this);
     }
 
@@ -30,8 +30,8 @@ public class BcyDetailActivity extends BaseDetailActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         BcyHttpClient.cancel(this);
+        super.onDestroy();
     }
 
     @Override
@@ -39,8 +39,22 @@ public class BcyDetailActivity extends BaseDetailActivity {
         List<String> data = new ArrayList<>();
         Elements elements = doc.getElementsByAttributeValue("class", "detail_std detail_clickable");
         for (Element e : elements) {
-            data.add(e.attr("src").replace("/w650", ""));
+            data.add(e.attr("src").replace("w650", "2X3"));
         }
-        mAdapter.addAll(data);
+        mAdapter.replaceAll(data);
+    }
+
+    @Override
+    protected String getAvatar(Document doc) {
+        String avatar = doc.select("a._avatar > img").first().attr("src");
+        if (avatar.startsWith("/Public"))
+            avatar = Constants.BASE_API_BCY + avatar;
+        return avatar;
+    }
+
+    @Override
+    protected String getTitle(Document doc) {
+        String title = doc.select("h1.js-post-title").first().text();
+        return title;
     }
 }

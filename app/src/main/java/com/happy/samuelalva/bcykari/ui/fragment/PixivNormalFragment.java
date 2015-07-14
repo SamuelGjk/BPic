@@ -7,7 +7,7 @@ import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
+import com.happy.samuelalva.bcykari.support.adapter.AbsHomeListAdapter;
 import com.happy.samuelalva.bcykari.support.adapter.PixivHomeListAdapter;
 import com.happy.samuelalva.bcykari.support.http.PixivHttpClient;
 import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
@@ -82,12 +82,13 @@ public class PixivNormalFragment extends ChildBaseFragment {
     }
 
     @Override
-    protected HomeListAdapter getAdapter() {
+    protected AbsHomeListAdapter getAdapter() {
         return new PixivHomeListAdapter(getActivity(), true);
     }
 
     @Override
     protected void doRequest(String url, AsyncHttpResponseHandler handler) {
+        super.doRequest(url, handler);
         PixivHttpClient.get(parentActivity, url, handler);
     }
 

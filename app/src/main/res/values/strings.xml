@@ -1,5 +1,8 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">BPic</string>
+
+    <string name="bcy">BCY</string>
+    <string name="pixiv">PIXIV</string>
 
     <string name="close">Close</string>
     <string name="illust">Painting</string>
@@ -9,15 +12,24 @@
 
     <string name="separator">&#160;/&#160;</string>
 
+    <string name="cleaning_cache_tip">Cleaning, please wait&#8230;</string>
+
+    <string name="search_pixiv_illust_id">please input pixiv illust id</string>
+
     <!-- settings -->
+    <string name="operation">Operation</string>
     <string name="about">About</string>
     <string name="version">Version</string>
     <string name="license">Open-source license</string>
+    <string name="clean_cache">Clean Cache</string>
+    <string name="cache_size">Cache Size:%sMB</string>
 
     <!-- menu -->
     <string name="the_day_after">the day after</string>
     <string name="the_day_before">the day before</string>
+    <string name="search">Search</string>
 
+    <!-- toast tips -->
     <string name="no_network">Please connect to the Internet</string>
     <string name="load_failed">Failed to load, please try again</string>
     <string name="mobile_data">Using Mobile Data</string>

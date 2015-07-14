@@ -12,15 +12,16 @@ import com.happy.samuelalva.bcykari.support.Utility;
  */
 public class ConnectivityReceiver extends BroadcastReceiver {
     public static boolean isWIFI;
+    public static boolean isConnected;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        readNetworkState(context);
-        if (readNetworkState(context) && !isWIFI)
+        isConnected = readNetworkState(context);
+        if (isConnected && !isWIFI)
             Utility.showToastForMobileData(context);
     }
 
-    public static boolean readNetworkState(Context context) {
+    public boolean readNetworkState(Context context) {
         if (context == null)
             return false;
 
@@ -32,7 +33,6 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 
             return true;
         } else {
-
             return false;
         }
     }

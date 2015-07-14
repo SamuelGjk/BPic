@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:numpb="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_image"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,4 +20,12 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         numpb:max="100" />
+
+    <ImageView
+        android:id="@+id/btn_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        android:src="@mipmap/ic_refresh_white_48dp"
+        android:visibility="gone" />
 </FrameLayout>

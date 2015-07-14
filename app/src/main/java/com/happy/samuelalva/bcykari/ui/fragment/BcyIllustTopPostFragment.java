@@ -9,10 +9,10 @@ import com.happy.samuelalva.bcykari.support.Constants;
 /**
  * Created by Samuel.Alva on 2015/4/17.
  */
-public class IllustTopPostFragment extends BcyChildFragment {
+public class BcyIllustTopPostFragment extends BcyAbsChildFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        requestUrl = Constants.ILLUST_TOP_POST_100;
+        requestUrl = Constants.ILLUST_TOP_POST_100_API_BCY;
         hasAvatar = true;
         super.onViewCreated(view, savedInstanceState);
     }

@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group
-        android:id="@+id/menu_bcy"
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navigation_item_illust"
+            android:enabled="false"
+            android:icon="@mipmap/ic_bcy"
+            android:title="@string/bcy" />
+
+        <item
+            android:id="@+id/navigation_item_bcy_illust"
             android:checked="true"
             android:title="@string/illust" />
+
         <item
-            android:id="@+id/navigation_item_cos"
+            android:id="@+id/navigation_item_bcy_cos"
             android:title="@string/cos" />
-    </group>
-    <group
-        android:id="@+id/menu_pixiv"
-        android:checkableBehavior="single"
-        android:visible="false">
+
         <item
-            android:id="@+id/navigation_item_daily_illust"
-            android:checked="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_pixiv"
+            android:title="@string/pixiv" />
+
+        <item
+            android:id="@+id/navigation_item_pixiv_daily_illust"
             android:title="@string/daily_illust" />
     </group>
 </menu>

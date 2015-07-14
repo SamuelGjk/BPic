@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
-        app:cardCornerRadius="3dp"
+        app:cardCornerRadius="0dp"
         app:cardElevation="2dp">
 
         <ImageView

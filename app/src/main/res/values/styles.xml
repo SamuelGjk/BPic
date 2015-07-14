@@ -1,18 +1,23 @@
 <resources>
 
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Base.Theme.BPic.Light" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.BPic.Light.DarkActionBar" parent="Base.Theme.BPic.Light">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/darkPrimaryColor</item>
     </style>
 
-    <style name="AppBaseTheme.AppTheme" parent="AppBaseTheme" />
-
-    <style name="AppTheme.Translucent" parent="AppBaseTheme.AppTheme">
+    <style name="Theme.BPic.Light.TranslucentActionBar" parent="Base.Theme.BPic.Light">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/darkPrimaryColor</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="ImageActivityIndicatorStyle">
+    <style name="TextIndicatorStyle">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@android:color/white</item>

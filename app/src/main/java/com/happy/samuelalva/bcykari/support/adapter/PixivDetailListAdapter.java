@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by Samuel.Alva on 2015/6/15.
  */
-public class PixivDetailListAdapter extends DetailListAdapter {
+public class PixivDetailListAdapter extends AbsDetailListAdapter {
     public PixivDetailListAdapter(Context context) {
         super(context);
     }
@@ -22,10 +22,5 @@ public class PixivDetailListAdapter extends DetailListAdapter {
         i.putExtra(BaseImageActivity.CUR_PAGE, position);
         i.putStringArrayListExtra(BaseImageActivity.IMG_URLS, new ArrayList<>(data));
         context.startActivity(i);
-    }
-
-    @Override
-    protected String picUrlDeal(String url) {
-        return url.replace("1200x1200", "240x480");
     }
 }

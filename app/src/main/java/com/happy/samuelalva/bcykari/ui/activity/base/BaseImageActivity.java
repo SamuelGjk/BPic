@@ -7,8 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.happy.samuelalva.bcykari.BPicApplication;
 import com.happy.samuelalva.bcykari.R;
-import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.ImagePagerAdapter;
 import com.happy.samuelalva.bcykari.support.image.ImageSaver;
@@ -27,16 +27,14 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
     private TextView curPage;
 
     protected List<String> urls;
-
     protected File mCacheDir;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
 
-        mCacheDir = new File(getExternalCacheDir().getPath() + "/image");
+        mCacheDir = BPicApplication.getImageCacheDir();
 
         curPage = (TextView) findViewById(R.id.cur_page);
         mPager = (ViewPager) findViewById(R.id.imagePager);
@@ -53,14 +51,10 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
         urls = intent.getStringArrayListExtra(IMG_URLS);
         int index = intent.getIntExtra(CUR_PAGE, 0);
 
-        if (ConnectivityReceiver.readNetworkState(this)) {
-            mPager.setAdapter(getAdapter());
-            mPager.setCurrentItem(index);
-            curPage.setText(String.valueOf(index + 1));
-            totalPage.setText(String.valueOf(urls.size()));
-        } else {
-            Utility.showToastForNoNetwork(this);
-        }
+        mPager.setAdapter(getAdapter());
+        mPager.setCurrentItem(index);
+        curPage.setText(String.valueOf(index + 1));
+        totalPage.setText(String.valueOf(urls.size()));
     }
 
     protected abstract ImagePagerAdapter getAdapter();
@@ -87,7 +81,7 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
         if (!file.exists()) {
             Utility.showToast(this, "图片正在加载");
         } else {
-            ImageSaver.getInstance().save(this, file, cacheName);
+            ImageSaver.getInstance(this).save(file, cacheName);
         }
     }
 }
