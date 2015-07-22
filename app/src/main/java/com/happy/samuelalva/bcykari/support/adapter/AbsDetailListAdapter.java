@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerAdapter;
+import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerViewAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 /**
  * Created by Samuel.Alva on 2015/4/15.
  */
-public abstract class AbsDetailListAdapter extends BaseRecyclerAdapter<String> {
+public abstract class AbsDetailListAdapter extends BaseRecyclerViewAdapter<String> {
     private final String TAG = AbsDetailListAdapter.class.getSimpleName();
 
     public AbsDetailListAdapter(Context context) {
@@ -39,7 +39,7 @@ public abstract class AbsDetailListAdapter extends BaseRecyclerAdapter<String> {
                 if (ConnectivityReceiver.isConnected) {
                     doOnClick(position, new ArrayList<>(data));
                 } else {
-                    Utility.showToastForNoNetwork(context);
+                    Utility.showToast(context, context.getString(R.string.no_network));
                 }
             }
         });

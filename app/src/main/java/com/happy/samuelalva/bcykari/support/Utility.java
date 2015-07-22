@@ -9,11 +9,6 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.happy.samuelalva.bcykari.BPicApplication;
-import com.happy.samuelalva.bcykari.R;
-
-import java.io.File;
-
 /**
  * Created by Samuel.Alva on 2015/5/4.
  */
@@ -45,21 +40,6 @@ public class Utility {
         return result;
     }
 
-    public static File[] getCacheFiles() {
-        File mCacheDir = BPicApplication.getImageCacheDir();
-        return mCacheDir.listFiles();
-    }
-
-    public static boolean cleanCache() {
-        File[] files = getCacheFiles();
-        if (files.length != 0) {
-            for (File file : files) {
-                file.delete();
-            }
-            return true;
-        }
-        return false;
-    }
 
     public static String getCacheName(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
@@ -67,18 +47,6 @@ public class Utility {
 
     public static void showToast(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    public static void showToastForNoNetwork(Context context) {
-        Toast.makeText(context, context.getResources().getString(R.string.no_network), Toast.LENGTH_SHORT).show();
-    }
-
-    public static void showToastForLoadFailure(Context context) {
-        Toast.makeText(context, context.getResources().getString(R.string.load_failed), Toast.LENGTH_SHORT).show();
-    }
-
-    public static void showToastForMobileData(Context context) {
-        Toast.makeText(context, context.getResources().getString(R.string.mobile_data), Toast.LENGTH_SHORT).show();
     }
 
     private static int getMaxNumOfPixels(Context context) {

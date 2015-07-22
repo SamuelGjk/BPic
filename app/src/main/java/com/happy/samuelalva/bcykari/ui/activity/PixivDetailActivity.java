@@ -1,5 +1,6 @@
 package com.happy.samuelalva.bcykari.ui.activity;
 
+import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.AbsDetailListAdapter;
@@ -29,6 +30,7 @@ public class PixivDetailActivity extends BaseDetailActivity {
 
     @Override
     protected void doRequest(String url, AsyncHttpResponseHandler handler) {
+        super.doRequest(url, handler);
         PixivHttpClient.get(this, Constants.BASE_API_PIXIV + url, handler);
     }
 
@@ -46,6 +48,7 @@ public class PixivDetailActivity extends BaseDetailActivity {
             doRequest(elements.first().attr("href"), new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    mDialog.dismiss();
                     Document childDoc = Jsoup.parse(responseString);
                     Elements cElements = childDoc.getElementsByAttributeValue("class", "image ui-scroll-view");
                     for (Element e : cElements) {
@@ -56,10 +59,11 @@ public class PixivDetailActivity extends BaseDetailActivity {
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    Utility.showToastForLoadFailure(PixivDetailActivity.this);
+                    Utility.showToast(PixivDetailActivity.this, getString(R.string.load_failed));
                 }
             });
         } else {
+            mDialog.dismiss();
             if (model.cover == null) {
                 model.cover = doc.select("a.medium-image > img").first().attr("src").replace("600x600", "240x480");
             }
@@ -79,7 +83,6 @@ public class PixivDetailActivity extends BaseDetailActivity {
 
     @Override
     protected String getTitle(Document doc) {
-        String title = doc.select("h1.title").get(3).text();
-        return title;
+        return doc.select("h1.title").get(3).text();
     }
 }

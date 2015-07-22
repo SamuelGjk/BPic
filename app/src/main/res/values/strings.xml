@@ -11,10 +11,14 @@
     <string name="settings">Settings</string>
 
     <string name="separator">&#160;/&#160;</string>
-
     <string name="cleaning_cache_tip">Cleaning, please wait&#8230;</string>
-
-    <string name="search_pixiv_illust_id">please input pixiv illust id</string>
+    <string name="search_pixiv_illust_id">Please input pixiv illust ID</string>
+    <string name="re_enter_id">Please re-enter ID</string>
+    <string name="loading">Loading&#8230;</string>
+    <string name="please_wait">please wait&#8230;</string>
+    <string name="this_work_was_deleted">This work was deleted</string>
+    <string name="no_titile">No Title</string>
+    <string name="the_id_does_not_exist">The ID does not exist</string>
 
     <!-- settings -->
     <string name="operation">Operation</string>

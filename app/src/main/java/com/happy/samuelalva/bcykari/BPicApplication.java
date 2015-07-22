@@ -1,10 +1,7 @@
 package com.happy.samuelalva.bcykari;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.os.Environment;
-
-import com.happy.samuelalva.bcykari.support.Utility;
 
 import java.io.File;
 
@@ -39,22 +36,6 @@ public class BPicApplication extends Application {
         mImageSaveDir = new File(Environment.getExternalStorageDirectory().getPath() + "/BPic");
         if (!mImageSaveDir.exists()) {
             mImageSaveDir.mkdirs();
-        }
-
-        new DeleteTask().execute(mImageCacheDir);
-    }
-
-    private class DeleteTask extends AsyncTask<File, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(File... params) {
-            return Utility.cleanCache();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean b) {
-            super.onPostExecute(b);
-            if (b)
-                Utility.showToast(BPicApplication.this, "缓存已清除");
         }
     }
 }

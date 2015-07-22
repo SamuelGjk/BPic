@@ -25,6 +25,7 @@ public class BcyDetailActivity extends BaseDetailActivity {
 
     @Override
     protected void doRequest(String url, AsyncHttpResponseHandler handler) {
+        super.doRequest(url, handler);
         BcyHttpClient.get(this, Constants.BASE_API_BCY + url, handler);
     }
 
@@ -36,6 +37,7 @@ public class BcyDetailActivity extends BaseDetailActivity {
 
     @Override
     protected void updateData(Document doc) {
+        mDialog.dismiss();
         List<String> data = new ArrayList<>();
         Elements elements = doc.getElementsByAttributeValue("class", "detail_std detail_clickable");
         for (Element e : elements) {
@@ -54,7 +56,6 @@ public class BcyDetailActivity extends BaseDetailActivity {
 
     @Override
     protected String getTitle(Document doc) {
-        String title = doc.select("h1.js-post-title").first().text();
-        return title;
+        return doc.select("h1.js-post-title").first().text();
     }
 }

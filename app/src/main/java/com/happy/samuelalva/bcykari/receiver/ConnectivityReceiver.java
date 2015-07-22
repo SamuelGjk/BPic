@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 
+import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.support.Utility;
 
 /**
@@ -18,7 +19,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         isConnected = readNetworkState(context);
         if (isConnected && !isWIFI)
-            Utility.showToastForMobileData(context);
+            Utility.showToast(context, context.getString(R.string.mobile_data));
     }
 
     public boolean readNetworkState(Context context) {

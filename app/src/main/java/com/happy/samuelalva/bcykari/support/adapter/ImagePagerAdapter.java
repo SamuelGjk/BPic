@@ -18,6 +18,7 @@ import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
 import com.happy.samuelalva.bcykari.support.http.PixivHttpClient;
 import com.happy.samuelalva.bcykari.support.image.BitmapCache;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -70,7 +71,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     }
 
     @Override
-    public Object instantiateItem(final ViewGroup container, final int position) {
+    public Object instantiateItem(ViewGroup container, int position) {
         View v = mViews.get(position);
         if (v != null) {
             container.addView(v);
@@ -84,7 +85,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
             layoutImage.setOnClickListener(this);
 
             final View refreshBtn = v.findViewById(R.id.btn_refresh);
-            refreshBtn.setOnClickListener(this);
 
             final SubsamplingScaleImageView iv = (SubsamplingScaleImageView) v.findViewById(R.id.scale_image_view);
             iv.setMaxScale(3.0f);
@@ -95,6 +95,60 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
 
             final String url = urls.get(position);
             final String cacheName = Utility.getCacheName(url);
+            final File tempFile = new File(mCacheDir, cacheName + ".temp");
+            final File file = new File(mCacheDir, cacheName);
+
+            final FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
+                @Override
+                public void onProgress(long bytesWritten, long totalSize) {
+                    super.onProgress(bytesWritten, totalSize);
+                    npb.setProgress((int) (bytesWritten * 100 / totalSize));
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, File tempFile) {
+                    if (tempFile.length() < MIN_FILE_SIZE) {
+                        Utility.showToast(context, "因为各种原因出错了=-=");
+                    } else {
+                        tempFile.renameTo(file);
+                        Bitmap bitmap = Utility.createPreviewImage(file.getPath(), context);
+                        iv.setImage(ImageSource.bitmap(bitmap));
+                        iv.setVisibility(View.VISIBLE);
+                        npb.setVisibility(View.GONE);
+                        bitmapCache.putBitmap(cacheName, bitmap);
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
+                    tempFile.delete();
+                    if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
+                        PixivHttpClient.cancel(context);
+                        for (int i = 0; i < urls.size(); i++) {
+                            urls.set(i, urls.get(i).replace("jpg", "png"));
+                        }
+                        notifyDataSetChanged();
+                    } else {
+                        refreshBtn.setVisibility(View.VISIBLE);
+                        npb.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onCancel() {
+                    super.onCancel();
+                    tempFile.delete();
+                }
+            };
+
+            refreshBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    refreshBtn.setVisibility(View.GONE);
+                    npb.setVisibility(View.VISIBLE);
+                    doRequest(url, handler);
+                }
+            });
 
             Bitmap bitmap = bitmapCache.getBitmap(cacheName);
             if (bitmap != null) {
@@ -103,7 +157,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 iv.setVisibility(View.VISIBLE);
                 npb.setVisibility(View.GONE);
             } else {
-                final File file = new File(mCacheDir, cacheName);
                 if (file.exists()) {
                     npb.setProgress(100);
                     bitmap = Utility.createPreviewImage(file.getPath(), context);
@@ -113,63 +166,28 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                     bitmapCache.putBitmap(cacheName, bitmap);
                 } else {
                     if (ConnectivityReceiver.isConnected) {
-                        final File tempFile = new File(mCacheDir, cacheName + ".temp");
-                        FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
-                            @Override
-                            public void onProgress(long bytesWritten, long totalSize) {
-                                super.onProgress(bytesWritten, totalSize);
-                                npb.setProgress((int) (bytesWritten * 100 / totalSize));
-                            }
 
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, File tempFile) {
-                                if (tempFile.length() < MIN_FILE_SIZE) {
-                                    Utility.showToast(context, "因为各种原因出错了=-=");
-                                } else {
-                                    tempFile.renameTo(file);
-                                    Bitmap bitmap = Utility.createPreviewImage(file.getPath(), context);
-                                    iv.setImage(ImageSource.bitmap(bitmap));
-                                    iv.setVisibility(View.VISIBLE);
-                                    npb.setVisibility(View.GONE);
-                                    bitmapCache.putBitmap(cacheName, bitmap);
-                                }
-                            }
+                        doRequest(url, handler);
 
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
-                                tempFile.delete();
-                                if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
-                                    PixivHttpClient.cancel(context);
-                                    urls.set(position, url.replace("jpg", "png"));
-                                    notifyDataSetChanged();
-                                } else {
-                                    refreshBtn.setVisibility(View.VISIBLE);
-                                    npb.setVisibility(View.GONE);
-                                }
-                            }
-
-                            @Override
-                            public void onCancel() {
-                                super.onCancel();
-                                tempFile.delete();
-                            }
-                        };
-                        switch (dataSource) {
-                            case BCY_SOURCE:
-                                BcyHttpClient.get(context, url, handler);
-                                break;
-                            case PIXIV_SOURCE:
-                                PixivHttpClient.get(context, url, handler);
-                                break;
-                        }
                     } else {
-                        Utility.showToastForNoNetwork(context);
+                        Utility.showToast(context, context.getString(R.string.no_network));
                         refreshBtn.setVisibility(View.VISIBLE);
                         npb.setVisibility(View.GONE);
                     }
                 }
             }
             return v;
+        }
+    }
+
+    private void doRequest(String url, AsyncHttpResponseHandler handler) {
+        switch (dataSource) {
+            case BCY_SOURCE:
+                BcyHttpClient.get(context, url, handler);
+                break;
+            case PIXIV_SOURCE:
+                PixivHttpClient.get(context, url, handler);
+                break;
         }
     }
 
@@ -197,9 +215,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
             case R.id.scale_image_view:
             case R.id.layout_image:
                 ((Activity) context).finish();
-                break;
-            case R.id.btn_refresh:
-                notifyDataSetChanged();
                 break;
         }
     }

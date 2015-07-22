@@ -6,8 +6,12 @@
     <string name="settings">设置</string>
 
     <string name="cleaning_cache_tip">正在清除, 请稍后&#8230;</string>
-
     <string name="search_pixiv_illust_id">请输入P站作品id</string>
+    <string name="re_enter_id">请重新输入ID</string>
+    <string name="loading">正在加载&#8230;</string>
+    <string name="please_wait">请稍后&#8230;</string>
+    <string name="this_work_was_deleted">作品已被删除</string>
+    <string name="the_id_does_not_exist">ID不存在</string>
 
     <!-- settings -->
     <string name="operation">操作</string>

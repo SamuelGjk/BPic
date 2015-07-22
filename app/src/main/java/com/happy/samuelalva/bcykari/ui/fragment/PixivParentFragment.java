@@ -21,13 +21,11 @@ import com.happy.samuelalva.bcykari.ui.fragment.base.ParentBaseFragment;
  * Created by Samuel.Alva on 2015/5/6.
  */
 public class PixivParentFragment extends ParentBaseFragment implements SearchView.OnQueryTextListener {
-    private String searchHint;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        searchHint = getResources().getString(R.string.search_pixiv_illust_id);
         setHasOptionsMenu(true);
     }
 
@@ -43,7 +41,7 @@ public class PixivParentFragment extends ParentBaseFragment implements SearchVie
         menu.setGroupVisible(R.id.menu_group_date_selector, true);
 
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        searchView.setQueryHint(searchHint);
+        searchView.setQueryHint(getString(R.string.search_pixiv_illust_id));
         searchView.setOnQueryTextListener(this);
     }
 

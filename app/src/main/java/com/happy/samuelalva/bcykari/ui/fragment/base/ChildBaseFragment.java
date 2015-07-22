@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
@@ -40,15 +39,6 @@ public abstract class ChildBaseFragment extends Fragment {
     protected double totalPage;
 
     protected MainActivity parentActivity;
-
-    private String noMoreStr;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        noMoreStr = getResources().getString(R.string.no_more);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,7 +78,12 @@ public abstract class ChildBaseFragment extends Fragment {
         });
         mList.setAdapter(mAdapter = getAdapter());
 
-        doRefresh();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doRefresh();
+            }
+        }, 100);
     }
 
     protected void doRefresh() {
@@ -100,7 +95,7 @@ public abstract class ChildBaseFragment extends Fragment {
 
     protected void doLoad() {
         if (nextPage > totalPage) {
-            Toast.makeText(parentActivity, noMoreStr, Toast.LENGTH_SHORT).show();
+            showToast(getString(R.string.no_more));
         } else {
             isRefresh = false;
             mSwipeRefresh.setRefreshing(true);
@@ -108,16 +103,16 @@ public abstract class ChildBaseFragment extends Fragment {
         }
     }
 
-    protected abstract List<StatusModel> responseDeal(String response);
-
-    protected abstract AbsHomeListAdapter getAdapter();
-
     protected void doRequest(String url, AsyncHttpResponseHandler handler) {
         if (!ConnectivityReceiver.isConnected) {
             mSwipeRefresh.setRefreshing(false);
-            Utility.showToastForNoNetwork(parentActivity);
+            showToast(getString(R.string.no_network));
             return;
         }
+    }
+
+    protected void showToast(String msg) {
+        Utility.showToast(parentActivity, msg);
     }
 
     private TextHttpResponseHandler handler = new TextHttpResponseHandler() {
@@ -137,15 +132,19 @@ public abstract class ChildBaseFragment extends Fragment {
                             nextPage++;
                         }
                     }
-                }, 200);
+                }, 100);
             }
         }
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
             mSwipeRefresh.setRefreshing(false);
-            Utility.showToastForLoadFailure(parentActivity);
+            showToast(getString(R.string.load_failed));
         }
     };
+
+    protected abstract List<StatusModel> responseDeal(String response);
+
+    protected abstract AbsHomeListAdapter getAdapter();
 
 }

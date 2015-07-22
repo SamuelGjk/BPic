@@ -12,11 +12,11 @@ import java.util.List;
 /**
  * Created by Samuel.Alva on 2015/6/10.
  */
-public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected Context context;
     protected List<T> data;
 
-    public BaseRecyclerAdapter(Context context) {
+    public BaseRecyclerViewAdapter(Context context) {
         this.context = context;
         this.data = new ArrayList<T>();
     }

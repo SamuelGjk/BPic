@@ -6,7 +6,6 @@ import android.view.View;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.AbsHomeListAdapter;
 import com.happy.samuelalva.bcykari.support.adapter.PixivHomeListAdapter;
 import com.happy.samuelalva.bcykari.support.http.PixivHttpClient;
@@ -32,18 +31,12 @@ public class PixivNormalFragment extends ChildBaseFragment {
     private Calendar curCalendar;
     private String today;
 
-    private String noAfterDayStr, waitStr, rankingNotUpdatedStr;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         sdf = new SimpleDateFormat("yyyyMMdd");
         initCalendar();
-
-        noAfterDayStr = getResources().getString(R.string.no_after_day);
-        waitStr = getResources().getString(R.string.wait_a_minute);
-        rankingNotUpdatedStr = getResources().getString(R.string.ranking_not_updated);
     }
 
     @Override
@@ -73,7 +66,7 @@ public class PixivNormalFragment extends ChildBaseFragment {
             data.add(model);
         }
         if (data.size() == 0) {
-            Utility.showToast(parentActivity, rankingNotUpdatedStr);
+            showToast(getString(R.string.ranking_not_updated));
             mSwipeRefresh.setRefreshing(false);
             dateChange(-1);
             return null;
@@ -103,14 +96,14 @@ public class PixivNormalFragment extends ChildBaseFragment {
     public void dateChange(int i) {
         if (!mSwipeRefresh.isRefreshing()) {
             if (i == 1 && today.equals(sdf.format(curCalendar.getTime()))) {
-                Utility.showToast(parentActivity, noAfterDayStr);
+                showToast(getString(R.string.no_after_day));
             } else {
                 curCalendar.add(Calendar.DATE, i);
                 requestUrl = Constants.getPixivDatlyIllustRankingApi(sdf.format(curCalendar.getTime()));
                 doRefresh();
             }
         } else {
-            Utility.showToast(parentActivity, waitStr);
+            showToast(getString(R.string.wait_a_minute));
         }
     }
 }

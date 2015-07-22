@@ -12,7 +12,7 @@ import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerAdapter;
+import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerViewAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.Random;
@@ -22,7 +22,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Samuel.Alva on 2015/4/15.
  */
-public abstract class AbsHomeListAdapter extends BaseRecyclerAdapter<StatusModel> {
+public abstract class AbsHomeListAdapter extends BaseRecyclerViewAdapter<StatusModel> {
     private final String TAG = AbsHomeListAdapter.class.getSimpleName();
 
     private Random random;
@@ -69,7 +69,7 @@ public abstract class AbsHomeListAdapter extends BaseRecyclerAdapter<StatusModel
                 if (ConnectivityReceiver.isConnected) {
                     doOnClick(data.get(position));
                 } else {
-                    Utility.showToastForNoNetwork(context);
+                    Utility.showToast(context, context.getString(R.string.no_network));
                 }
             }
         });

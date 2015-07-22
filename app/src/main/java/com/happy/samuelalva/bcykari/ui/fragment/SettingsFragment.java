@@ -12,8 +12,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.webkit.WebView;
 
+import com.happy.samuelalva.bcykari.BPicApplication;
 import com.happy.samuelalva.bcykari.R;
-import com.happy.samuelalva.bcykari.support.Utility;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -28,19 +28,15 @@ public class SettingsFragment extends PreferenceFragment {
 
     private Preference mCleanCache;
 
-    private String cacheSummaryStr;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
 
-        cacheSummaryStr = getResources().getString(R.string.cache_size);
-
         mCleanCache = findPreference(CLEAN_CACHE);
         Preference mVersion = findPreference(VERSION);
 
-        mCleanCache.setSummary(String.format(cacheSummaryStr, getCacheFolderSize()));
+        setCacheSizeSummary(getCacheFolderSize());
 
         String version = "Unknown";
         try {
@@ -78,13 +74,33 @@ public class SettingsFragment extends PreferenceFragment {
 
     private String getCacheFolderSize() {
         float size = 0;
-        File[] files = Utility.getCacheFiles();
+        File[] files = getCacheFiles();
         if (files.length != 0) {
             for (File file : files) {
                 size += file.length();
             }
         }
         return new DecimalFormat("0.00").format(size / (1024 * 1024));
+    }
+
+    private void setCacheSizeSummary(String size) {
+        mCleanCache.setSummary(String.format(getString(R.string.cache_size), size));
+    }
+
+    private File[] getCacheFiles() {
+        File mCacheDir = BPicApplication.getImageCacheDir();
+        return mCacheDir.listFiles();
+    }
+
+    private boolean cleanCache() {
+        File[] files = getCacheFiles();
+        if (files.length != 0) {
+            for (File file : files) {
+                file.delete();
+            }
+            return true;
+        }
+        return false;
     }
 
     private class DeleteTask extends AsyncTask<Void, Void, Boolean> {
@@ -95,21 +111,21 @@ public class SettingsFragment extends PreferenceFragment {
             super.onPreExecute();
             dialog = new ProgressDialog(getActivity());
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            dialog.setMessage(getResources().getString(R.string.cleaning_cache_tip));
+            dialog.setMessage(getString(R.string.cleaning_cache_tip));
             dialog.setCancelable(false);
             dialog.show();
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return Utility.cleanCache();
+            return cleanCache();
         }
 
         @Override
         protected void onPostExecute(Boolean b) {
             super.onPostExecute(b);
             dialog.dismiss();
-            mCleanCache.setSummary(String.format(cacheSummaryStr, "0.00"));
+            setCacheSizeSummary("0.00");
         }
     }
 }
