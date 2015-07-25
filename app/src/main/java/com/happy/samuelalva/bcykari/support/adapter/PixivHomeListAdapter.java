@@ -17,7 +17,7 @@ public class PixivHomeListAdapter extends AbsHomeListAdapter {
     }
 
     @Override
-    protected void doOnClick(StatusModel model) {
+    protected void doClick(StatusModel model) {
         Intent i = new Intent(context, PixivDetailActivity.class);
         i.putExtra(BaseDetailActivity.ENTITY, model);
         context.startActivity(i);

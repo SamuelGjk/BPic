@@ -17,7 +17,7 @@ public class BcyDetailListAdapter extends AbsDetailListAdapter {
     }
 
     @Override
-    protected void doOnClick(int position, ArrayList<String> urls) {
+    protected void doClick(int position, ArrayList<String> urls) {
         Intent i = new Intent(context, BcyImageActivity.class);
         i.putExtra(BaseImageActivity.CUR_PAGE, position);
         i.putStringArrayListExtra(BaseImageActivity.IMG_URLS, new ArrayList<>(data));

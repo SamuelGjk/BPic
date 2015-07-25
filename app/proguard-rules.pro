@@ -20,9 +20,13 @@
 
 -keep class com.happy.samuelalva.bcykari.model.** { *; }
 
--keep class org.jsoup.** { *; }
+-keep public class org.jsoup.** {
+    public *;
+}
 
--keep class android.support.design.widget.** { *; }
+-keep public class * extends android.support.design.widget.CoordinatorLayout$Behavior {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
 
 -keep class android.support.v7.widget.SearchView { *; }
 

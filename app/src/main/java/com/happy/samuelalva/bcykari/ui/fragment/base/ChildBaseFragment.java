@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,15 +27,16 @@ import java.util.List;
  * Created by Samuel.Alva on 2015/4/17.
  */
 public abstract class ChildBaseFragment extends Fragment {
-    protected String requestUrl;
 
-    protected RecyclerView mList;
+    private RecyclerView mList;
+    private AbsHomeListAdapter mAdapter;
+    private StaggeredGridLayoutManager mLayoutManager;
     protected SwipeRefreshLayout mSwipeRefresh;
-    protected AbsHomeListAdapter mAdapter;
-    protected GridLayoutManager mLayoutManager;
 
-    protected boolean isRefresh;
-    protected int nextPage = 2;
+    private int[] lastCompleteVisibleItems;
+    private boolean isRefresh;
+    private int nextPage = 2;
+    protected String requestUrl;
     protected double totalPage;
 
     protected MainActivity parentActivity;
@@ -58,7 +59,7 @@ public abstract class ChildBaseFragment extends Fragment {
             }
         });
         mList = (RecyclerView) view.findViewById(R.id.rv_timeline);
-        mList.setLayoutManager(mLayoutManager = new GridLayoutManager(parentActivity, 2));
+        mList.setLayoutManager(mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mList.setHasFixedSize(true);
         mList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -71,19 +72,20 @@ public abstract class ChildBaseFragment extends Fragment {
                     parentActivity.hideFab();
                 }
 
-                if (dy > 0 && !mSwipeRefresh.isRefreshing() && mLayoutManager.findLastCompletelyVisibleItemPosition() >= mAdapter.getItemCount() - 1) {
+                lastCompleteVisibleItems = mLayoutManager.findLastCompletelyVisibleItemPositions(null);
+                if (dy > 0 && !mSwipeRefresh.isRefreshing() && Math.max(lastCompleteVisibleItems[0], lastCompleteVisibleItems[1]) >= mAdapter.getItemCount() - 1) {
                     doLoad();
                 }
             }
         });
         mList.setAdapter(mAdapter = getAdapter());
 
-        new Handler().postDelayed(new Runnable() {
+        mList.post(new Runnable() {
             @Override
             public void run() {
                 doRefresh();
             }
-        }, 100);
+        });
     }
 
     protected void doRefresh() {
@@ -132,7 +134,7 @@ public abstract class ChildBaseFragment extends Fragment {
                             nextPage++;
                         }
                     }
-                }, 100);
+                }, 200);
             }
         }
 

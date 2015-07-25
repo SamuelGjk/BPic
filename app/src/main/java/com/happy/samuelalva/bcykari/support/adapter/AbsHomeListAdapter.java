@@ -1,10 +1,9 @@
 package com.happy.samuelalva.bcykari.support.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,7 +14,7 @@ import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerViewAdapter;
 import com.squareup.picasso.Picasso;
 
-import java.util.Random;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -25,23 +24,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public abstract class AbsHomeListAdapter extends BaseRecyclerViewAdapter<StatusModel> {
     private final String TAG = AbsHomeListAdapter.class.getSimpleName();
 
-    private Random random;
-    private int lastPosition = -1;
     private boolean hasAvatar;
+
+    private SparseArray<Integer> mHeights;
 
     public AbsHomeListAdapter(Context context, boolean hasAvatar) {
         super(context);
-
         this.hasAvatar = hasAvatar;
-        random = new Random();
-    }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-
-        ((ItemViewHolder) holder).getView(R.id.list_item_layout).clearAnimation();
+        mHeights = new SparseArray<>();
     }
 
     @Override
@@ -52,40 +43,46 @@ public abstract class AbsHomeListAdapter extends BaseRecyclerViewAdapter<StatusM
     @Override
     public void doBindViewHolder(ItemViewHolder holder, final int position) {
         View card = holder.getView(R.id.card_view);
-        View itemLayout = holder.getView(R.id.list_item_layout);
         CircleImageView avatar = holder.getView(R.id.avatar);
         ImageView cover = holder.getView(R.id.cover);
         TextView author = holder.getView(R.id.author);
+
+        Integer height = mHeights.get(position);
+        if (height == null) {
+            height = (int) Utility.dp2px(context, (float) (150 + Math.random() * 50));
+            mHeights.put(position, height);
+        }
+        ViewGroup.LayoutParams lp = cover.getLayoutParams();
+        lp.height = height;
+        cover.setLayoutParams(lp);
+
         if (hasAvatar) {
             avatar.setVisibility(View.VISIBLE);
             Picasso.with(context).load(data.get(position).avatar).placeholder(android.R.color.darker_gray).into(avatar);
         }
 
         Picasso.with(context).load(data.get(position).cover).placeholder(android.R.color.darker_gray).into(cover);
-        author.setText(data.get(position).author);
-        card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ConnectivityReceiver.isConnected) {
-                    doOnClick(data.get(position));
-                } else {
-                    Utility.showToast(context, context.getString(R.string.no_network));
-                }
-            }
-        });
 
-        if (position > lastPosition) {
-            Animation animation = AnimationUtils.loadAnimation(context, R.anim.list_item_into);
-            switch (random.nextInt(2)) {
-                case 0:
-                    animation.setDuration(500);
-                    break;
-            }
-            itemLayout.startAnimation(animation);
-            lastPosition = position;
-        }
+        author.setText(data.get(position).author);
+        card.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (ConnectivityReceiver.isConnected) {
+                            doClick(data.get(position));
+                        } else {
+                            Utility.showToast(context, context.getString(R.string.no_network));
+                        }
+                    }
+                }
+        );
     }
 
-    protected abstract void doOnClick(StatusModel model);
+    protected abstract void doClick(StatusModel model);
 
+    @Override
+    public void replaceAll(List<StatusModel> elem) {
+        mHeights.clear();
+        super.replaceAll(elem);
+    }
 }

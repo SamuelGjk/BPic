@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +17,6 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,7 +46,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
     private ImageView mBackdrop;
     private TextView tvAuthor;
 
-    private EditText etPixivId;
+    private AppCompatEditText etPixivId;
     private View mProgressBarLayout;
 
     protected AlertDialog mDialog;
@@ -155,7 +155,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
 
     private void initDialog() {
         View v = View.inflate(this, R.layout.dialog_layout_detail_activity, null);
-        etPixivId = (EditText) v.findViewById(R.id.et_pixiv_id);
+        etPixivId = (AppCompatEditText) v.findViewById(R.id.et_pixiv_id);
         mProgressBarLayout = v.findViewById(R.id.loading_progressbar_layout);
         mDialog = new AlertDialog.Builder(BaseDetailActivity.this).setView(v).setCancelable(false).setPositiveButton(android.R.string.ok, null).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override

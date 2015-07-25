@@ -16,7 +16,7 @@ public abstract class BasePagerAdapter extends FragmentStatePagerAdapter {
 
     public BasePagerAdapter(FragmentManager fm) {
         super(fm);
-        mPages = new SparseArray<Fragment>();
+        mPages = new SparseArray<>();
     }
 
     @Override

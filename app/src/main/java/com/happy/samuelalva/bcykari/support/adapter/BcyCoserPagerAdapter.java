@@ -11,6 +11,8 @@ import com.happy.samuelalva.bcykari.ui.fragment.BcyCoserTopPostFragment;
  * Created by Samuel.Alva on 2015/5/6.
  */
 public class BcyCoserPagerAdapter extends BasePagerAdapter {
+    int[] a = new int[]{1, 2, 0x0052, 0x0053, 0x0054};
+
     public BcyCoserPagerAdapter(FragmentManager fm) {
         super(fm);
         titles = new String[]{"正片", "本周热门"};

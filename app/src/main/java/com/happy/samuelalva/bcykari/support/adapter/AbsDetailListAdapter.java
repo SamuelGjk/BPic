@@ -37,7 +37,7 @@ public abstract class AbsDetailListAdapter extends BaseRecyclerViewAdapter<Strin
             @Override
             public void onClick(View v) {
                 if (ConnectivityReceiver.isConnected) {
-                    doOnClick(position, new ArrayList<>(data));
+                    doClick(position, new ArrayList<>(data));
                 } else {
                     Utility.showToast(context, context.getString(R.string.no_network));
                 }
@@ -45,6 +45,6 @@ public abstract class AbsDetailListAdapter extends BaseRecyclerViewAdapter<Strin
         });
     }
 
-    protected abstract void doOnClick(int position, ArrayList<String> urls);
+    protected abstract void doClick(int position, ArrayList<String> urls);
 
 }

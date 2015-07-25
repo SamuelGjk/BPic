@@ -30,10 +30,12 @@ public abstract class ParentBaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mTabLayout = (TabLayout) View.inflate(getActivity(), R.layout.tabs_layout, null);
         mPager = (ViewPager) view.findViewById(R.id.pager);
+        mTabLayout = (TabLayout) View.inflate(getActivity(), R.layout.tabs_layout, null);
+
         mPager.setOffscreenPageLimit(3);
         mPager.setAdapter(mAdapter = getAdapter());
+
         mTabLayout.setupWithViewPager(mPager);
     }
 

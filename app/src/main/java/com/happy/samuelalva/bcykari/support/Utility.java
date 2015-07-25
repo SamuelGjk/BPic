@@ -14,11 +14,12 @@ import android.widget.Toast;
  */
 public class Utility {
 
-    /*
+
     public static float dp2px(Context context, float dp) {
         return context.getResources().getDisplayMetrics().density * dp + 0.5f;
     }
 
+    /*
     public static int getActionBarHeight(Context context) {
         TypedValue v = new TypedValue();
 

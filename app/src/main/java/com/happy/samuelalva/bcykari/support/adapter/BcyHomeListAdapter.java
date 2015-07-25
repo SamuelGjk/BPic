@@ -17,7 +17,7 @@ public class BcyHomeListAdapter extends AbsHomeListAdapter {
     }
 
     @Override
-    protected void doOnClick(StatusModel model) {
+    protected void doClick(StatusModel model) {
         Intent i = new Intent(context, BcyDetailActivity.class);
         i.putExtra(BaseDetailActivity.ENTITY, model);
         context.startActivity(i);
