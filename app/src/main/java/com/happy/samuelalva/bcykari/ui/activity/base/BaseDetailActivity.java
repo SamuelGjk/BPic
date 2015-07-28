@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
@@ -46,6 +47,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
     private ImageView mBackdrop;
     private TextView tvAuthor;
 
+    private TextInputLayout mTextInputLayout;
     private AppCompatEditText etPixivId;
     private View mProgressBarLayout;
 
@@ -155,8 +157,12 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
 
     private void initDialog() {
         View v = View.inflate(this, R.layout.dialog_layout_detail_activity, null);
+        mTextInputLayout = (TextInputLayout) v.findViewById(R.id.text_input_layout);
         etPixivId = (AppCompatEditText) v.findViewById(R.id.et_pixiv_id);
         mProgressBarLayout = v.findViewById(R.id.loading_progressbar_layout);
+
+        mTextInputLayout.setHint(getString(R.string.re_enter_id));
+
         mDialog = new AlertDialog.Builder(BaseDetailActivity.this).setView(v).setCancelable(false).setPositiveButton(android.R.string.ok, null).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -196,16 +202,19 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
 
     private void showLoadingDialog() {
         mProgressBarLayout.setVisibility(View.VISIBLE);
-        etPixivId.setVisibility(View.GONE);
+        mTextInputLayout.setVisibility(View.GONE);
         mDialog.setTitle(getString(R.string.loading));
-        mDialog.show();
+
+        if (!mDialog.isShowing())
+            mDialog.show();
+
         mDialog.getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(View.GONE);
         mDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setVisibility(View.GONE);
     }
 
     private void showFailureDialog(int strId) {
         mProgressBarLayout.setVisibility(View.GONE);
-        etPixivId.setVisibility(View.VISIBLE);
+        mTextInputLayout.setVisibility(View.VISIBLE);
         mDialog.setTitle(getString(strId));
         mDialog.getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(View.VISIBLE);
         mDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setVisibility(View.VISIBLE);

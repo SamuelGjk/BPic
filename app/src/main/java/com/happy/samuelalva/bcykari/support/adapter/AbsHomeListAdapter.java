@@ -49,8 +49,8 @@ public abstract class AbsHomeListAdapter extends BaseRecyclerViewAdapter<StatusM
 
         Integer height = mHeights.get(position);
         if (height == null) {
-            height = (int) Utility.dp2px(context, (float) (150 + Math.random() * 50));
-            mHeights.put(position, height);
+            height = (int) Utility.dp2px(context, (float) (170 + Math.random() * 50));
+            mHeights.append(position, height);
         }
         ViewGroup.LayoutParams lp = cover.getLayoutParams();
         lp.height = height;

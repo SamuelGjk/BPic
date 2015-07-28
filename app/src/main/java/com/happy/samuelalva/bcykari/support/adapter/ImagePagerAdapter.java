@@ -7,6 +7,8 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -87,6 +89,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
             final View refreshBtn = v.findViewById(R.id.btn_refresh);
 
             final SubsamplingScaleImageView iv = (SubsamplingScaleImageView) v.findViewById(R.id.scale_image_view);
+            final Animation animation = AnimationUtils.loadAnimation(context, R.anim.fade_in);
             iv.setMaxScale(3.0f);
             iv.setDoubleTapZoomScale(2.0f);
             iv.setOnClickListener(this);
@@ -113,6 +116,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                         tempFile.renameTo(file);
                         Bitmap bitmap = Utility.createPreviewImage(file.getPath(), context);
                         iv.setImage(ImageSource.bitmap(bitmap));
+                        iv.startAnimation(animation);
                         iv.setVisibility(View.VISIBLE);
                         npb.setVisibility(View.GONE);
                         bitmapCache.putBitmap(cacheName, bitmap);
@@ -154,6 +158,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
             if (bitmap != null) {
                 npb.setProgress(100);
                 iv.setImage(ImageSource.bitmap(bitmap));
+                iv.startAnimation(animation);
                 iv.setVisibility(View.VISIBLE);
                 npb.setVisibility(View.GONE);
             } else {
@@ -161,6 +166,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                     npb.setProgress(100);
                     bitmap = Utility.createPreviewImage(file.getPath(), context);
                     iv.setImage(ImageSource.bitmap(bitmap));
+                    iv.startAnimation(animation);
                     iv.setVisibility(View.VISIBLE);
                     npb.setVisibility(View.GONE);
                     bitmapCache.putBitmap(cacheName, bitmap);

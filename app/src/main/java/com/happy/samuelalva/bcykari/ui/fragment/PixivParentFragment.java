@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,6 +42,7 @@ public class PixivParentFragment extends ParentBaseFragment implements SearchVie
         menu.setGroupVisible(R.id.menu_group_date_selector, true);
 
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setInputType(InputType.TYPE_CLASS_NUMBER);
         searchView.setQueryHint(getString(R.string.search_pixiv_illust_id));
         searchView.setOnQueryTextListener(this);
     }
