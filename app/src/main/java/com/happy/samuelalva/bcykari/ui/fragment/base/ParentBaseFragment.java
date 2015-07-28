@@ -37,6 +37,10 @@ public abstract class ParentBaseFragment extends Fragment {
         mPager.setAdapter(mAdapter = getAdapter());
 
         mTabLayout.setupWithViewPager(mPager);
+//        if (getActivity() instanceof MainActivity) {
+//            FrameLayout tabContainer = ((MainActivity) getActivity()).getTabContainer();
+//            tabContainer.addView(mTabLayout);
+//        }
     }
 
     protected abstract BasePagerAdapter getAdapter();
@@ -44,6 +48,11 @@ public abstract class ParentBaseFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+
+//        if (mTabLayout != null) {
+//            mTabLayout.setVisibility(hidden ? View.GONE : View.VISIBLE);
+//        }
+
         if (!hidden) {
             if (getActivity() instanceof MainActivity) {
                 FrameLayout tabContainer = ((MainActivity) getActivity()).getTabContainer();
