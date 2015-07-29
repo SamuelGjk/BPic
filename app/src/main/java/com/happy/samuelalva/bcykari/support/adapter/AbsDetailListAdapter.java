@@ -8,7 +8,6 @@ import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerViewAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -31,7 +30,7 @@ public abstract class AbsDetailListAdapter extends BaseRecyclerViewAdapter<Strin
     public void doBindViewHolder(ItemViewHolder holder, final int position) {
         View card = holder.getView(R.id.card_view);
         ImageView iv = holder.getView(R.id.iv_detail);
-        Picasso.with(context).load(data.get(position)).placeholder(android.R.color.darker_gray).into(iv);
+        loadImage(data.get(position), iv);
 
         card.setOnClickListener(new View.OnClickListener() {
             @Override

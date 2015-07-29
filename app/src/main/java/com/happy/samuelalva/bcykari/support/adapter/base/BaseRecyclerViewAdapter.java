@@ -5,6 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,18 +76,12 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
         }
     }
 
+    public void loadImage(String path, ImageView imageView) {
+        Picasso.with(context).load(path).placeholder(android.R.color.darker_gray).into(imageView);
+    }
+
     public void addAll(List<T> elem) {
         data.addAll(elem);
-        notifyDataSetChanged();
-    }
-
-    public void remove(T elem) {
-        data.remove(elem);
-        notifyDataSetChanged();
-    }
-
-    public void remove(int index) {
-        data.remove(index);
         notifyDataSetChanged();
     }
 

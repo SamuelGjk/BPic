@@ -12,7 +12,6 @@ import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerViewAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -58,10 +57,10 @@ public abstract class AbsHomeListAdapter extends BaseRecyclerViewAdapter<StatusM
 
         if (hasAvatar) {
             avatar.setVisibility(View.VISIBLE);
-            Picasso.with(context).load(data.get(position).avatar).placeholder(android.R.color.darker_gray).into(avatar);
+            loadImage(data.get(position).avatar, avatar);
         }
 
-        Picasso.with(context).load(data.get(position).cover).placeholder(android.R.color.darker_gray).into(cover);
+        loadImage(data.get(position).cover, cover);
 
         author.setText(data.get(position).author);
         card.setOnClickListener(
