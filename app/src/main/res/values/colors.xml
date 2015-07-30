@@ -11,6 +11,11 @@
     <color name="refresh_progress_2">@color/accentColor</color>
     <color name="refresh_progress_3">@color/primaryColor</color>
 
+    <color name="rcpb_background">#e4e4e6</color>
+    <color name="rcpb">#009688</color>
+
+    #009688
+
     <color name="image_activity_bg">#9000</color>
 
     <color name="tab_text_color">#CCFFFFFF</color>

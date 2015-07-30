@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.daimajia.numberprogressbar.NumberProgressBar;
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.happy.samuelalva.bcykari.BPicApplication;
@@ -94,7 +94,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
             iv.setDoubleTapZoomScale(2.0f);
             iv.setOnClickListener(this);
 
-            final NumberProgressBar npb = (NumberProgressBar) v.findViewById(R.id.number_progress_bar);
+            final RoundCornerProgressBar mProgressBar = (RoundCornerProgressBar) v.findViewById(R.id.round_corner_progress_bar);
 
             final String url = urls.get(position);
             final String cacheName = Utility.getCacheName(url);
@@ -105,7 +105,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 @Override
                 public void onProgress(long bytesWritten, long totalSize) {
                     super.onProgress(bytesWritten, totalSize);
-                    npb.setProgress((int) (bytesWritten * 100 / totalSize));
+                    mProgressBar.setProgress(bytesWritten * 100 / totalSize);
                 }
 
                 @Override
@@ -118,7 +118,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                         iv.setImage(ImageSource.bitmap(bitmap));
                         iv.startAnimation(animation);
                         iv.setVisibility(View.VISIBLE);
-                        npb.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
                         bitmapCache.putBitmap(cacheName, bitmap);
                     }
                 }
@@ -134,7 +134,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                         notifyDataSetChanged();
                     } else {
                         refreshBtn.setVisibility(View.VISIBLE);
-                        npb.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
                     }
                 }
 
@@ -149,26 +149,24 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 @Override
                 public void onClick(View v) {
                     refreshBtn.setVisibility(View.GONE);
-                    npb.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
                     doRequest(url, handler);
                 }
             });
 
             Bitmap bitmap = bitmapCache.getBitmap(cacheName);
             if (bitmap != null) {
-                npb.setProgress(100);
                 iv.setImage(ImageSource.bitmap(bitmap));
                 iv.startAnimation(animation);
                 iv.setVisibility(View.VISIBLE);
-                npb.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
             } else {
                 if (file.exists()) {
-                    npb.setProgress(100);
                     bitmap = Utility.createPreviewImage(file.getPath(), context);
                     iv.setImage(ImageSource.bitmap(bitmap));
                     iv.startAnimation(animation);
                     iv.setVisibility(View.VISIBLE);
-                    npb.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
                     bitmapCache.putBitmap(cacheName, bitmap);
                 } else {
                     if (ConnectivityReceiver.isConnected) {
@@ -178,7 +176,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                     } else {
                         Utility.showToast(context, context.getString(R.string.no_network));
                         refreshBtn.setVisibility(View.VISIBLE);
-                        npb.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
                     }
                 }
             }
