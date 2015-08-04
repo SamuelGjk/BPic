@@ -105,7 +105,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 @Override
                 public void onProgress(long bytesWritten, long totalSize) {
                     super.onProgress(bytesWritten, totalSize);
-                    mProgressBar.setProgress(bytesWritten * 100 / totalSize);
+                    mProgressBar.setProgress((float) (bytesWritten * 100 / totalSize));
                 }
 
                 @Override
@@ -149,6 +149,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 @Override
                 public void onClick(View v) {
                     refreshBtn.setVisibility(View.GONE);
+                    mProgressBar.setProgress(0.0f);
                     mProgressBar.setVisibility(View.VISIBLE);
                     doRequest(url, handler);
                 }

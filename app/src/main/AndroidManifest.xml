@@ -41,18 +41,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activity.BcyImageActivity"
-            android:theme="@style/Theme.BPic.Light.TranslucentActionBar">
+        <activity android:name=".ui.activity.BcyImageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activity.PixivImageActivity"
-            android:theme="@style/Theme.BPic.Light.TranslucentActionBar">
+        <activity android:name=".ui.activity.PixivImageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
