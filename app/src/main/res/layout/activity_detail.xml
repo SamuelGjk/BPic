@@ -55,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/translucent"
                 android:fitsSystemWindows="true"
+                android:visibility="gone"
                 app:layout_collapseMode="pin" />
 
             <android.support.v7.widget.Toolbar
@@ -67,23 +68,35 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
+    <ProgressBar
+        android:id="@+id/loading_progress_bar"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab"
+    <LinearLayout
+        android:id="@+id/load_failure_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@mipmap/ic_refresh_white_24dp"
-        android:visibility="gone"
-        app:fab_colorNormal="@color/primaryColor"
-        app:fab_colorPressed="@color/primaryColor"
-        app:fab_colorRipple="@color/darkPrimaryColor"
-        app:layout_anchor="@id/rv_detail"
-        app:layout_anchorGravity="bottom|right" />
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/load_failure" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/click_on_reload" />
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

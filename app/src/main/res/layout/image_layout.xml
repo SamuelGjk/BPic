@@ -22,6 +22,7 @@
         app:rcBackgroundColor="@color/rcpb_background"
         app:rcBackgroundPadding="3dp"
         app:rcMax="100"
+        app:rcProgress="0"
         app:rcProgressColor="@color/rcpb" />
 
     <ImageView

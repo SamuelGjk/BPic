@@ -19,6 +19,7 @@
     <string name="this_work_was_deleted">This work was deleted</string>
     <string name="no_titile">No Title</string>
     <string name="the_id_does_not_exist">The ID does not exist</string>
+    <string name="click_on_reload">Failed to load, please click on reload</string>
 
     <!-- settings -->
     <string name="operation">Operation</string>

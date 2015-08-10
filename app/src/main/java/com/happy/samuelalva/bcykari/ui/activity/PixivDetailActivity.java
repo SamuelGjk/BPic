@@ -1,5 +1,7 @@
 package com.happy.samuelalva.bcykari.ui.activity;
 
+import android.view.View;
+
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.Utility;
@@ -30,7 +32,6 @@ public class PixivDetailActivity extends BaseDetailActivity {
 
     @Override
     protected void doRequest(String url, AsyncHttpResponseHandler handler) {
-        super.doRequest(url, handler);
         PixivHttpClient.get(this, Constants.BASE_API_PIXIV + url, handler);
     }
 
@@ -48,7 +49,7 @@ public class PixivDetailActivity extends BaseDetailActivity {
             doRequest(elements.first().attr("href"), new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                    mDialog.dismiss();
+                    mLoadingProgressBar.setVisibility(View.GONE);
                     Document childDoc = Jsoup.parse(responseString);
                     Elements cElements = childDoc.getElementsByAttributeValue("class", "image ui-scroll-view");
                     for (Element e : cElements) {
@@ -59,11 +60,11 @@ public class PixivDetailActivity extends BaseDetailActivity {
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    Utility.showToast(PixivDetailActivity.this, getString(R.string.load_failed));
+                    mLoadFailureView.setVisibility(View.VISIBLE);
                 }
             });
         } else {
-            mDialog.dismiss();
+            mLoadingProgressBar.setVisibility(View.GONE);
             if (model.cover == null) {
                 model.cover = doc.select("a.medium-image > img").first().attr("src").replace("600x600", "240x480");
             }

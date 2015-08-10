@@ -12,6 +12,7 @@
     <string name="please_wait">请稍后&#8230;</string>
     <string name="this_work_was_deleted">作品已被删除</string>
     <string name="the_id_does_not_exist">ID不存在</string>
+    <string name="click_on_reload">加载失败，请点击重新加载</string>
 
     <!-- settings -->
     <string name="operation">操作</string>

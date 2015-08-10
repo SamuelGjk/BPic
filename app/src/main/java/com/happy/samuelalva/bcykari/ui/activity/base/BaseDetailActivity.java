@@ -47,12 +47,8 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
     private ImageView mBackdrop;
     private TextView tvAuthor;
 
-    private TextInputLayout mTextInputLayout;
-    private AppCompatEditText etPixivId;
-    private View mProgressBarLayout;
-
-    protected AlertDialog mDialog;
-    protected FloatingActionButton mFAB;
+    protected AlertDialog mFailureDialog;
+    protected View mLoadingProgressBar, mLoadFailureView;
 
     protected AbsDetailListAdapter mAdapter;
     protected StatusModel model;
@@ -65,34 +61,33 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        initDialog();
-
-        View mStatusBarTintView = findViewById(R.id.status_bar_tint_view);
-        if (Build.VERSION.SDK_INT < 20) {
-            mStatusBarTintView.setVisibility(View.GONE);
+        if (Build.VERSION.SDK_INT > 19) {
+            View mStatusBarTintView = findViewById(R.id.status_bar_tint_view);
+            ViewGroup.LayoutParams p = mStatusBarTintView.getLayoutParams();
+            p.height = Utility.getStatusBarHeight(this);
+            mStatusBarTintView.setLayoutParams(p);
+            mStatusBarTintView.setVisibility(View.VISIBLE);
         }
-        ViewGroup.LayoutParams p = mStatusBarTintView.getLayoutParams();
-        p.height = Utility.getStatusBarHeight(this);
-        mStatusBarTintView.setLayoutParams(p);
 
         Intent intent = getIntent();
         model = intent.getParcelableExtra(ENTITY);
 
+        mLoadingProgressBar = findViewById(R.id.loading_progress_bar);
         mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         mBackdrop = (ImageView) findViewById(R.id.iv_backdrop);
         tvAuthor = (TextView) findViewById(R.id.tv_author);
+        mLoadFailureView = findViewById(R.id.load_failure_view);
 
-        mFAB = (FloatingActionButton) findViewById(R.id.fab);
-        mFAB.hide();
-        mFAB.setOnClickListener(this);
+        mLoadFailureView.setOnClickListener(this);
 
         RecyclerView mList = (RecyclerView) findViewById(R.id.rv_detail);
         mList.setLayoutManager(new GridLayoutManager(this, 2));
         mList.setHasFixedSize(true);
         mList.setAdapter(mAdapter = getAdapter());
 
-        doRequest(model.detail, handler);
+        initIdErrorDialog();
 
+        doRequest(model.detail, handler);
     }
 
     @Override
@@ -111,7 +106,8 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
                 if (getAvatar(doc) != null) {
                     model.avatar = getAvatar(doc);
                 } else {
-                    showFailureDialog(R.string.this_work_was_deleted);
+                    mFailureDialog.setTitle(R.string.this_work_was_deleted);
+                    mFailureDialog.show();
                     return;
                 }
             }
@@ -139,46 +135,44 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
             }).into(mBackdrop);
 
             updateData(doc);
-            mFAB.hide();
         }
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
             if (model.author == null) {
-                showFailureDialog(R.string.the_id_does_not_exist);
+                mFailureDialog.setTitle(R.string.the_id_does_not_exist);
+                mFailureDialog.show();
             } else {
-                mDialog.dismiss();
-                Utility.showToast(BaseDetailActivity.this, getString(R.string.load_failed));
-                mFAB.setVisibility(View.VISIBLE);
-                mFAB.show();
+                mLoadingProgressBar.setVisibility(View.GONE);
+                mLoadFailureView.setVisibility(View.VISIBLE);
             }
         }
     };
 
-    private void initDialog() {
+    private void initIdErrorDialog() {
         View v = View.inflate(this, R.layout.dialog_layout_detail_activity, null);
-        mTextInputLayout = (TextInputLayout) v.findViewById(R.id.text_input_layout);
-        etPixivId = (AppCompatEditText) v.findViewById(R.id.et_pixiv_id);
-        mProgressBarLayout = v.findViewById(R.id.loading_progressbar_layout);
+        TextInputLayout mTextInputLayout = (TextInputLayout) v.findViewById(R.id.text_input_layout);
+        final AppCompatEditText etPixivId = (AppCompatEditText) v.findViewById(R.id.et_pixiv_id);
 
         mTextInputLayout.setHint(getString(R.string.re_enter_id));
 
-        mDialog = new AlertDialog.Builder(BaseDetailActivity.this).setView(v).setCancelable(false).setPositiveButton(android.R.string.ok, null).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+        mFailureDialog = new AlertDialog.Builder(this).setView(v).setCancelable(false).setPositiveButton(android.R.string.ok, null).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
             }
         }).create();
 
-        mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+        mFailureDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
+                etPixivId.setText(null);
                 ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-
                     @Override
                     public void onClick(View view) {
                         String new_id = etPixivId.getText().toString();
                         if (!TextUtils.isEmpty(new_id)) {
+                            mFailureDialog.dismiss();
                             doRequest(Constants.MEMBER_ILLUST_API_PIXIV + new_id, handler);
                         }
                     }
@@ -186,12 +180,12 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
             }
         });
 
-        mDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+        mFailureDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     finish();
-                    mDialog.dismiss();
+                    mFailureDialog.dismiss();
                     return true;
                 } else {
                     return false;
@@ -200,34 +194,14 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
         });
     }
 
-    private void showLoadingDialog() {
-        mProgressBarLayout.setVisibility(View.VISIBLE);
-        mTextInputLayout.setVisibility(View.GONE);
-        mDialog.setTitle(getString(R.string.loading));
-
-        if (!mDialog.isShowing())
-            mDialog.show();
-
-        mDialog.getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(View.GONE);
-        mDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setVisibility(View.GONE);
-    }
-
-    private void showFailureDialog(int strId) {
-        mProgressBarLayout.setVisibility(View.GONE);
-        mTextInputLayout.setVisibility(View.VISIBLE);
-        mDialog.setTitle(getString(strId));
-        mDialog.getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(View.VISIBLE);
-        mDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setVisibility(View.VISIBLE);
-    }
-
     @Override
     public void onClick(View v) {
+        mLoadFailureView.setVisibility(View.GONE);
+        mLoadingProgressBar.setVisibility(View.VISIBLE);
         doRequest(model.detail, handler);
     }
 
-    protected void doRequest(String url, AsyncHttpResponseHandler handler) {
-        showLoadingDialog();
-    }
+    protected abstract void doRequest(String url, AsyncHttpResponseHandler handler);
 
     protected abstract AbsDetailListAdapter getAdapter();
 
