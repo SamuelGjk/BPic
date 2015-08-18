@@ -21,7 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            getWindow().setStatusBarColor(getResources().getColor(R.color.darkPrimaryColor));
+            getWindow().setStatusBarColor(getColor(R.color.darkPrimaryColor));
 
         getFragmentManager().beginTransaction().replace(R.id.settings, new SettingsFragment()).commit();
     }
