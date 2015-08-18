@@ -1,5 +1,6 @@
 package com.happy.samuelalva.bcykari.ui.fragment.base;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -15,7 +16,6 @@ import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.AbsHomeListAdapter;
-import com.happy.samuelalva.bcykari.ui.activity.MainActivity;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
 
@@ -39,7 +39,7 @@ public abstract class ChildBaseFragment extends Fragment {
     protected String requestUrl;
     protected double totalPage;
 
-    protected MainActivity parentActivity;
+    protected Activity parentActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public abstract class ChildBaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        parentActivity = (MainActivity) getActivity();
+        parentActivity = getActivity();
         mSwipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefresh.setColorSchemeResources(R.color.refresh_progress_1, R.color.refresh_progress_2, R.color.refresh_progress_3);
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -65,12 +65,6 @@ public abstract class ChildBaseFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
-                if (dy < 0) {
-                    parentActivity.showFab();
-                } else {
-                    parentActivity.hideFab();
-                }
 
                 lastCompleteVisibleItems = mLayoutManager.findLastCompletelyVisibleItemPositions(null);
                 if (dy > 0 && !mSwipeRefresh.isRefreshing() && Math.max(lastCompleteVisibleItems[0], lastCompleteVisibleItems[1]) >= mAdapter.getItemCount() - 1) {

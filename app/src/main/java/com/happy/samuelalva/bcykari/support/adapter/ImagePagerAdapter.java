@@ -3,6 +3,8 @@ package com.happy.samuelalva.bcykari.support.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,62 +100,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
 
             final String url = urls.get(position);
             final String cacheName = Utility.getCacheName(url);
-            final File tempFile = new File(mCacheDir, cacheName + ".temp");
-            final File file = new File(mCacheDir, cacheName);
-
-            final FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
-                @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    super.onProgress(bytesWritten, totalSize);
-                    mProgressBar.setProgress((float) (bytesWritten * 100 / totalSize));
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, File tempFile) {
-                    if (tempFile.length() < MIN_FILE_SIZE) {
-                        Utility.showToast(context, "因为各种原因出错了=-=");
-                    } else {
-                        tempFile.renameTo(file);
-                        Bitmap bitmap = Utility.createPreviewImage(file.getPath(), context);
-                        iv.setImage(ImageSource.bitmap(bitmap));
-                        iv.startAnimation(animation);
-                        iv.setVisibility(View.VISIBLE);
-                        mProgressBar.setVisibility(View.GONE);
-                        bitmapCache.putBitmap(cacheName, bitmap);
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
-                    tempFile.delete();
-                    if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
-                        PixivHttpClient.cancel(context);
-                        for (int i = 0; i < urls.size(); i++) {
-                            urls.set(i, urls.get(i).replace("jpg", "png"));
-                        }
-                        notifyDataSetChanged();
-                    } else {
-                        refreshBtn.setVisibility(View.VISIBLE);
-                        mProgressBar.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onCancel() {
-                    super.onCancel();
-                    tempFile.delete();
-                }
-            };
-
-            refreshBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    refreshBtn.setVisibility(View.GONE);
-                    mProgressBar.setProgress(0.0f);
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    doRequest(url, handler);
-                }
-            });
 
             Bitmap bitmap = bitmapCache.getBitmap(cacheName);
             if (bitmap != null) {
@@ -162,6 +108,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 iv.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
             } else {
+                final File file = new File(mCacheDir, cacheName);
                 if (file.exists()) {
                     bitmap = Utility.createPreviewImage(file.getPath(), context);
                     iv.setImage(ImageSource.bitmap(bitmap));
@@ -170,10 +117,63 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                     mProgressBar.setVisibility(View.GONE);
                     bitmapCache.putBitmap(cacheName, bitmap);
                 } else {
+                    final File tempFile = new File(mCacheDir, cacheName + ".temp");
+                    final FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
+                        @Override
+                        public void onProgress(long bytesWritten, long totalSize) {
+                            super.onProgress(bytesWritten, totalSize);
+                            mProgressBar.setProgress((float) (bytesWritten * 100 / totalSize));
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, File tempFile) {
+                            if (tempFile.length() < MIN_FILE_SIZE) {
+                                Utility.showToast(context, "因为各种原因出错了=-=");
+                            } else {
+                                tempFile.renameTo(file);
+                                Bitmap bitmap = Utility.createPreviewImage(file.getPath(), context);
+                                iv.setImage(ImageSource.bitmap(bitmap));
+                                iv.startAnimation(animation);
+                                iv.setVisibility(View.VISIBLE);
+                                mProgressBar.setVisibility(View.GONE);
+                                bitmapCache.putBitmap(cacheName, bitmap);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
+                            tempFile.delete();
+                            if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
+                                PixivHttpClient.cancel(context);
+                                for (int i = 0; i < urls.size(); i++) {
+                                    urls.set(i, urls.get(i).replace("jpg", "png"));
+                                }
+                                notifyDataSetChanged();
+                            } else {
+                                refreshBtn.setVisibility(View.VISIBLE);
+                                mProgressBar.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            super.onCancel();
+                            tempFile.delete();
+                        }
+                    };
+
+                    refreshBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            refreshBtn.setVisibility(View.GONE);
+                            mProgressBar.setProgress(0.0f);
+                            mProgressBar.setVisibility(View.VISIBLE);
+                            doRequest(url, handler);
+                        }
+                    });
+
                     if (ConnectivityReceiver.isConnected) {
-
                         doRequest(url, handler);
-
                     } else {
                         Utility.showToast(context, context.getString(R.string.no_network));
                         refreshBtn.setVisibility(View.VISIBLE);
@@ -216,11 +216,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.scale_image_view:
-            case R.id.layout_image:
-                ((Activity) context).finish();
-                break;
-        }
+        ((Activity) context).finish();
     }
 }

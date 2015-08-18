@@ -64,9 +64,15 @@ public class PixivDetailActivity extends BaseDetailActivity {
                 }
             });
         } else {
-            mLoadingProgressBar.setVisibility(View.GONE);
             if (model.cover == null) {
-                model.cover = doc.select("a.medium-image > img").first().attr("src").replace("600x600", "240x480");
+                Element e = doc.select("a.medium-image > img").first();
+                if (e == null) {
+                    mFailureDialog.setTitle(R.string.r18_is_prohibited);
+                    mFailureDialog.show();
+                    return;
+                }
+                mLoadingProgressBar.setVisibility(View.GONE);
+                model.cover = e.attr("src").replace("600x600", "240x480");
             }
             data.add(model.cover);
             mAdapter.replaceAll(data);

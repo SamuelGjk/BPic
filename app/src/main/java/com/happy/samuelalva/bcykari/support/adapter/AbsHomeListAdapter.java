@@ -2,6 +2,7 @@ package com.happy.samuelalva.bcykari.support.adapter;
 
 import android.content.Context;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -48,7 +49,7 @@ public abstract class AbsHomeListAdapter extends BaseRecyclerViewAdapter<StatusM
 
         Integer height = mHeights.get(position);
         if (height == null) {
-            height = (int) Utility.dp2px(context, (float) (170 + Math.random() * 50));
+            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) (170 + Math.random() * 50), context.getResources().getDisplayMetrics());
             mHeights.append(position, height);
         }
         ViewGroup.LayoutParams lp = cover.getLayoutParams();

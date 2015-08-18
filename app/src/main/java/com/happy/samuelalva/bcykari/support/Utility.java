@@ -14,23 +14,6 @@ import android.widget.Toast;
  */
 public class Utility {
 
-
-    public static float dp2px(Context context, float dp) {
-        return context.getResources().getDisplayMetrics().density * dp + 0.5f;
-    }
-
-    /*
-    public static int getActionBarHeight(Context context) {
-        TypedValue v = new TypedValue();
-
-        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, v, true)) {
-            return TypedValue.complexToDimensionPixelSize(v.data, context.getResources().getDisplayMetrics());
-        } else {
-            return 0;
-        }
-    }
-    */
-
     public static int getStatusBarHeight(Context context) {
         Resources res = context.getResources();
         int result = 0;
@@ -40,7 +23,6 @@ public class Utility {
         }
         return result;
     }
-
 
     public static String getCacheName(String url) {
         return url.substring(url.lastIndexOf("/") + 1);

@@ -13,6 +13,7 @@
     <string name="this_work_was_deleted">作品已被删除</string>
     <string name="the_id_does_not_exist">ID不存在</string>
     <string name="click_on_reload">加载失败，请点击重新加载</string>
+    <string name="r18_is_prohibited">R18是被禁止的</string>
 
     <!-- settings -->
     <string name="operation">操作</string>
@@ -20,7 +21,7 @@
     <string name="version">版本</string>
     <string name="license">开源协议</string>
     <string name="clean_cache">清除缓存</string>
-    <string name="cache_size">缓存大小:%sMB</string>
+    <string name="cache_size">缓存大小:</string>
 
     <!-- menu -->
     <string name="the_day_after">后一天</string>

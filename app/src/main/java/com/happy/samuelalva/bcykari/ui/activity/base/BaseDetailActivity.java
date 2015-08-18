@@ -17,19 +17,16 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.AbsDetailListAdapter;
 import com.happy.samuelalva.bcykari.support.image.FastBlur;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.melnykov.fab.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -63,9 +60,6 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
 
         if (Build.VERSION.SDK_INT > 19) {
             View mStatusBarTintView = findViewById(R.id.status_bar_tint_view);
-            ViewGroup.LayoutParams p = mStatusBarTintView.getLayoutParams();
-            p.height = Utility.getStatusBarHeight(this);
-            mStatusBarTintView.setLayoutParams(p);
             mStatusBarTintView.setVisibility(View.VISIBLE);
         }
 
@@ -102,6 +96,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
         @Override
         public void onSuccess(int statusCode, Header[] headers, String responseString) {
             Document doc = Jsoup.parse(responseString);
+            
             if (model.avatar == null) {
                 if (getAvatar(doc) != null) {
                     model.avatar = getAvatar(doc);
@@ -173,6 +168,8 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
                         String new_id = etPixivId.getText().toString();
                         if (!TextUtils.isEmpty(new_id)) {
                             mFailureDialog.dismiss();
+                            model.avatar = null;
+                            model.author = null;
                             doRequest(Constants.MEMBER_ILLUST_API_PIXIV + new_id, handler);
                         }
                     }

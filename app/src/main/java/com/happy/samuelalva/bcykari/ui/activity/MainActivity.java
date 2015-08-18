@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,7 +28,6 @@ import com.happy.samuelalva.bcykari.ui.fragment.BcyCoserParentFragment;
 import com.happy.samuelalva.bcykari.ui.fragment.BcyIllustParentFragment;
 import com.happy.samuelalva.bcykari.ui.fragment.PixivParentFragment;
 import com.happy.samuelalva.bcykari.ui.fragment.base.ParentBaseFragment;
-import com.melnykov.fab.FloatingActionButton;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
@@ -146,14 +146,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         headerChange(isBcy);
         curFragment = index;
         mDrawerLayout.closeDrawer(GravityCompat.START);
-    }
-
-    public void showFab() {
-        mFab.show();
-    }
-
-    public void hideFab() {
-        mFab.hide();
     }
 
     @Override
