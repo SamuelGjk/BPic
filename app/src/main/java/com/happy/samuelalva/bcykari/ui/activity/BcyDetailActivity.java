@@ -1,5 +1,7 @@
 package com.happy.samuelalva.bcykari.ui.activity;
 
+import android.view.View;
+
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.BcyDetailListAdapter;
 import com.happy.samuelalva.bcykari.support.adapter.AbsDetailListAdapter;
@@ -25,19 +27,18 @@ public class BcyDetailActivity extends BaseDetailActivity {
 
     @Override
     protected void doRequest(String url, AsyncHttpResponseHandler handler) {
-        super.doRequest(url, handler);
         BcyHttpClient.get(this, Constants.BASE_API_BCY + url, handler);
     }
 
-    @Override
-    protected void onDestroy() {
-        BcyHttpClient.cancel(this);
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        BcyHttpClient.cancel(this);
+//        super.onDestroy();
+//    }
 
     @Override
     protected void updateData(Document doc) {
-        mDialog.dismiss();
+        mLoadingProgressBar.setVisibility(View.GONE);
         List<String> data = new ArrayList<>();
         Elements elements = doc.getElementsByAttributeValue("class", "detail_std detail_clickable");
         for (Element e : elements) {

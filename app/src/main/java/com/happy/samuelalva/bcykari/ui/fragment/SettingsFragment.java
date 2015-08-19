@@ -10,6 +10,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.text.format.Formatter;
+import android.util.Log;
 import android.webkit.WebView;
 
 import com.happy.samuelalva.bcykari.BPicApplication;
@@ -73,18 +75,18 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private String getCacheFolderSize() {
-        float size = 0;
+        long size = 0;
         File[] files = getCacheFiles();
         if (files.length != 0) {
             for (File file : files) {
                 size += file.length();
             }
         }
-        return new DecimalFormat("0.00").format(size / (1024 * 1024));
+        return Formatter.formatFileSize(getActivity(), size);
     }
 
     private void setCacheSizeSummary(String size) {
-        mCleanCache.setSummary(String.format(getString(R.string.cache_size), size));
+        mCleanCache.setSummary(getString(R.string.cache_size) + size);
     }
 
     private File[] getCacheFiles() {
@@ -92,19 +94,17 @@ public class SettingsFragment extends PreferenceFragment {
         return mCacheDir.listFiles();
     }
 
-    private boolean cleanCache() {
-        File[] files = getCacheFiles();
-        if (files.length != 0) {
-            for (File file : files) {
-                file.delete();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private class DeleteTask extends AsyncTask<Void, Void, Boolean> {
+    private class DeleteTask extends AsyncTask<Void, Void, Void> {
         ProgressDialog dialog = null;
+
+        private void cleanCache() {
+            File[] files = getCacheFiles();
+            if (files.length != 0) {
+                for (File file : files) {
+                    file.delete();
+                }
+            }
+        }
 
         @Override
         protected void onPreExecute() {
@@ -117,13 +117,14 @@ public class SettingsFragment extends PreferenceFragment {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            return cleanCache();
+        protected Void doInBackground(Void... params) {
+            cleanCache();
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Boolean b) {
-            super.onPostExecute(b);
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
             dialog.dismiss();
             setCacheSizeSummary("0.00");
         }

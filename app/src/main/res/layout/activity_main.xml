@@ -30,17 +30,16 @@
                 android:background="?colorPrimary" />
         </android.support.design.widget.AppBarLayout>
 
-        <com.melnykov.fab.FloatingActionButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/fab_margin"
             android:src="@mipmap/ic_refresh_white_24dp"
-            app:fab_colorNormal="@color/primaryColor"
-            app:fab_colorPressed="@color/primaryColor"
-            app:fab_colorRipple="@color/darkPrimaryColor"
             app:layout_anchor="@id/content_frame"
-            app:layout_anchorGravity="bottom|right" />
+            app:backgroundTint="?colorPrimary"
+            app:layout_anchorGravity="right|bottom"
+            app:layout_behavior="com.happy.samuelalva.bcykari.widget.ScrollAwareFABBehavior"/>
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView

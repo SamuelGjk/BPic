@@ -2,6 +2,7 @@ package com.happy.samuelalva.bcykari.support.adapter;
 
 import android.content.Context;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,7 +13,6 @@ import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.base.BaseRecyclerViewAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -49,8 +49,8 @@ public abstract class AbsHomeListAdapter extends BaseRecyclerViewAdapter<StatusM
 
         Integer height = mHeights.get(position);
         if (height == null) {
-            height = (int) Utility.dp2px(context, (float) (150 + Math.random() * 50));
-            mHeights.put(position, height);
+            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) (170 + Math.random() * 50), context.getResources().getDisplayMetrics());
+            mHeights.append(position, height);
         }
         ViewGroup.LayoutParams lp = cover.getLayoutParams();
         lp.height = height;
@@ -58,10 +58,10 @@ public abstract class AbsHomeListAdapter extends BaseRecyclerViewAdapter<StatusM
 
         if (hasAvatar) {
             avatar.setVisibility(View.VISIBLE);
-            Picasso.with(context).load(data.get(position).avatar).placeholder(android.R.color.darker_gray).into(avatar);
+            loadImage(data.get(position).avatar, avatar);
         }
 
-        Picasso.with(context).load(data.get(position).cover).placeholder(android.R.color.darker_gray).into(cover);
+        loadImage(data.get(position).cover, cover);
 
         author.setText(data.get(position).author);
         card.setOnClickListener(

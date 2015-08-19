@@ -19,6 +19,8 @@
     <string name="this_work_was_deleted">This work was deleted</string>
     <string name="no_titile">No Title</string>
     <string name="the_id_does_not_exist">The ID does not exist</string>
+    <string name="click_on_reload">Failed to load, please click on reload</string>
+    <string name="r18_is_prohibited">R18 is prohibited.</string>
 
     <!-- settings -->
     <string name="operation">Operation</string>
@@ -26,7 +28,7 @@
     <string name="version">Version</string>
     <string name="license">Open-source license</string>
     <string name="clean_cache">Clean Cache</string>
-    <string name="cache_size">Cache Size:%sMB</string>
+    <string name="cache_size">Cache Size:</string>
 
     <!-- menu -->
     <string name="the_day_after">the day after</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:numpb="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_image"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,14 +12,16 @@
         android:scaleType="fitCenter"
         android:visibility="gone" />
 
-    <com.daimajia.numberprogressbar.NumberProgressBar
-        android:id="@+id/number_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+        android:id="@+id/round_corner_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        numpb:max="100" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        app:rcBackgroundColor="@color/rcpb_background"
+        app:rcBackgroundPadding="3dp"
+        app:rcProgressColor="@color/rcpb" />
 
     <ImageView
         android:id="@+id/btn_refresh"

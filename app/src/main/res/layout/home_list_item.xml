@@ -9,8 +9,9 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        app:cardCornerRadius="0dp">
+        android:layout_margin="@dimen/cardview_margin"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:foreground="?android:attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/cover"
