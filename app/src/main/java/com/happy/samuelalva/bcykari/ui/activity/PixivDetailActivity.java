@@ -35,11 +35,11 @@ public class PixivDetailActivity extends BaseDetailActivity {
         PixivHttpClient.get(this, Constants.BASE_API_PIXIV + url, handler);
     }
 
-    @Override
-    protected void onDestroy() {
-        PixivHttpClient.cancel(this);
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        PixivHttpClient.cancel(this);
+//        super.onDestroy();
+//    }
 
     @Override
     protected void updateData(Document doc) {
@@ -71,9 +71,9 @@ public class PixivDetailActivity extends BaseDetailActivity {
                     mFailureDialog.show();
                     return;
                 }
-                mLoadingProgressBar.setVisibility(View.GONE);
                 model.cover = e.attr("src").replace("600x600", "240x480");
             }
+            mLoadingProgressBar.setVisibility(View.GONE);
             data.add(model.cover);
             mAdapter.replaceAll(data);
         }

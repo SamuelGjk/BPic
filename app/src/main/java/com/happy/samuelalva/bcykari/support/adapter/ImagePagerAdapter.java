@@ -104,7 +104,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
             Bitmap bitmap = bitmapCache.getBitmap(cacheName);
             if (bitmap != null) {
                 iv.setImage(ImageSource.bitmap(bitmap));
-                iv.startAnimation(animation);
                 iv.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
             } else {
@@ -112,7 +111,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 if (file.exists()) {
                     bitmap = Utility.createPreviewImage(file.getPath(), context);
                     iv.setImage(ImageSource.bitmap(bitmap));
-                    iv.startAnimation(animation);
                     iv.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
                     bitmapCache.putBitmap(cacheName, bitmap);

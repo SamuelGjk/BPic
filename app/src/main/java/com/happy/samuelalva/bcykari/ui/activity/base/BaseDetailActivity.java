@@ -28,6 +28,7 @@ import com.happy.samuelalva.bcykari.support.image.FastBlur;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 
 import org.apache.http.Header;
@@ -58,7 +59,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (Build.VERSION.SDK_INT > 19) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             View mStatusBarTintView = findViewById(R.id.status_bar_tint_view);
             mStatusBarTintView.setVisibility(View.VISIBLE);
         }
@@ -96,7 +97,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
         @Override
         public void onSuccess(int statusCode, Header[] headers, String responseString) {
             Document doc = Jsoup.parse(responseString);
-            
+
             if (model.avatar == null) {
                 if (getAvatar(doc) != null) {
                     model.avatar = getAvatar(doc);
@@ -115,19 +116,23 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
             mCollapsingToolbar.setTitle(TextUtils.isEmpty(title) ? getString(R.string.no_titile) : title);
             tvAuthor.setText(model.author);
 
-            Picasso.with(BaseDetailActivity.this).load(model.avatar).transform(new Transformation() {
-                @Override
-                public Bitmap transform(Bitmap source) {
-                    Bitmap bitmap = source.copy(Bitmap.Config.ARGB_8888, true);
-                    source.recycle();
-                    return FastBlur.doBlur(bitmap, 2, true);
-                }
+            RequestCreator creator = Picasso.with(BaseDetailActivity.this).load(model.avatar);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                creator.transform(new Transformation() {
+                    @Override
+                    public Bitmap transform(Bitmap source) {
+                        Bitmap bitmap = source.copy(Bitmap.Config.ARGB_8888, true);
+                        source.recycle();
+                        return FastBlur.doBlur(bitmap, 2, true);
+                    }
 
-                @Override
-                public String key() {
-                    return "doBlur";
-                }
-            }).into(mBackdrop);
+                    @Override
+                    public String key() {
+                        return "doBlur";
+                    }
+                });
+            }
+            creator.into(mBackdrop);
 
             updateData(doc);
         }

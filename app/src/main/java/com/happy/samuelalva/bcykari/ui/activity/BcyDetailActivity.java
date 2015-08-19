@@ -30,11 +30,11 @@ public class BcyDetailActivity extends BaseDetailActivity {
         BcyHttpClient.get(this, Constants.BASE_API_BCY + url, handler);
     }
 
-    @Override
-    protected void onDestroy() {
-        BcyHttpClient.cancel(this);
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        BcyHttpClient.cancel(this);
+//        super.onDestroy();
+//    }
 
     @Override
     protected void updateData(Document doc) {
