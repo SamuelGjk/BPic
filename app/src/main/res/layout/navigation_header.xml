@@ -3,8 +3,7 @@
     android:id="@+id/navigation_header"
     android:layout_width="match_parent"
     android:layout_height="224dp"
-    android:background="@color/bcy_color"
-    android:foreground="?selectableItemBackground">
+    android:background="@color/bcy_color">
 
     <ImageView
         android:id="@+id/iv_navigation_header"

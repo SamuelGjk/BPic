@@ -121,7 +121,7 @@ public abstract class ChildBaseFragment extends Fragment {
                     public void run() {
                         mSwipeRefresh.setRefreshing(false);
                     }
-                }, 358);
+                }, 500);
                 if (replace) {
                     mAdapter.replaceAll(data);
                     nextPage = 2;
