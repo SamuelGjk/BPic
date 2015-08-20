@@ -3,8 +3,6 @@ package com.happy.samuelalva.bcykari.support.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +35,7 @@ import java.util.List;
  */
 public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListener {
     private final String TAG = ImagePagerAdapter.class.getSimpleName();
+
     public static final int BCY_SOURCE = 0, PIXIV_SOURCE = 1;
 
     private static final long MIN_FILE_SIZE = 1024 * 10;
@@ -48,6 +47,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     private File mCacheDir;
     private int dataSource;
     private BitmapCache bitmapCache;
+    private boolean[] imgDLCompletedTags;
 
 
     public ImagePagerAdapter(Context context, List<String> urls, int dataSource) {
@@ -58,6 +58,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
         mCacheDir = BPicApplication.getImageCacheDir();
         mInflater = LayoutInflater.from(context);
         bitmapCache = BitmapCache.getInstance();
+        imgDLCompletedTags = new boolean[urls.size()];
 
         for (int i = 0; i < urls.size(); i++) {
             mViews.add(null);
@@ -75,7 +76,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, final int position) {
         View v = mViews.get(position);
         if (v != null) {
             container.addView(v);
@@ -106,17 +107,18 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 iv.setImage(ImageSource.bitmap(bitmap));
                 iv.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
+                imgDLCompletedTags[position] = true;
             } else {
-                final File file = new File(mCacheDir, cacheName);
+                File file = new File(mCacheDir, cacheName);
                 if (file.exists()) {
                     bitmap = Utility.createPreviewImage(file.getPath(), context);
                     iv.setImage(ImageSource.bitmap(bitmap));
                     iv.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
                     bitmapCache.putBitmap(cacheName, bitmap);
+                    imgDLCompletedTags[position] = true;
                 } else {
-                    final File tempFile = new File(mCacheDir, cacheName + ".temp");
-                    final FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
+                    final FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(file) {
                         @Override
                         public void onProgress(long bytesWritten, long totalSize) {
                             super.onProgress(bytesWritten, totalSize);
@@ -124,23 +126,23 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                         }
 
                         @Override
-                        public void onSuccess(int statusCode, Header[] headers, File tempFile) {
-                            if (tempFile.length() < MIN_FILE_SIZE) {
+                        public void onSuccess(int statusCode, Header[] headers, File file) {
+                            if (file.length() < MIN_FILE_SIZE) {
                                 Utility.showToast(context, "因为各种原因出错了=-=");
                             } else {
-                                tempFile.renameTo(file);
                                 Bitmap bitmap = Utility.createPreviewImage(file.getPath(), context);
                                 iv.setImage(ImageSource.bitmap(bitmap));
                                 iv.startAnimation(animation);
                                 iv.setVisibility(View.VISIBLE);
                                 mProgressBar.setVisibility(View.GONE);
                                 bitmapCache.putBitmap(cacheName, bitmap);
+                                imgDLCompletedTags[position] = true;
                             }
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
-                            tempFile.delete();
+                        public void onFailure(int statusCode, Header[] headers, Throwable error, File file) {
+                            file.delete();
                             if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
                                 PixivHttpClient.cancel(context);
                                 for (int i = 0; i < urls.size(); i++) {
@@ -156,7 +158,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                         @Override
                         public void onCancel() {
                             super.onCancel();
-                            tempFile.delete();
+                            file.delete();
                         }
                     };
 
@@ -192,6 +194,10 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 PixivHttpClient.get(context, url, handler);
                 break;
         }
+    }
+
+    public boolean canSaveImg(int position){
+        return imgDLCompletedTags[position];
     }
 
     @Override

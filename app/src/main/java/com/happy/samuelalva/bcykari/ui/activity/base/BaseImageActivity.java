@@ -26,6 +26,7 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
 
     private ViewPager mPager;
     private TextView curPage;
+    private ImagePagerAdapter mAdapter;
 
     protected List<String> urls;
     protected File mCacheDir;
@@ -56,7 +57,7 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
         urls = intent.getStringArrayListExtra(IMG_URLS);
         int index = intent.getIntExtra(CUR_PAGE, 0);
 
-        mPager.setAdapter(getAdapter());
+        mPager.setAdapter(mAdapter = getAdapter());
         mPager.setCurrentItem(index);
         curPage.setText(String.valueOf(index + 1));
         totalPage.setText(String.valueOf(urls.size()));
@@ -81,12 +82,16 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
 
     @Override
     public void onClick(View v) {
-        String cacheName = Utility.getCacheName(urls.get(mPager.getCurrentItem()));
-        File file = new File(mCacheDir, cacheName);
-        if (!file.exists()) {
-            Utility.showToast(this, "图片正在加载");
+        if (mAdapter.canSaveImg(mPager.getCurrentItem())) {
+            String cacheName = Utility.getCacheName(urls.get(mPager.getCurrentItem()));
+            File file = new File(mCacheDir, cacheName);
+            if (file.exists()) {
+                ImageSaver.getInstance(this).save(file, cacheName);
+            } else {
+                Utility.showToast(this, "您现在看到的是缓存在内存中的图片，源文件已被删除，无法保存");
+            }
         } else {
-            ImageSaver.getInstance(this).save(file, cacheName);
+            Utility.showToast(this, "图片正在加载");
         }
     }
 }

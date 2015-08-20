@@ -14,16 +14,6 @@ import android.widget.Toast;
  */
 public class Utility {
 
-    public static int getStatusBarHeight(Context context) {
-        Resources res = context.getResources();
-        int result = 0;
-        int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = res.getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
-
     public static String getCacheName(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
     }
