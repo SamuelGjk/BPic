@@ -48,10 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FragmentManager mManager;
     private int curFragment;
 
-    public FrameLayout getTabContainer() {
-        return tabContainer;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,6 +142,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         headerChange(isBcy);
         curFragment = index;
         mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    public void addTab(View tab) {
+        tabContainer.addView(tab);
     }
 
     @Override

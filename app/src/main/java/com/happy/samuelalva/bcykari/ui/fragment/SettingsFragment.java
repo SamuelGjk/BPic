@@ -11,14 +11,12 @@ import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.webkit.WebView;
 
 import com.happy.samuelalva.bcykari.BPicApplication;
 import com.happy.samuelalva.bcykari.R;
 
 import java.io.File;
-import java.text.DecimalFormat;
 
 /**
  * Created by Samuel.Alva on 2015/5/16.
@@ -29,6 +27,8 @@ public class SettingsFragment extends PreferenceFragment {
     private static final String CLEAN_CACHE = "clean_cache";
 
     private Preference mCleanCache;
+
+    private boolean clean;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,8 @@ public class SettingsFragment extends PreferenceFragment {
                 showAboutDialog();
                 return true;
             case CLEAN_CACHE:
-                new DeleteTask().execute();
+                if (clean)
+                    new DeleteTask().execute();
                 return true;
             default:
                 return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -78,6 +79,7 @@ public class SettingsFragment extends PreferenceFragment {
         long size = 0;
         File[] files = getCacheFiles();
         if (files.length != 0) {
+            clean = true;
             for (File file : files) {
                 size += file.length();
             }
@@ -125,8 +127,9 @@ public class SettingsFragment extends PreferenceFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            clean = false;
             dialog.dismiss();
-            setCacheSizeSummary("0.00");
+            setCacheSizeSummary("0.00B");
         }
     }
 }

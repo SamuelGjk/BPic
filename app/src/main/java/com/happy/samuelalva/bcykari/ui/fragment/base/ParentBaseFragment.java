@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.support.adapter.base.BasePagerAdapter;
@@ -37,10 +36,10 @@ public abstract class ParentBaseFragment extends Fragment {
         mPager.setAdapter(mAdapter = getAdapter());
 
         mTabLayout.setupWithViewPager(mPager);
-//        if (getActivity() instanceof MainActivity) {
-//            FrameLayout tabContainer = ((MainActivity) getActivity()).getTabContainer();
-//            tabContainer.addView(mTabLayout);
-//        }
+
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).addTab(mTabLayout);
+        }
     }
 
     protected abstract BasePagerAdapter getAdapter();
@@ -49,17 +48,8 @@ public abstract class ParentBaseFragment extends Fragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
 
-//        if (mTabLayout != null) {
-//            mTabLayout.setVisibility(hidden ? View.GONE : View.VISIBLE);
-//        }
-
-        if (!hidden) {
-            if (getActivity() instanceof MainActivity) {
-                FrameLayout tabContainer = ((MainActivity) getActivity()).getTabContainer();
-                tabContainer.removeAllViews();
-                tabContainer.addView(mTabLayout);
-            }
-        }
+        if (mTabLayout != null)
+            mTabLayout.setVisibility(hidden ? View.GONE : View.VISIBLE);
     }
 
     public void doRefresh() {
