@@ -3,9 +3,8 @@ package com.happy.samuelalva.bcykari.ui.activity;
 import android.view.View;
 
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.adapter.BcyDetailListAdapter;
-import com.happy.samuelalva.bcykari.support.adapter.AbsDetailListAdapter;
-import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
+import com.happy.samuelalva.bcykari.support.adapter.DetailListAdapter;
+import com.happy.samuelalva.bcykari.support.http.BPicHttpClient;
 import com.happy.samuelalva.bcykari.ui.activity.base.BaseDetailActivity;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -21,20 +20,14 @@ import java.util.List;
  */
 public class BcyDetailActivity extends BaseDetailActivity {
     @Override
-    protected AbsDetailListAdapter getAdapter() {
-        return new BcyDetailListAdapter(this);
+    protected DetailListAdapter getAdapter() {
+        return new DetailListAdapter(this, mData, BcyImageActivity.class);
     }
 
     @Override
     protected void doRequest(String url, AsyncHttpResponseHandler handler) {
-        BcyHttpClient.get(this, Constants.BASE_API_BCY + url, handler);
+        BPicHttpClient.get(this, Constants.BASE_API_BCY + url, null, handler);
     }
-
-//    @Override
-//    protected void onDestroy() {
-//        BcyHttpClient.cancel(this);
-//        super.onDestroy();
-//    }
 
     @Override
     protected void updateData(Document doc) {
@@ -44,7 +37,8 @@ public class BcyDetailActivity extends BaseDetailActivity {
         for (Element e : elements) {
             data.add(e.attr("src").replace("w650", "2X3"));
         }
-        mAdapter.replaceAll(data);
+        mData.addAll(data);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

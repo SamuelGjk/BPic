@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.adapter.AbsDetailListAdapter;
+import com.happy.samuelalva.bcykari.support.adapter.DetailListAdapter;
 import com.happy.samuelalva.bcykari.support.image.FastBlur;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -35,6 +35,9 @@ import org.apache.http.Header;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Samuel.Alva on 2015/4/16.
  */
@@ -44,12 +47,12 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
     private CollapsingToolbarLayout mCollapsingToolbar;
     private ImageView mBackdrop;
     private TextView tvAuthor;
-
     protected AlertDialog mFailureDialog;
     protected View mLoadingProgressBar, mLoadFailureView;
 
-    protected AbsDetailListAdapter mAdapter;
+    protected DetailListAdapter mAdapter;
     protected StatusModel model;
+    protected List<String> mData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
         RecyclerView mList = (RecyclerView) findViewById(R.id.rv_detail);
         mList.setLayoutManager(new GridLayoutManager(this, 2));
         mList.setHasFixedSize(true);
+        mData = new ArrayList<>();
         mList.setAdapter(mAdapter = getAdapter());
 
         initIdErrorDialog();
@@ -205,7 +209,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
 
     protected abstract void doRequest(String url, AsyncHttpResponseHandler handler);
 
-    protected abstract AbsDetailListAdapter getAdapter();
+    protected abstract DetailListAdapter getAdapter();
 
     protected abstract void updateData(Document doc);
 

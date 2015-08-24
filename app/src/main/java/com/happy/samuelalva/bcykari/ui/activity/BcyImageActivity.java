@@ -1,7 +1,6 @@
 package com.happy.samuelalva.bcykari.ui.activity;
 
 import com.happy.samuelalva.bcykari.support.adapter.ImagePagerAdapter;
-import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
 import com.happy.samuelalva.bcykari.ui.activity.base.BaseImageActivity;
 
 /**
@@ -13,12 +12,6 @@ public class BcyImageActivity extends BaseImageActivity {
         for (int i = 0; i < urls.size(); i++) {
             urls.set(i, urls.get(i).replace("/2X3", ""));
         }
-        return new ImagePagerAdapter(this, urls, ImagePagerAdapter.BCY_SOURCE);
-    }
-
-    @Override
-    protected void onDestroy() {
-        BcyHttpClient.cancel(this);
-        super.onDestroy();
+        return new ImagePagerAdapter(this, urls, null);
     }
 }

@@ -6,11 +6,9 @@ import android.view.View;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.adapter.AbsHomeListAdapter;
-import com.happy.samuelalva.bcykari.support.adapter.PixivHomeListAdapter;
-import com.happy.samuelalva.bcykari.support.http.PixivHttpClient;
+import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
+import com.happy.samuelalva.bcykari.ui.activity.PixivDetailActivity;
 import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -69,20 +67,13 @@ public class PixivNormalFragment extends ChildBaseFragment {
             showToast(getString(R.string.ranking_not_updated));
             mSwipeRefresh.setRefreshing(false);
             dateChange(-1);
-            return null;
         }
         return data;
     }
 
     @Override
-    protected AbsHomeListAdapter getAdapter() {
-        return new PixivHomeListAdapter(getActivity(), true);
-    }
-
-    @Override
-    protected void doRequest(String url, AsyncHttpResponseHandler handler) {
-        super.doRequest(url, handler);
-        PixivHttpClient.get(parentActivity, url, handler);
+    protected HomeListAdapter getAdapter() {
+        return new HomeListAdapter(parentActivity, mData, PixivDetailActivity.class);
     }
 
     private void initCalendar() {

@@ -17,8 +17,7 @@ import com.happy.samuelalva.bcykari.BPicApplication;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
-import com.happy.samuelalva.bcykari.support.http.PixivHttpClient;
+import com.happy.samuelalva.bcykari.support.http.BPicHttpClient;
 import com.happy.samuelalva.bcykari.support.image.BitmapCache;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
@@ -36,8 +35,6 @@ import java.util.List;
 public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListener {
     private final String TAG = ImagePagerAdapter.class.getSimpleName();
 
-    public static final int BCY_SOURCE = 0, PIXIV_SOURCE = 1;
-
     private static final long MIN_FILE_SIZE = 1024 * 10;
 
     private Context context;
@@ -45,15 +42,15 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     private List<View> mViews = new ArrayList<>();
     private LayoutInflater mInflater;
     private File mCacheDir;
-    private int dataSource;
     private BitmapCache bitmapCache;
     private boolean[] imgDLCompletedTags;
+    private Header[] headers;
 
 
-    public ImagePagerAdapter(Context context, List<String> urls, int dataSource) {
+    public ImagePagerAdapter(Context context, List<String> urls, Header[] headers) {
         this.context = context;
         this.urls = urls;
-        this.dataSource = dataSource;
+        this.headers = headers;
 
         mCacheDir = BPicApplication.getImageCacheDir();
         mInflater = LayoutInflater.from(context);
@@ -92,12 +89,30 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
             final View refreshBtn = v.findViewById(R.id.btn_refresh);
 
             final SubsamplingScaleImageView iv = (SubsamplingScaleImageView) v.findViewById(R.id.scale_image_view);
-            final Animation animation = AnimationUtils.loadAnimation(context, R.anim.fade_in);
             iv.setMaxScale(3.0f);
             iv.setDoubleTapZoomScale(2.0f);
             iv.setOnClickListener(this);
 
             final RoundCornerProgressBar mProgressBar = (RoundCornerProgressBar) v.findViewById(R.id.round_corner_progress_bar);
+
+            final Animation animation = AnimationUtils.loadAnimation(context, R.anim.fade_in);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    mProgressBar.setVisibility(View.GONE);
+                    iv.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    iv.clearAnimation();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
 
             final String url = urls.get(position);
             final String cacheName = Utility.getCacheName(url);
@@ -105,16 +120,14 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
             Bitmap bitmap = bitmapCache.getBitmap(cacheName);
             if (bitmap != null) {
                 iv.setImage(ImageSource.bitmap(bitmap));
-                iv.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.GONE);
+                iv.startAnimation(animation);
                 imgDLCompletedTags[position] = true;
             } else {
                 File file = new File(mCacheDir, cacheName);
                 if (file.exists()) {
                     bitmap = Utility.createPreviewImage(file.getPath(), context);
                     iv.setImage(ImageSource.bitmap(bitmap));
-                    iv.setVisibility(View.VISIBLE);
-                    mProgressBar.setVisibility(View.GONE);
+                    iv.startAnimation(animation);
                     bitmapCache.putBitmap(cacheName, bitmap);
                     imgDLCompletedTags[position] = true;
                 } else {
@@ -133,8 +146,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                                 Bitmap bitmap = Utility.createPreviewImage(file.getPath(), context);
                                 iv.setImage(ImageSource.bitmap(bitmap));
                                 iv.startAnimation(animation);
-                                iv.setVisibility(View.VISIBLE);
-                                mProgressBar.setVisibility(View.GONE);
                                 bitmapCache.putBitmap(cacheName, bitmap);
                                 imgDLCompletedTags[position] = true;
                             }
@@ -144,7 +155,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                         public void onFailure(int statusCode, Header[] headers, Throwable error, File file) {
                             file.delete();
                             if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
-                                PixivHttpClient.cancel(context);
+                                BPicHttpClient.cancel(context);
                                 for (int i = 0; i < urls.size(); i++) {
                                     urls.set(i, urls.get(i).replace("jpg", "png"));
                                 }
@@ -186,18 +197,15 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     }
 
     private void doRequest(String url, AsyncHttpResponseHandler handler) {
-        switch (dataSource) {
-            case BCY_SOURCE:
-                BcyHttpClient.get(context, url, handler);
-                break;
-            case PIXIV_SOURCE:
-                PixivHttpClient.get(context, url, handler);
-                break;
-        }
+        BPicHttpClient.get(context, url, headers, handler);
     }
 
-    public boolean canSaveImg(int position){
+    public boolean canSaveImg(int position) {
         return imgDLCompletedTags[position];
+    }
+
+    public void stopDownload() {
+        BPicHttpClient.cancel(context);
     }
 
     @Override

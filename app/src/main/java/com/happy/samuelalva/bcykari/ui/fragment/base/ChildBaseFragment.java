@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +15,14 @@ import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.support.adapter.AbsHomeListAdapter;
+import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
+import com.happy.samuelalva.bcykari.support.http.BPicHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,16 +31,15 @@ import java.util.List;
 public abstract class ChildBaseFragment extends Fragment {
 
     private RecyclerView mList;
-    private AbsHomeListAdapter mAdapter;
-    private StaggeredGridLayoutManager mLayoutManager;
+    private HomeListAdapter mAdapter;
+    private GridLayoutManager mLayoutManager;
     protected SwipeRefreshLayout mSwipeRefresh;
 
-    private int[] lastCompleteVisibleItems;
-    private boolean replace;
+    private boolean clean;
     private int nextPage = 2;
+    protected List<StatusModel> mData;
     protected String requestUrl;
     protected double totalPage;
-
     protected Activity parentActivity;
 
     @Override
@@ -59,33 +60,33 @@ public abstract class ChildBaseFragment extends Fragment {
             }
         });
         mList = (RecyclerView) view.findViewById(R.id.rv_timeline);
-        mList.setLayoutManager(mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mList.setLayoutManager(mLayoutManager = new GridLayoutManager(parentActivity, 2));
         mList.setHasFixedSize(true);
         mList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                lastCompleteVisibleItems = mLayoutManager.findLastCompletelyVisibleItemPositions(null);
-                if (dy > 0 && !mSwipeRefresh.isRefreshing() && Math.max(lastCompleteVisibleItems[0], lastCompleteVisibleItems[1]) >= mAdapter.getItemCount() - 1) {
+                if (dy > 0 && !mSwipeRefresh.isRefreshing() && mLayoutManager.findLastCompletelyVisibleItemPosition() >= mAdapter.getItemCount() - 3) {
                     doLoad();
                 }
             }
         });
+        mData = new ArrayList<>();
         mList.setAdapter(mAdapter = getAdapter());
 
-        mList.post(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 doRefresh();
             }
-        });
+        }, 358);
     }
 
     protected void doRefresh() {
-        mList.smoothScrollToPosition(0);
-        replace = true;
         mSwipeRefresh.setRefreshing(true);
+        mList.smoothScrollToPosition(0);
+        clean = true;
         doRequest(requestUrl, handler);
     }
 
@@ -93,8 +94,8 @@ public abstract class ChildBaseFragment extends Fragment {
         if (nextPage > totalPage) {
             showToast(getString(R.string.no_more));
         } else {
-            replace = false;
             mSwipeRefresh.setRefreshing(true);
+            clean = false;
             doRequest(requestUrl + nextPage, handler);
         }
     }
@@ -103,7 +104,8 @@ public abstract class ChildBaseFragment extends Fragment {
         if (!ConnectivityReceiver.isConnected) {
             mSwipeRefresh.setRefreshing(false);
             showToast(getString(R.string.no_network));
-            return;
+        } else {
+            BPicHttpClient.get(parentActivity, url, null, handler);
         }
     }
 
@@ -114,22 +116,24 @@ public abstract class ChildBaseFragment extends Fragment {
     private TextHttpResponseHandler handler = new TextHttpResponseHandler() {
         @Override
         public void onSuccess(int statusCode, Header[] headers, final String responseString) {
-            final List<StatusModel> data = responseDeal(responseString);
-            if (data != null) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSwipeRefresh.setRefreshing(false);
+            mSwipeRefresh.setRefreshing(false);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    List<StatusModel> data = responseDeal(responseString);
+                    if (data.size() != 0) {
+                        if (clean) {
+                            mData.clear();
+                            mData.addAll(data);
+                            nextPage = 2;
+                        } else {
+                            mData.addAll(data);
+                            nextPage++;
+                        }
+                        mAdapter.notifyDataSetChanged();
                     }
-                }, 500);
-                if (replace) {
-                    mAdapter.replaceAll(data);
-                    nextPage = 2;
-                } else {
-                    mAdapter.addAll(data);
-                    nextPage++;
                 }
-            }
+            }, 210);
         }
 
         @Override
@@ -141,6 +145,6 @@ public abstract class ChildBaseFragment extends Fragment {
 
     protected abstract List<StatusModel> responseDeal(String response);
 
-    protected abstract AbsHomeListAdapter getAdapter();
+    protected abstract HomeListAdapter getAdapter();
 
 }

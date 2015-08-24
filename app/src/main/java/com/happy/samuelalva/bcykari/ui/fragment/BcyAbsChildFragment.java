@@ -2,11 +2,9 @@ package com.happy.samuelalva.bcykari.ui.fragment;
 
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.adapter.BcyHomeListAdapter;
-import com.happy.samuelalva.bcykari.support.adapter.AbsHomeListAdapter;
-import com.happy.samuelalva.bcykari.support.http.BcyHttpClient;
+import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
+import com.happy.samuelalva.bcykari.ui.activity.BcyDetailActivity;
 import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -39,10 +37,8 @@ public abstract class BcyAbsChildFragment extends ChildBaseFragment {
         List<StatusModel> data = new ArrayList<>();
         for (Element e : detailUrls) {
             StatusModel model = new StatusModel();
-
             model.detail = e.attr("href");
             model.cover = e.getElementsByTag("img").first().attr("src");
-
             if (hasAvatar) {
                 String avatar = avatars.get(index).getElementsByTag("img").first().attr("src");
                 if (avatar.startsWith("/Public")) {
@@ -50,24 +46,15 @@ public abstract class BcyAbsChildFragment extends ChildBaseFragment {
                 }
                 model.avatar = avatar.replace("middle", "big");
             }
-
             model.author = authors.get(index).html();
-
             data.add(model);
-
             index++;
         }
         return data;
     }
 
     @Override
-    protected void doRequest(String url, AsyncHttpResponseHandler handler) {
-        super.doRequest(url, handler);
-        BcyHttpClient.get(url, handler);
-    }
-
-    @Override
-    protected AbsHomeListAdapter getAdapter() {
-        return new BcyHomeListAdapter(getActivity(), hasAvatar);
+    protected HomeListAdapter getAdapter() {
+        return new HomeListAdapter(parentActivity, mData, BcyDetailActivity.class);
     }
 }

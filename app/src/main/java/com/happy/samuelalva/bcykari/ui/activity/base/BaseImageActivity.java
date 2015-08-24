@@ -94,4 +94,10 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
             Utility.showToast(this, "图片正在加载");
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        mAdapter.stopDownload();
+        super.onDestroy();
+    }
 }

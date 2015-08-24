@@ -4,10 +4,8 @@ import android.view.View;
 
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.support.adapter.AbsDetailListAdapter;
-import com.happy.samuelalva.bcykari.support.adapter.PixivDetailListAdapter;
-import com.happy.samuelalva.bcykari.support.http.PixivHttpClient;
+import com.happy.samuelalva.bcykari.support.adapter.DetailListAdapter;
+import com.happy.samuelalva.bcykari.support.http.BPicHttpClient;
 import com.happy.samuelalva.bcykari.ui.activity.base.BaseDetailActivity;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -26,25 +24,18 @@ import java.util.List;
  */
 public class PixivDetailActivity extends BaseDetailActivity {
     @Override
-    protected AbsDetailListAdapter getAdapter() {
-        return new PixivDetailListAdapter(this);
+    protected DetailListAdapter getAdapter() {
+        return new DetailListAdapter(this, mData, PixivImageActivity.class);
     }
 
     @Override
     protected void doRequest(String url, AsyncHttpResponseHandler handler) {
-        PixivHttpClient.get(this, Constants.BASE_API_PIXIV + url, handler);
+        BPicHttpClient.get(this, Constants.BASE_API_PIXIV + url, null, handler);
     }
-
-//    @Override
-//    protected void onDestroy() {
-//        PixivHttpClient.cancel(this);
-//        super.onDestroy();
-//    }
 
     @Override
     protected void updateData(Document doc) {
         Elements elements = doc.getElementsByAttributeValue("class", "medium-image  _work multiple ");
-        final List<String> data = new ArrayList<>();
         if (elements.size() > 0) {
             doRequest(elements.first().attr("href"), new TextHttpResponseHandler() {
                 @Override
@@ -52,10 +43,12 @@ public class PixivDetailActivity extends BaseDetailActivity {
                     mLoadingProgressBar.setVisibility(View.GONE);
                     Document childDoc = Jsoup.parse(responseString);
                     Elements cElements = childDoc.getElementsByAttributeValue("class", "image ui-scroll-view");
+                    List<String> data = new ArrayList<>();
                     for (Element e : cElements) {
                         data.add(e.attr("data-src").replace("1200x1200", "240x480"));
                     }
-                    mAdapter.replaceAll(data);
+                    mData.addAll(data);
+                    mAdapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -74,8 +67,8 @@ public class PixivDetailActivity extends BaseDetailActivity {
                 model.cover = e.attr("src").replace("600x600", "240x480");
             }
             mLoadingProgressBar.setVisibility(View.GONE);
-            data.add(model.cover);
-            mAdapter.replaceAll(data);
+            mData.add(model.cover);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
