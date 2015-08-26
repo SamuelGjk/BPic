@@ -19,15 +19,15 @@
 -keepattributes Signature
 
 -keep class com.happy.samuelalva.bcykari.model.** { *; }
-
 -keep public class org.jsoup.** {
     public *;
 }
-
 -keep public class * extends android.support.design.widget.CoordinatorLayout$Behavior {
     public <init>(android.content.Context, android.util.AttributeSet);
 }
-
--keep class android.support.v7.widget.SearchView { *; }
+-keep public class android.support.v7.widget.SearchView {
+    public *;
+}
 
 -dontwarn com.squareup.okhttp.**
+-dontwarn android.util.FloatMath
