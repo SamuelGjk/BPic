@@ -133,7 +133,7 @@ public abstract class ChildBaseFragment extends Fragment {
                         mAdapter.notifyDataSetChanged();
                     }
                 }
-            }, 210);
+            }, 165);
         }
 
         @Override

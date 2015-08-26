@@ -7,8 +7,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,7 +26,6 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ViewHo
     private Context mContext;
     private List<StatusModel> mList;
     private Class mClass;
-    private int mLastPosition = -1;
 
     public HomeListAdapter(Context context, List<StatusModel> list, Class cls) {
         mContext = context;
@@ -43,7 +40,7 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         StatusModel model = mList.get(position);
         holder.model = model;
         holder.author.setText(model.author);
@@ -52,31 +49,6 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ViewHo
             holder.avatar.setVisibility(View.VISIBLE);
         }
         Picasso.with(mContext).load(model.cover).placeholder(android.R.color.darker_gray).into(holder.cover);
-
-        if (position > mLastPosition) {
-            holder.card.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.fade_in);
-                    animation.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-                            holder.card.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-                        }
-                    });
-                    holder.card.startAnimation(animation);
-                }
-            }, 64);
-            mLastPosition = position;
-        }
     }
 
     @Override

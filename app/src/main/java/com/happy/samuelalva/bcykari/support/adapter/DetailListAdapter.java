@@ -60,6 +60,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
             card.setOnClickListener(this);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public void onClick(View view) {
             if (ConnectivityReceiver.isConnected) {
