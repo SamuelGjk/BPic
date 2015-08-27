@@ -124,7 +124,8 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                 imgDLCompletedTags[position] = true;
             } else {
                 File file = new File(mCacheDir, cacheName);
-                if (file.exists()) {
+                bitmap = Utility.createPreviewImage(file.getPath(), context);
+                if (bitmap != null) {
                     bitmap = Utility.createPreviewImage(file.getPath(), context);
                     iv.setImage(ImageSource.bitmap(bitmap));
                     iv.startAnimation(animation);
