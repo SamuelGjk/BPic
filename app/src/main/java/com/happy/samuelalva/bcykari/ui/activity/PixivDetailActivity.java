@@ -57,17 +57,15 @@ public class PixivDetailActivity extends BaseDetailActivity {
                 }
             });
         } else {
-            if (model.cover == null) {
-                Element e = doc.select("a.medium-image > img").first();
-                if (e == null) {
-                    mFailureDialog.setTitle(R.string.r18_is_prohibited);
-                    mFailureDialog.show();
-                    return;
-                }
-                model.cover = e.attr("src").replace("600x600", "240x480");
+            Element e = doc.select("a.medium-image > img").first();
+            if (e == null) {
+                mFailureDialog.setTitle(R.string.r18_is_prohibited);
+                mFailureDialog.show();
+                return;
             }
+            String cover = e.attr("src").replace("600x600", "240x480");
             mLoadingProgressBar.setVisibility(View.GONE);
-            mData.add(model.cover);
+            mData.add(cover);
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -83,6 +81,11 @@ public class PixivDetailActivity extends BaseDetailActivity {
 
     @Override
     protected String getTitle(Document doc) {
-        return doc.select("h1.title").get(3).text();
+        return doc.select("h1.title").get(3).html();
+    }
+
+    @Override
+    protected String getAuthor(Document doc) {
+        return doc.select("h2.name > a").first().html();
     }
 }

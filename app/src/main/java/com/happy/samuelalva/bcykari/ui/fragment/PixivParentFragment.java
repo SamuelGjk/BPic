@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.happy.samuelalva.bcykari.R;
-import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.PixivPagerAdapter;
 import com.happy.samuelalva.bcykari.support.adapter.base.BasePagerAdapter;
@@ -71,10 +70,9 @@ public class PixivParentFragment extends ParentBaseFragment implements SearchVie
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        StatusModel model = new StatusModel();
-        model.detail = Constants.MEMBER_ILLUST_API_PIXIV + query;
+        String detail = Constants.MEMBER_ILLUST_API_PIXIV + query;
         Intent intent = new Intent(getActivity(), PixivDetailActivity.class);
-        intent.putExtra(BaseDetailActivity.ENTITY, model);
+        intent.putExtra(BaseDetailActivity.DETAIL_URL, detail);
         startActivity(intent);
         return true;
     }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     private LayoutInflater mInflater;
     private File mCacheDir;
     private BitmapCache bitmapCache;
-    private boolean[] imgDLCompletedTags;
     private Header[] headers;
 
 
@@ -55,7 +55,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
         mCacheDir = BPicApplication.getImageCacheDir();
         mInflater = LayoutInflater.from(context);
         bitmapCache = BitmapCache.getInstance();
-        imgDLCompletedTags = new boolean[urls.size()];
 
         for (int i = 0; i < urls.size(); i++) {
             mViews.add(null);
@@ -121,18 +120,16 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
             if (bitmap != null) {
                 iv.setImage(ImageSource.bitmap(bitmap));
                 iv.startAnimation(animation);
-                imgDLCompletedTags[position] = true;
             } else {
-                File file = new File(mCacheDir, cacheName);
-                bitmap = Utility.createPreviewImage(file.getPath(), context);
-                if (bitmap != null) {
-                    bitmap = Utility.createPreviewImage(file.getPath(), context);
+                final File cacheFile = new File(mCacheDir, cacheName);
+                if (cacheFile.exists()) {
+                    bitmap = Utility.createPreviewImage(cacheFile.getPath(), context);
                     iv.setImage(ImageSource.bitmap(bitmap));
                     iv.startAnimation(animation);
                     bitmapCache.putBitmap(cacheName, bitmap);
-                    imgDLCompletedTags[position] = true;
                 } else {
-                    final FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(file) {
+                    File tempFile = new File(mCacheDir, cacheName + ".temp");
+                    final FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
                         @Override
                         public void onProgress(long bytesWritten, long totalSize) {
                             super.onProgress(bytesWritten, totalSize);
@@ -140,37 +137,27 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                         }
 
                         @Override
-                        public void onSuccess(int statusCode, Header[] headers, File file) {
-                            if (file.length() < MIN_FILE_SIZE) {
+                        public void onSuccess(int statusCode, Header[] headers, File tempFile) {
+                            if (tempFile.length() < MIN_FILE_SIZE) {
                                 Utility.showToast(context, "因为各种原因出错了=-=");
                             } else {
-                                Bitmap bitmap = Utility.createPreviewImage(file.getPath(), context);
+                                tempFile.renameTo(cacheFile);
+                                Bitmap bitmap = Utility.createPreviewImage(cacheFile.getPath(), context);
                                 iv.setImage(ImageSource.bitmap(bitmap));
                                 iv.startAnimation(animation);
                                 bitmapCache.putBitmap(cacheName, bitmap);
-                                imgDLCompletedTags[position] = true;
                             }
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable error, File file) {
-                            file.delete();
+                        public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
                             if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
-                                BPicHttpClient.cancel(context);
-                                for (int i = 0; i < urls.size(); i++) {
-                                    urls.set(i, urls.get(i).replace("jpg", "png"));
-                                }
-                                notifyDataSetChanged();
+                                tempFile.delete();
+                                doRequest(url.replace("jpg", "png"), this);
                             } else {
                                 refreshBtn.setVisibility(View.VISIBLE);
                                 mProgressBar.setVisibility(View.GONE);
                             }
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            super.onCancel();
-                            file.delete();
                         }
                     };
 
@@ -201,25 +188,8 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
         BPicHttpClient.get(context, url, headers, handler);
     }
 
-    public boolean canSaveImg(int position) {
-        return imgDLCompletedTags[position];
-    }
-
     public void stopDownload() {
         BPicHttpClient.cancel(context);
-    }
-
-    @Override
-    public int getItemPosition(Object object) {
-        return POSITION_NONE;
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        for (int i = 0; i < mViews.size(); i++) {
-            mViews.set(i, null);
-        }
-        super.notifyDataSetChanged();
     }
 
     @Override

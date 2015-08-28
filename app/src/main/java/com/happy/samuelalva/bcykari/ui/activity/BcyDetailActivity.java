@@ -51,6 +51,11 @@ public class BcyDetailActivity extends BaseDetailActivity {
 
     @Override
     protected String getTitle(Document doc) {
-        return doc.select("h1.js-post-title").first().text();
+        return doc.select("h1.js-post-title").first().html();
+    }
+
+    @Override
+    protected String getAuthor(Document doc) {
+        return doc.getElementsByAttributeValue("class", "fz14 blue1").first().html();
     }
 }

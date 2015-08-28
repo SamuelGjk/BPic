@@ -35,6 +35,7 @@ import org.apache.http.Header;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import java.util.List;
  * Created by Samuel.Alva on 2015/4/16.
  */
 public abstract class BaseDetailActivity extends AppCompatActivity implements View.OnClickListener {
-    public static final String ENTITY = "ENTITY";
+    public static final String DETAIL_URL = "DETAIL_URL";
 
     private CollapsingToolbarLayout mCollapsingToolbar;
     private ImageView mBackdrop;
@@ -51,7 +52,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
     protected View mLoadingProgressBar, mLoadFailureView;
 
     protected DetailListAdapter mAdapter;
-    protected StatusModel model;
+    protected String detailUrl;
     protected List<String> mData;
 
     @Override
@@ -68,7 +69,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
         }
 
         Intent intent = getIntent();
-        model = intent.getParcelableExtra(ENTITY);
+        detailUrl = intent.getStringExtra(DETAIL_URL);
 
         mLoadingProgressBar = findViewById(R.id.loading_progress_bar);
         mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -86,7 +87,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
 
         initIdErrorDialog();
 
-        doRequest(model.detail, handler);
+        doRequest(detailUrl, handler);
     }
 
     @Override
@@ -102,25 +103,21 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
         public void onSuccess(int statusCode, Header[] headers, String responseString) {
             Document doc = Jsoup.parse(responseString);
 
-            if (model.avatar == null) {
-                if (getAvatar(doc) != null) {
-                    model.avatar = getAvatar(doc);
-                } else {
-                    mFailureDialog.setTitle(R.string.this_work_was_deleted);
-                    mFailureDialog.show();
-                    return;
-                }
+            String avatar;
+            if (getAvatar(doc) != null) {
+                avatar = getAvatar(doc);
+            } else {
+                mFailureDialog.setTitle(R.string.this_work_was_deleted);
+                mFailureDialog.show();
+                return;
             }
-
             String title = getTitle(doc);
-            if (model.author == null) {
-                model.author = doc.select("h2.name > a").first().html();
-            }
+            String author = getAuthor(doc);
 
             mCollapsingToolbar.setTitle(TextUtils.isEmpty(title) ? getString(R.string.no_titile) : title);
-            tvAuthor.setText(model.author);
+            tvAuthor.setText(author);
 
-            RequestCreator creator = Picasso.with(BaseDetailActivity.this).load(model.avatar);
+            RequestCreator creator = Picasso.with(BaseDetailActivity.this).load(avatar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 creator.transform(new Transformation() {
                     @Override
@@ -143,7 +140,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-            if (model.author == null) {
+            if (statusCode == HttpURLConnection.HTTP_NOT_FOUND) {
                 mFailureDialog.setTitle(R.string.the_id_does_not_exist);
                 mFailureDialog.show();
             } else {
@@ -177,8 +174,6 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
                         String new_id = etPixivId.getText().toString();
                         if (!TextUtils.isEmpty(new_id)) {
                             mFailureDialog.dismiss();
-                            model.avatar = null;
-                            model.author = null;
                             doRequest(Constants.MEMBER_ILLUST_API_PIXIV + new_id, handler);
                         }
                     }
@@ -204,7 +199,7 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
     public void onClick(View v) {
         mLoadFailureView.setVisibility(View.GONE);
         mLoadingProgressBar.setVisibility(View.VISIBLE);
-        doRequest(model.detail, handler);
+        doRequest(detailUrl, handler);
     }
 
     protected abstract void doRequest(String url, AsyncHttpResponseHandler handler);
@@ -216,4 +211,6 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
     protected abstract String getAvatar(Document doc);
 
     protected abstract String getTitle(Document doc);
+
+    protected abstract String getAuthor(Document doc);
 }

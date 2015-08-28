@@ -42,7 +42,7 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         StatusModel model = mList.get(position);
-        holder.model = model;
+        holder.detailUrl = model.detail;
         holder.author.setText(model.author);
         if (!TextUtils.isEmpty(model.avatar)) {
             Picasso.with(mContext).load(model.avatar).placeholder(android.R.color.darker_gray).into(holder.avatar);
@@ -68,7 +68,7 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ViewHo
         ImageView cover;
         TextView author;
 
-        StatusModel model;
+        String detailUrl;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -82,7 +82,7 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ViewHo
         @Override
         public void onClick(View view) {
             Intent i = new Intent(mContext, mClass);
-            i.putExtra(BaseDetailActivity.ENTITY, model);
+            i.putExtra(BaseDetailActivity.DETAIL_URL, detailUrl);
             mContext.startActivity(i);
         }
     }
