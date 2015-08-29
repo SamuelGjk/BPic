@@ -1,19 +1,35 @@
+/*
+ * Copyright 2014 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.happy.samuelalva.bcykari.support.image;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 
-import com.happy.samuelalva.bcykari.support.Constants;
+import static com.happy.samuelalva.bcykari.support.LogUtils.LOGD;
+import static com.happy.samuelalva.bcykari.support.LogUtils.makeLogTag;
 
 /**
  * This class holds our bitmap caches (memory).
  * Mod by google's iosched (com.google.samples.apps.iosched.util.BitmapCache)
  */
 public class BitmapCache {
-    private static final String TAG = BitmapCache.class.getSimpleName();
+    private static final String TAG = makeLogTag(BitmapCache.class);
 
-    private static final float DEFAULT_MEM_CACHE_PERCENT = 0.5f;
+    private static final float DEFAULT_MEM_CACHE_PERCENT = 0.3f;
 
     private static BitmapCache bitmapCache;
 
@@ -36,8 +52,7 @@ public class BitmapCache {
     }
 
     private void init(int memCacheSize) {
-        if (Constants.DEBUG)
-            Log.d(TAG, "Memory cache created (size = " + memCacheSize + "KB)");
+        LOGD(TAG, "Memory cache created (size = " + memCacheSize + "KB)");
 
         mMemoryCache = new LruCache<String, Bitmap>(memCacheSize) {
             @Override
@@ -55,8 +70,7 @@ public class BitmapCache {
 
         synchronized (mMemoryCache) {
             if (mMemoryCache.get(data) == null) {
-                if (Constants.DEBUG)
-                    Log.d(TAG, "Memory cache put - " + data);
+                LOGD(TAG, "Memory cache put - " + data);
 
                 mMemoryCache.put(data, bitmap);
             }
@@ -68,14 +82,12 @@ public class BitmapCache {
             synchronized (mMemoryCache) {
                 final Bitmap memBitmap = mMemoryCache.get(data);
                 if (memBitmap != null) {
-                    if (Constants.DEBUG)
-                        Log.d(TAG, "Memory cache hit - " + data);
+                    LOGD(TAG, "Memory cache hit - " + data);
 
                     return memBitmap;
                 }
             }
-            if (Constants.DEBUG)
-                Log.d(TAG, "Memory cache miss - " + data);
+            LOGD(TAG, "Memory cache miss - " + data);
         }
         return null;
     }

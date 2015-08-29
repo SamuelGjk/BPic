@@ -4,8 +4,6 @@ package com.happy.samuelalva.bcykari.support;
  * Created by Samuel.Alva on 2015/4/16.
  */
 public class Constants {
-    public static final boolean DEBUG = false;
-
     public static final String BASE_API_BCY = "http://bcy.net";
     public static final String ILLUST_API_BCY = BASE_API_BCY + "/illust";
     public static final String ILLUST_TOP_POST_100_API_BCY = ILLUST_API_BCY + "/toppost100";
