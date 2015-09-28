@@ -49,15 +49,13 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        View card;
         ImageView iv;
         int position;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            card = itemView;
             iv = (ImageView) itemView.findViewById(R.id.iv_detail);
-            card.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @SuppressWarnings("unchecked")

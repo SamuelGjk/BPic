@@ -3,10 +3,9 @@ package com.happy.samuelalva.bcykari.ui.fragment.base;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,26 +16,28 @@ import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
 import com.happy.samuelalva.bcykari.support.http.BPicHttpClient;
+import com.happy.samuelalva.bcykari.widget.LazyFrament;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
-
-import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
+
 /**
  * Created by Samuel.Alva on 2015/4/17.
  */
-public abstract class ChildBaseFragment extends Fragment {
+public abstract class ChildBaseFragment extends LazyFrament {
 
     private RecyclerView mList;
     private HomeListAdapter mAdapter;
-    private GridLayoutManager mLayoutManager;
+    private StaggeredGridLayoutManager mLayoutManager;
     protected SwipeRefreshLayout mSwipeRefresh;
 
     private boolean clean;
     private int nextPage = 2;
+    private boolean isPrepared = false;
     protected List<StatusModel> mData;
     protected String requestUrl;
     protected double totalPage;
@@ -56,18 +57,18 @@ public abstract class ChildBaseFragment extends Fragment {
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                doRefresh();
+                doRequest(requestUrl, handler, true);
             }
         });
         mList = (RecyclerView) view.findViewById(R.id.rv_timeline);
-        mList.setLayoutManager(mLayoutManager = new GridLayoutManager(parentActivity, 2));
+        mList.setLayoutManager(mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mList.setHasFixedSize(true);
         mList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                if (dy > 0 && !mSwipeRefresh.isRefreshing() && mLayoutManager.findLastCompletelyVisibleItemPosition() >= mAdapter.getItemCount() - 3) {
+                if (dy > 0 && !mSwipeRefresh.isRefreshing() && mLayoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1] >= mAdapter.getItemCount() - 3) {
                     doLoad();
                 }
             }
@@ -75,19 +76,25 @@ public abstract class ChildBaseFragment extends Fragment {
         mData = new ArrayList<>();
         mList.setAdapter(mAdapter = getAdapter());
 
+        isPrepared = true;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                doRefresh();
+                lazyLoad();
             }
         }, 358);
+    }
+
+    @Override
+    protected void lazyLoad() {
+        if (!isPrepared || !isVisible) return;
+        doRefresh();
     }
 
     protected void doRefresh() {
         mSwipeRefresh.setRefreshing(true);
         mList.smoothScrollToPosition(0);
-        clean = true;
-        doRequest(requestUrl, handler);
+        doRequest(requestUrl, handler, true);
     }
 
     protected void doLoad() {
@@ -95,12 +102,12 @@ public abstract class ChildBaseFragment extends Fragment {
             showToast(getString(R.string.no_more));
         } else {
             mSwipeRefresh.setRefreshing(true);
-            clean = false;
-            doRequest(requestUrl + nextPage, handler);
+            doRequest(requestUrl + nextPage, handler, false);
         }
     }
 
-    protected void doRequest(String url, AsyncHttpResponseHandler handler) {
+    protected void doRequest(String url, AsyncHttpResponseHandler handler, boolean clean) {
+        this.clean = clean;
         if (!ConnectivityReceiver.isConnected) {
             mSwipeRefresh.setRefreshing(false);
             showToast(getString(R.string.no_network));

@@ -8,4 +8,6 @@ public class StatusModel {
     public String avatar;
     public String cover;
     public String detail;
+    public int width;
+    public int height;
 }

@@ -9,11 +9,10 @@ import com.happy.samuelalva.bcykari.support.Constants;
 /**
  * Created by Samuel.Alva on 2015/5/6.
  */
-public class BcyCoserTopPostFragment extends BcyAbsChildFragment {
+public class BcyCoserTopPostFragment extends BcyAbsTopPostFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         requestUrl = Constants.COSER_TOP_POST_100_API_BCY;
-        hasAvatar = true;
         super.onViewCreated(view, savedInstanceState);
     }
 

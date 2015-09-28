@@ -4,8 +4,9 @@ import com.happy.samuelalva.bcykari.support.Constants;
 import com.happy.samuelalva.bcykari.support.adapter.ImagePagerAdapter;
 import com.happy.samuelalva.bcykari.ui.activity.base.BaseImageActivity;
 
-import org.apache.http.Header;
-import org.apache.http.message.BasicHeader;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.message.BasicHeader;
+
 
 /**
  * Created by Samuel.Alva on 2015/6/15.
