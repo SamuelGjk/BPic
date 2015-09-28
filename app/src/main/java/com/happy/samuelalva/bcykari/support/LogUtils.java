@@ -20,9 +20,6 @@ import android.util.Log;
 
 import com.happy.samuelalva.bcykari.BuildConfig;
 
-/**
- * Created by SamuelGjk on 2015/8/29.
- */
 public class LogUtils {
     private static final String LOG_PREFIX = "bpic_";
     private static final int LOG_PREFIX_LENGTH = LOG_PREFIX.length();

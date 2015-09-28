@@ -27,7 +27,7 @@ import static com.happy.samuelalva.bcykari.support.LogUtils.makeLogTag;
  * Mod by google's iosched (com.google.samples.apps.iosched.util.BitmapCache)
  */
 public class BitmapCache {
-    private static final String TAG = makeLogTag(BitmapCache.class);
+    private static final String TAG = makeLogTag("BitmapCache");
 
     private static final float DEFAULT_MEM_CACHE_PERCENT = 0.3f;
 
