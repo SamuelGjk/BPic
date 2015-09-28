@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 SamuelGjk <samuel.alva@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.happy.samuelalva.bcykari.ui.activity.base;
 
 import android.content.Intent;
@@ -82,14 +98,10 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
 
     @Override
     public void onClick(View v) {
-        if (mAdapter.canSaveImg(mPager.getCurrentItem())) {
-            String cacheName = Utility.getCacheName(urls.get(mPager.getCurrentItem()));
-            File file = new File(mCacheDir, cacheName);
-            if (file.exists()) {
-                ImageSaver.getInstance(this).save(file, cacheName);
-            } else {
-                Utility.showToast(this, "您现在看到的是缓存在内存中的图片，源文件已被删除，无法保存");
-            }
+        String cacheName = Utility.getCacheName(urls.get(mPager.getCurrentItem()));
+        File file = new File(mCacheDir, cacheName);
+        if (file.exists()) {
+            ImageSaver.getInstance(this).save(file, cacheName);
         } else {
             Utility.showToast(this, "图片正在加载");
         }

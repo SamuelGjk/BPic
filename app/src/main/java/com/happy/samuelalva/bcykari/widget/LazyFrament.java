@@ -14,31 +14,35 @@
  * limitations under the License.
  */
 
-package com.happy.samuelalva.bcykari.support.adapter;
+package com.happy.samuelalva.bcykari.widget;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-
-import com.happy.samuelalva.bcykari.support.adapter.base.BasePagerAdapter;
-import com.happy.samuelalva.bcykari.ui.fragment.PixivNormalFragment;
 
 /**
- * Created by Samuel.Alva on 2015/5/6.
+ * Created by SamuelGjk on 2015/9/26.
  */
-public class PixivPagerAdapter extends BasePagerAdapter {
-    public PixivPagerAdapter(FragmentManager fm) {
-        super(fm);
-        titles = new String[]{"全年龄（大概）"};
-    }
+public abstract class LazyFrament extends Fragment {
+    private boolean loadCompleted = false;
+
+    protected boolean isVisible = false;
 
     @Override
-    protected Fragment createItem(int position) {
-        switch (position) {
-            case 0:
-                return new PixivNormalFragment();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
 
-            default:
-                return null;
+        if (getUserVisibleHint()) {
+            isVisible = true;
+            onVisible();
+        } else {
+            isVisible = false;
         }
     }
+
+    protected void onVisible() {
+        if (loadCompleted) return;
+        lazyLoad();
+        loadCompleted = true;
+    }
+
+    protected abstract void lazyLoad();
 }

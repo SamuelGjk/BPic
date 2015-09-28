@@ -1,44 +1,29 @@
-package com.happy.samuelalva.bcykari.model;
+/*
+ * Copyright 2015 SamuelGjk <samuel.alva@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import android.os.Parcel;
-import android.os.Parcelable;
+package com.happy.samuelalva.bcykari.model;
 
 /**
  * Created by Samuel.Alva on 2015/4/16.
  */
-public class StatusModel implements Parcelable {
+public class StatusModel {
     public String author;
     public String avatar;
     public String cover;
     public String detail;
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(author);
-        dest.writeString(avatar);
-        dest.writeString(cover);
-        dest.writeString(detail);
-    }
-
-    public static final Parcelable.Creator<StatusModel> CREATOR = new Parcelable.Creator<StatusModel>() {
-        @Override
-        public StatusModel createFromParcel(Parcel source) {
-            StatusModel ret = new StatusModel();
-            ret.author = source.readString();
-            ret.avatar = source.readString();
-            ret.cover = source.readString();
-            ret.detail = source.readString();
-            return ret;
-        }
-
-        @Override
-        public StatusModel[] newArray(int size) {
-            return new StatusModel[size];
-        }
-    };
+    public int width;
+    public int height;
 }

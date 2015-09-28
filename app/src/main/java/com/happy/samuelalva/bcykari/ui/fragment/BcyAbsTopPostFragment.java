@@ -18,9 +18,6 @@ package com.happy.samuelalva.bcykari.ui.fragment;
 
 import com.happy.samuelalva.bcykari.model.StatusModel;
 import com.happy.samuelalva.bcykari.support.Constants;
-import com.happy.samuelalva.bcykari.support.adapter.HomeListAdapter;
-import com.happy.samuelalva.bcykari.ui.activity.BcyDetailActivity;
-import com.happy.samuelalva.bcykari.ui.fragment.base.ChildBaseFragment;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,23 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Samuel.Alva on 2015/6/7.
+ * Created by SamuelGjk on 2015/9/27.
  */
-public abstract class BcyAbsChildFragment extends ChildBaseFragment {
-    protected boolean hasAvatar;
-
+public abstract class BcyAbsTopPostFragment extends BcyAbsChildFragment {
     @Override
     protected List<StatusModel> responseDeal(String response) {
         Document doc = Jsoup.parse(response);
-        Elements detailUrls = doc.select("div.work-thumbnail__bd > a");
-        Elements avatars = doc.getElementsByAttributeValue("class", "i-work-thumbnail__uava");
-        Elements authors = doc.getElementsByAttributeValue("class", "work-thumbnail__author");
-
-        if (!hasAvatar) {
-            Element pageItem = doc.getElementsByAttributeValue("class", "pager__item pager__item--is-cur pager__item--disabled").first();
-            String strTotalPage = pageItem.getElementsByTag("span").first().html();
-            totalPage = Math.ceil(Double.parseDouble(strTotalPage.substring(strTotalPage.indexOf("共") + 1, strTotalPage.lastIndexOf("篇"))) / 60);
-        }
+        Elements detailUrls = doc.select("div.work-thumbnail__topBd > a");
+        Elements avatars = doc.getElementsByAttributeValue("class", "_avatar _avatar--user work-thumbnail__topavatar mr10");
+        Elements authors = doc.select("span.fz12 > a");
 
         int index = 0;
         List<StatusModel> data = new ArrayList<>();
@@ -55,22 +44,15 @@ public abstract class BcyAbsChildFragment extends ChildBaseFragment {
             StatusModel model = new StatusModel();
             model.detail = e.attr("href");
             model.cover = e.getElementsByTag("img").first().attr("src");
-            if (hasAvatar) {
-                String avatar = avatars.get(index).getElementsByTag("img").first().attr("src");
-                if (avatar.startsWith("/Public")) {
-                    avatar = Constants.BASE_API_BCY + avatar;
-                }
-                model.avatar = avatar.replace("middle", "big");
+            String avatar = avatars.get(index).getElementsByTag("img").first().attr("src");
+            if (avatar.startsWith("/Public")) {
+                avatar = Constants.BASE_API_BCY + avatar;
             }
+            model.avatar = avatar.replace("middle", "big");
             model.author = authors.get(index).html();
             data.add(model);
             index++;
         }
         return data;
-    }
-
-    @Override
-    protected HomeListAdapter getAdapter() {
-        return new HomeListAdapter(parentActivity, mData, BcyDetailActivity.class);
     }
 }

@@ -30,4 +30,3 @@
 }
 
 -dontwarn com.squareup.okhttp.**
--dontwarn android.util.FloatMath
