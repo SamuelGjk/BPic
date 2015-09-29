@@ -80,7 +80,7 @@ public class PixivNormalFragment extends ChildBaseFragment {
             data.add(model);
         }
         if (data.size() == 0) {
-            showToast(getString(R.string.ranking_not_updated));
+            showToast(R.string.ranking_not_updated);
             mSwipeRefresh.setRefreshing(false);
             dateChange(-1);
         }
@@ -89,7 +89,7 @@ public class PixivNormalFragment extends ChildBaseFragment {
 
     @Override
     protected HomeListAdapter getAdapter() {
-        return new HomeListAdapter(parentActivity, mData, PixivDetailActivity.class);
+        return new HomeListAdapter(mContext, mData, PixivDetailActivity.class);
     }
 
     private void initCalendar() {
@@ -103,14 +103,14 @@ public class PixivNormalFragment extends ChildBaseFragment {
     public void dateChange(int i) {
         if (!mSwipeRefresh.isRefreshing()) {
             if (i == 1 && today.equals(sdf.format(curCalendar.getTime()))) {
-                showToast(getString(R.string.no_after_day));
+                showToast(R.string.no_after_day);
             } else {
                 curCalendar.add(Calendar.DATE, i);
                 requestUrl = Constants.getPixivDatlyIllustRankingApi(sdf.format(curCalendar.getTime()));
                 doRefresh();
             }
         } else {
-            showToast(getString(R.string.wait_a_minute));
+            showToast(R.string.wait_a_minute);
         }
     }
 }

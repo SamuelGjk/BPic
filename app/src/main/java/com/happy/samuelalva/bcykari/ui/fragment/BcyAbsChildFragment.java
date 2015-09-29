@@ -71,6 +71,6 @@ public abstract class BcyAbsChildFragment extends ChildBaseFragment {
 
     @Override
     protected HomeListAdapter getAdapter() {
-        return new HomeListAdapter(parentActivity, mData, BcyDetailActivity.class);
+        return new HomeListAdapter(mContext, mData, BcyDetailActivity.class);
     }
 }

@@ -19,6 +19,8 @@ package com.happy.samuelalva.bcykari;
 import android.app.Application;
 import android.os.Environment;
 
+import com.happy.samuelalva.bcykari.support.CrashHandler;
+
 import java.io.File;
 
 /**
@@ -38,6 +40,8 @@ public class BPicApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        CrashHandler.addCrashHandler(getApplicationContext());
 
         File file = getExternalCacheDir();
         if (file != null) {

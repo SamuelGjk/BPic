@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.http.BPicHttpClient;
 import com.happy.samuelalva.bcykari.support.image.BitmapCache;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RangeFileAsyncHttpResponseHandler;
+import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -59,6 +60,8 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     private BitmapCache bitmapCache;
     private Header[] headers;
 
+    public SparseArray<String> mSuffixKeeper;
+
 
     public ImagePagerAdapter(Context context, List<String> urls, Header[] headers) {
         this.context = context;
@@ -68,6 +71,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
         mCacheDir = BPicApplication.getImageCacheDir();
         mInflater = LayoutInflater.from(context);
         bitmapCache = BitmapCache.getInstance();
+        mSuffixKeeper = new SparseArray<>();
 
         for (int i = 0; i < urls.size(); i++) {
             mViews.add(null);
@@ -127,7 +131,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
             });
 
             final String url = urls.get(position);
-            final String cacheName = Utility.getCacheName(url);
+            final String cacheName = Utility.getCacheName(url) + ".cache";
 
             Bitmap bitmap = bitmapCache.getBitmap(cacheName);
             if (bitmap != null) {
@@ -142,7 +146,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                     bitmapCache.putBitmap(cacheName, bitmap);
                 } else {
                     File tempFile = new File(mCacheDir, cacheName + ".temp");
-                    final RangeFileAsyncHttpResponseHandler handler = new RangeFileAsyncHttpResponseHandler(tempFile) {
+                    final FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
                         @Override
                         public void onProgress(long bytesWritten, long totalSize) {
                             super.onProgress(bytesWritten, totalSize);
@@ -150,11 +154,11 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                         }
 
                         @Override
-                        public void onSuccess(int statusCode, Header[] headers, File file) {
-                            if (file.length() < MIN_FILE_SIZE) {
+                        public void onSuccess(int statusCode, Header[] headers, File tempFile) {
+                            if (tempFile.length() < MIN_FILE_SIZE) {
                                 Utility.showToast(context, "因为各种原因出错了=-=");
                             } else {
-                                file.renameTo(cacheFile);
+                                tempFile.renameTo(cacheFile);
                                 Bitmap bitmap = Utility.createPreviewImage(cacheFile.getPath(), context);
                                 iv.setImage(ImageSource.bitmap(bitmap));
                                 iv.startAnimation(animation);
@@ -163,48 +167,23 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
+                        public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
                             if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
-                                file.delete();
+                                tempFile.delete();
+                                mSuffixKeeper.put(position, "png");
                                 doRequest(url.replace("jpg", "png"), this);
                             } else {
                                 refreshBtn.setVisibility(View.VISIBLE);
                                 mProgressBar.setVisibility(View.GONE);
                             }
                         }
-                    };
 
-//                    final FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
-//                        @Override
-//                        public void onProgress(long bytesWritten, long totalSize) {
-//                            super.onProgress(bytesWritten, totalSize);
-//                            mProgressBar.setProgress((float) (bytesWritten * 100 / totalSize));
-//                        }
-//
-//                        @Override
-//                        public void onSuccess(int statusCode, Header[] headers, File tempFile) {
-//                            if (tempFile.length() < MIN_FILE_SIZE) {
-//                                Utility.showToast(context, "因为各种原因出错了=-=");
-//                            } else {
-//                                tempFile.renameTo(cacheFile);
-//                                Bitmap bitmap = Utility.createPreviewImage(cacheFile.getPath(), context);
-//                                iv.setImage(ImageSource.bitmap(bitmap));
-//                                iv.startAnimation(animation);
-//                                bitmapCache.putBitmap(cacheName, bitmap);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
-//                            if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
-//                                tempFile.delete();
-//                                doRequest(url.replace("jpg", "png"), this);
-//                            } else {
-//                                refreshBtn.setVisibility(View.VISIBLE);
-//                                mProgressBar.setVisibility(View.GONE);
-//                            }
-//                        }
-//                    };
+                        @Override
+                        public void onCancel() {
+                            super.onCancel();
+                            file.delete();
+                        }
+                    };
 
                     refreshBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -219,7 +198,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                     if (ConnectivityReceiver.isConnected) {
                         doRequest(url, handler);
                     } else {
-                        Utility.showToast(context, context.getString(R.string.no_network));
+                        Utility.showToast(context, R.string.no_network);
                         refreshBtn.setVisibility(View.VISIBLE);
                         mProgressBar.setVisibility(View.GONE);
                     }

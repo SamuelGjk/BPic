@@ -35,7 +35,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         isConnected = readNetworkState(context);
         if (isConnected && !isWIFI)
-            Utility.showToast(context, context.getString(R.string.mobile_data));
+            Utility.showToast(context, R.string.mobile_data);
     }
 
     public boolean readNetworkState(Context context) {

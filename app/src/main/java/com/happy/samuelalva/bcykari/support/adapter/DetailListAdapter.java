@@ -83,7 +83,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
                 i.putStringArrayListExtra(BaseImageActivity.IMG_URLS, (ArrayList) mList);
                 mContext.startActivity(i);
             } else {
-                Utility.showToast(mContext, mContext.getString(R.string.no_network));
+                Utility.showToast(mContext, R.string.no_network);
             }
         }
     }

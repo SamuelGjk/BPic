@@ -16,7 +16,7 @@
 
 package com.happy.samuelalva.bcykari.ui.fragment.base;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -57,7 +57,7 @@ public abstract class ChildBaseFragment extends LazyFrament {
     protected List<StatusModel> mData;
     protected String requestUrl;
     protected double totalPage;
-    protected Activity parentActivity;
+    protected Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +67,7 @@ public abstract class ChildBaseFragment extends LazyFrament {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        parentActivity = getActivity();
+        mContext = getContext();
         mSwipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefresh.setColorSchemeResources(R.color.refresh_progress_1, R.color.refresh_progress_2, R.color.refresh_progress_3);
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -115,7 +115,7 @@ public abstract class ChildBaseFragment extends LazyFrament {
 
     protected void doLoad() {
         if (nextPage > totalPage) {
-            showToast(getString(R.string.no_more));
+            showToast(R.string.no_more);
         } else {
             mSwipeRefresh.setRefreshing(true);
             doRequest(requestUrl + nextPage, handler, false);
@@ -126,14 +126,14 @@ public abstract class ChildBaseFragment extends LazyFrament {
         this.clean = clean;
         if (!ConnectivityReceiver.isConnected) {
             mSwipeRefresh.setRefreshing(false);
-            showToast(getString(R.string.no_network));
+            showToast(R.string.no_network);
         } else {
-            BPicHttpClient.get(parentActivity, url, null, handler);
+            BPicHttpClient.get(mContext, url, null, handler);
         }
     }
 
-    protected void showToast(String msg) {
-        Utility.showToast(parentActivity, msg);
+    protected void showToast(int resId) {
+        Utility.showToast(mContext, resId);
     }
 
     private TextHttpResponseHandler handler = new TextHttpResponseHandler() {
@@ -162,7 +162,7 @@ public abstract class ChildBaseFragment extends LazyFrament {
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
             mSwipeRefresh.setRefreshing(false);
-            showToast(getString(R.string.load_failed));
+            if (getUserVisibleHint()) showToast(R.string.load_failed);
         }
     };
 

@@ -55,15 +55,18 @@ public class ImageSaver {
 
         @Override
         protected String doInBackground(Object... params) {
-            File f = new File(mDir, params[1].toString());
-            if (f.exists()) {
+            String fileName = params[1].toString();
+            File f1 = new File(mDir, fileName);
+            File f2 = null;
+            if (fileName.contains("jpg")) f2 = new File(mDir, fileName.replace("jpg", "png"));
+            if (f1.exists() || (f2 != null && f2.exists())) {
                 return "图片已存在";
             }
             FileInputStream fis = null;
             FileOutputStream fos = null;
             try {
                 fis = new FileInputStream((File) params[0]);
-                fos = new FileOutputStream(f);
+                fos = new FileOutputStream(f1);
 
                 byte[] buf = new byte[1024];
                 int len = 0;
