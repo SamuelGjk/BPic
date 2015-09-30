@@ -1,7 +1,7 @@
 # BPic
 不用登陆你就可以从bcy和p站下载到高清无码大图(然而并不是每张图都行233)
 
-下载地址：
+下载地址：稍后更新
 
 ## 界面截图
 <img src="/screenshots/screenshot0.png" width="240" height="427" /> <img src="/screenshots/screenshot1.png" width="240" height="427" /> <img src="/screenshots/screenshot2.png" width="240" height="427" />
