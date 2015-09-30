@@ -15,12 +15,13 @@
 1.初次放出
 
 ## TODO
-1.适配Android 6.0的权限管理  
-2.添加P站画师个人详情页  
-3.作品详情页重造  
-4.ImageActivity重造  
-5.分享功能  
+1.适配Android 6.0的权限管理
+2.添加P站画师个人详情页
+3.作品详情页重造
+4.ImageActivity重造
+5.分享功能
 6.遥遥无期的代码重构
+7.没想好..
 
 ## 感谢
 [XiNGRZ](https://github.com/xingrz)(RatioImageView)  
