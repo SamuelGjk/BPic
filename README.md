@@ -8,13 +8,17 @@
 <img src="/screenshots/screenshot3.png" width="240" height="427" /> <img src="/screenshots/screenshot4.png" width="240" height="427" />
 
 ## Changelog
+### 1.0-beta2
+1.取消图片加载时的断点续传（可能造成文件损坏）
+2.终于搞定了文件的后缀名问题（大概）
 ### 1.0-beta1
 1.初次放出
 
 ## TODO
 1.添加P站画师个人详情页
 2.作品详情页重造
-3.遥遥无期的代码重构
+3.适配Android 6.0的权限管理
+4.遥遥无期的代码重构
 
 ## 感谢
 [XiNGRZ](https://github.com/xingrz)(RatioImageView)
