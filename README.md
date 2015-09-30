@@ -1,7 +1,7 @@
 # BPic
 不用登陆你就可以从bcy和p站下载到高清无码大图(然而并不是每张图都行233)
 
-下载地址：稍后更新
+[下载地址](http://fir.im/bpic)
 
 ## 界面截图
 <img src="/screenshots/screenshot0.png" width="240" height="427" /> <img src="/screenshots/screenshot1.png" width="240" height="427" /> <img src="/screenshots/screenshot2.png" width="240" height="427" />
@@ -15,10 +15,12 @@
 1.初次放出
 
 ## TODO
-1.添加P站画师个人详情页  
-2.作品详情页重造  
-3.适配Android 6.0的权限管理  
-4.遥遥无期的代码重构  
+1.适配Android 6.0的权限管理  
+2.添加P站画师个人详情页  
+3.作品详情页重造  
+4.ImageActivity重造  
+5.分享功能  
+6.遥遥无期的代码重构
 
 ## 感谢
 [XiNGRZ](https://github.com/xingrz)(RatioImageView)  
