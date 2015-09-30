@@ -9,25 +9,25 @@
 
 ## Changelog
 ### 1.0-beta2
-1.取消图片加载时的断点续传（可能造成文件损坏）
+1.取消图片加载时的断点续传（可能造成文件损坏）  
 2.终于搞定了文件的后缀名问题（大概）
 ### 1.0-beta1
 1.初次放出
 
 ## TODO
-1.适配Android 6.0的权限管理
-2.添加P站画师个人详情页
-3.作品详情页重造
-4.ImageActivity重造
-5.分享功能
+1.适配Android 6.0的权限管理  
+2.添加P站画师个人详情页  
+3.作品详情页重造  
+4.ImageActivity重造  
+5.分享功能  
 6.遥遥无期的代码重构
 
 ## 感谢
-[XiNGRZ](https://github.com/xingrz)(RatioImageView)
+[XiNGRZ](https://github.com/xingrz)(RatioImageView)  
 [Paper Airplane Dev Team](https://github.com/PaperAirplane-Dev-Team)(代码参考和学习)
 
 ## 联系我
-E-MAIL: samuel.alva@outlook.com
+E-MAIL: samuel.alva@outlook.com  
 新浪微博: [@打酱油的什么鬼](http://weibo.com/234394146)
 
 ## License
