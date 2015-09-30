@@ -30,7 +30,7 @@ import android.widget.Toast;
 public class Utility {
 
     public static String getCacheName(String url) {
-        return url.substring(url.lastIndexOf("/") + 1);
+        return url.substring(url.lastIndexOf("/") + 1) + ".cache";
     }
 
     public static void showToast(Context context, int resId) {
