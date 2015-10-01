@@ -57,6 +57,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
     private File mCacheDir;
     private BitmapCache bitmapCache;
     private Header[] headers;
+    private boolean[] isDownloaded;
 
     public ImagePagerAdapter(Context context, List<String> urls, Header[] headers) {
         this.context = context;
@@ -66,6 +67,7 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
         mCacheDir = BPicApplication.getImageCacheDir();
         mInflater = LayoutInflater.from(context);
         bitmapCache = BitmapCache.getInstance();
+        isDownloaded = new boolean[urls.size()];
 
         for (int i = 0; i < urls.size(); i++) {
             mViews.add(null);
@@ -154,18 +156,19 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
         }
 
         final String cacheName = Utility.getCacheName(url);
+        final File cacheFile = new File(mCacheDir, cacheName);
+        isDownloaded[position] = cacheFile.exists();
+
         Bitmap bitmap = bitmapCache.getBitmap(cacheName);
         if (bitmap != null) {
             updateImageView(imageView, bitmap, animation);
         } else {
-            final File cacheFile = new File(mCacheDir, cacheName);
-            if (cacheFile.exists()) {
+            if (isDownloaded[position]) {
                 bitmap = Utility.createPreviewImage(cacheFile.getPath(), context);
                 updateImageView(imageView, bitmap, animation);
                 bitmapCache.putBitmap(cacheName, bitmap);
             } else {
-                File tempFile = new File(mCacheDir, cacheName + ".temp");
-                FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(tempFile) {
+                FileAsyncHttpResponseHandler handler = new FileAsyncHttpResponseHandler(cacheFile) {
                     @Override
                     public void onProgress(long bytesWritten, long totalSize) {
                         super.onProgress(bytesWritten, totalSize);
@@ -173,11 +176,11 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                     }
 
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, File tempFile) {
-                        if (tempFile.length() < MIN_FILE_SIZE) {
+                    public void onSuccess(int statusCode, Header[] headers, File cacheFile) {
+                        if (cacheFile.length() < MIN_FILE_SIZE) {
                             Utility.showToast(context, "因为各种原因出错了=-=");
                         } else {
-                            tempFile.renameTo(cacheFile);
+                            isDownloaded[position] = true;
                             Bitmap bitmap = Utility.createPreviewImage(cacheFile.getPath(), context);
                             updateImageView(imageView, bitmap, animation);
                             bitmapCache.putBitmap(cacheName, bitmap);
@@ -185,9 +188,9 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                     }
 
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable error, File tempFile) {
+                    public void onFailure(int statusCode, Header[] headers, Throwable error, File cacheFile) {
+                        cacheFile.delete();
                         if (statusCode == HttpURLConnection.HTTP_NOT_FOUND && url.endsWith(".jpg")) {
-                            tempFile.delete();
                             String newUrl = url.replace("jpg", "png");
                             urls.set(position, newUrl);
                             loadPicture(newUrl, position, progressBar, imageView, refreshBtn, animation);
@@ -195,6 +198,12 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
                             refreshBtn.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
                         }
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        super.onCancel();
+                        cacheFile.delete();
                     }
                 };
                 BPicHttpClient.get(context, url, headers, handler);
@@ -204,6 +213,10 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
 
     public void stopDownload() {
         BPicHttpClient.cancel(context);
+    }
+
+    public boolean isDownloaded(int position) {
+        return isDownloaded[position];
     }
 
     @Override
