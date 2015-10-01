@@ -98,9 +98,10 @@ public abstract class BaseImageActivity extends AppCompatActivity implements Vie
 
     @Override
     public void onClick(View v) {
-        String cacheName = Utility.getCacheName(urls.get(mPager.getCurrentItem()));
-        File file = new File(mCacheDir, cacheName);
-        if (file.exists()) {
+        int position = mPager.getCurrentItem();
+        if (mAdapter.isDownloaded(position)) {
+            String cacheName = Utility.getCacheName(urls.get(position));
+            File file = new File(mCacheDir, cacheName);
             String fileName = cacheName.substring(0, cacheName.lastIndexOf("."));
             ImageSaver.getInstance(this).save(file, fileName);
         } else {
