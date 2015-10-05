@@ -27,7 +27,7 @@ import android.widget.ImageView;
 import com.happy.samuelalva.bcykari.R;
 import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
-import com.happy.samuelalva.bcykari.ui.activity.base.BaseImageActivity;
+import com.happy.samuelalva.bcykari.ui.activity.base.BaseGalleryActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -79,8 +79,8 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
         public void onClick(View view) {
             if (ConnectivityReceiver.isConnected) {
                 Intent i = new Intent(mContext, mClass);
-                i.putExtra(BaseImageActivity.CUR_PAGE, position);
-                i.putStringArrayListExtra(BaseImageActivity.IMG_URLS, (ArrayList) mList);
+                i.putExtra(BaseGalleryActivity.CUR_PAGE, position);
+                i.putStringArrayListExtra(BaseGalleryActivity.IMG_URLS, (ArrayList) mList);
                 mContext.startActivity(i);
             } else {
                 Utility.showToast(mContext, R.string.no_network);

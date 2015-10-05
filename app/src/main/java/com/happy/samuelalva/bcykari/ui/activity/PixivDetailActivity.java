@@ -42,7 +42,7 @@ import cz.msebera.android.httpclient.Header;
 public class PixivDetailActivity extends BaseDetailActivity {
     @Override
     protected DetailListAdapter getAdapter() {
-        return new DetailListAdapter(this, mData, PixivImageActivity.class);
+        return new DetailListAdapter(this, mData, PixivGalleryActivity.class);
     }
 
     @Override

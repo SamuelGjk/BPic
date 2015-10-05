@@ -140,8 +140,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         unregisterReceiver(mReceiver);
+        super.onDestroy();
     }
 
     private void selectItem(int index, boolean isBcy) {

@@ -16,7 +16,6 @@
 
 package com.happy.samuelalva.bcykari.support.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
@@ -35,6 +34,7 @@ import com.happy.samuelalva.bcykari.receiver.ConnectivityReceiver;
 import com.happy.samuelalva.bcykari.support.Utility;
 import com.happy.samuelalva.bcykari.support.http.BPicHttpClient;
 import com.happy.samuelalva.bcykari.support.image.BitmapCache;
+import com.happy.samuelalva.bcykari.ui.activity.base.BaseGalleryActivity;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import java.io.File;
@@ -226,6 +226,6 @@ public class ImagePagerAdapter extends PagerAdapter implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        ((Activity) context).finish();
+        ((BaseGalleryActivity) context).SystemUIConfig();
     }
 }

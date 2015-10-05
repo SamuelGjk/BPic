@@ -32,9 +32,7 @@
 
     <color name="image_activity_bg">#3C3F41</color>
 
-    <color name="tab_text_color">#CCFFFFFF</color>
     <color name="bcy_color">#FA6FA1</color>
     <color name="pixiv_color">#0096DB</color>
     <color name="menu_title_gray">#FF717171</color>
-    <color name="divider_color">#FFCCCCCC</color>
 </resources>

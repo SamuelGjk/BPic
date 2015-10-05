@@ -79,9 +79,9 @@ public abstract class BaseDetailActivity extends AppCompatActivity implements Vi
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            View mStatusBarTintView = findViewById(R.id.status_bar_tint_view);
-            mStatusBarTintView.setVisibility(View.VISIBLE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            View mStatusBarTintView = findViewById(R.id.status_bar_header_view);
+            mStatusBarTintView.setVisibility(View.GONE);
         }
 
         Intent intent = getIntent();

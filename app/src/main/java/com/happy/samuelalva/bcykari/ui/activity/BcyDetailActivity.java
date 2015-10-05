@@ -37,7 +37,7 @@ import java.util.List;
 public class BcyDetailActivity extends BaseDetailActivity {
     @Override
     protected DetailListAdapter getAdapter() {
-        return new DetailListAdapter(this, mData, BcyImageActivity.class);
+        return new DetailListAdapter(this, mData, BcyGalleryActivity.class);
     }
 
     @Override
