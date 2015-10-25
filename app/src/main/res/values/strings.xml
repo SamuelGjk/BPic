@@ -50,6 +50,7 @@
     <string name="the_day_after">the day after</string>
     <string name="the_day_before">the day before</string>
     <string name="search">Search</string>
+    <string name="save">Save</string>
 
     <!-- toast tips -->
     <string name="no_network">Please connect to the Internet</string>

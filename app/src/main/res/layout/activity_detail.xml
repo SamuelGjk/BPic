@@ -65,14 +65,7 @@
                 android:singleLine="true"
                 app:layout_collapseMode="parallax" />
 
-            <View
-                android:id="@+id/status_bar_tint_view"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:background="@color/translucent"
-                android:fitsSystemWindows="true"
-                android:visibility="gone"
-                app:layout_collapseMode="pin" />
+            <include layout="@layout/status_bar_header_view" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

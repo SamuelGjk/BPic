@@ -23,7 +23,7 @@
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="@dimen/card_corner_radius">
 
-    <com.happy.samuelalva.bcykari.widget.RatioImageView
+    <moe.yukinoneko.bpic.widget.RatioImageView
         android:id="@+id/cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

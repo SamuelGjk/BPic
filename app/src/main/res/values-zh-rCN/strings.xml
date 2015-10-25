@@ -43,6 +43,7 @@
     <string name="the_day_after">后一天</string>
     <string name="the_day_before">前一天</string>
     <string name="search">搜索</string>
+    <string name="save">保存</string>
 
     <string name="no_network">看来你的网络傲娇了╮(￣▽￣)╭</string>
     <string name="load_failed">加载失败，请重试</string>

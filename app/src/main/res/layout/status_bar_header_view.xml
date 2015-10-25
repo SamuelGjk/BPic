@@ -15,13 +15,11 @@
   ~ limitations under the License.
   -->
 
-<android.support.design.widget.TabLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<View xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tabs"
+    android:id="@+id/status_bar_header_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    android:visibility="gone"
-    app:tabContentStart="16dp"
-    app:tabIndicatorColor="@android:color/white"
-    app:tabMode="scrollable" />
+    android:layout_height="25dp"
+    android:background="@color/translucent"
+    android:fitsSystemWindows="true"
+    app:layout_collapseMode="pin" />

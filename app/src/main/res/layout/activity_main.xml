@@ -55,7 +55,7 @@
             app:layout_anchor="@id/content_frame"
             app:backgroundTint="?colorPrimary"
             app:layout_anchorGravity="right|bottom"
-            app:layout_behavior="com.happy.samuelalva.bcykari.widget.ScrollAwareFABBehavior"/>
+            app:layout_behavior="moe.yukinoneko.bpic.widget.ScrollAwareFABBehavior"/>
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView

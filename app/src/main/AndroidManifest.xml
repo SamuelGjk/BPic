@@ -16,7 +16,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.happy.samuelalva.bcykari">
+    package="moe.yukinoneko.bpic">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -57,14 +57,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.BcyImageActivity">
+        <activity android:name=".ui.activity.BcyGalleryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.PixivImageActivity">
+        <activity android:name=".ui.activity.PixivGalleryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
